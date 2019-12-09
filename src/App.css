@@ -1,0 +1,15 @@
+.shadow {
+  position: fixed;
+  width: 100%;
+  height: 100vh;
+  z-index: 0;
+}
+
+/* Android 端 textarea 的 font-family 默认是 monospace，而不是 inherit，会导致宽度计算不一致 */
+textarea {
+  font-family: inherit;
+}
+
+body {
+  margin: 0;
+}
