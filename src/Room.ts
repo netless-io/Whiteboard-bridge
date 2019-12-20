@@ -9,6 +9,28 @@ import {
 } from "white-web-sdk";
 import { DisplayerBridge } from "./Displayer";
 
+// common types
+type PluginInformation = {
+    readonly protocal: string;
+    readonly props?: {
+        [key: string]: any;
+    };
+    readonly centerX: number;
+    readonly centerY: number;
+    readonly width: number;
+    readonly height: number;
+};
+
+type VideoPluginInfo = {
+    readonly props?: {
+        videoUrl: string;
+    }
+    readonly centerX: number;
+    readonly centerY: number;
+    readonly width: number;
+    readonly height: number;
+}
+
 type EventEntry = {
     eventName: string;
     payload: any;
@@ -162,6 +184,13 @@ export class RoomBridge extends DisplayerBridge {
             insertImage: (imageInfo: ImageInformation) => {
                 this.logger("insertImage", imageInfo);
                 this.room.insertImage(imageInfo);
+            },
+            insertVideo: (videoInfo: VideoPluginInfo) => {
+                this.logger("insertVideo", videoInfo);
+                this.room.insertPlugin({
+                    protocal: "video",
+                    ...videoInfo,
+                });
             },
             completeImageUpload: (uuid: string, url: string) => {
                 this.logger("completeImageUpload", uuid, url);

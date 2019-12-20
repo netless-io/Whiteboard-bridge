@@ -7,6 +7,8 @@ import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, Pla
 import UserCursor from "./UserCursor";
 import {BaseTypeKey, Writable} from "./utils/tools";
 import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
+import WhiteVideoPlugin from "@netless/white-video-plugin";
+import WhiteAudioPlugin from "@netless/white-audio-plugin";
 
 declare global {
     interface Window {
@@ -87,6 +89,7 @@ export class App extends React.Component<{}, {}> {
         const {debug, userCursor, enableInterrupterAPI, ...restConfig} = config;
         this.webSdk = new WhiteWebSdk({
             ...restConfig,
+            plugins: [WhiteVideoPlugin, WhiteAudioPlugin],
             deviceType: DeviceType.Touch,
             urlInterrupter: urlInterrupter,
         });
@@ -264,6 +267,7 @@ export class App extends React.Component<{}, {}> {
         this.debug = true;
         this.nativeConfig = {debug: true, userCursor: true};
         this.webSdk = new WhiteWebSdk({
+            plugins: [WhiteVideoPlugin, WhiteAudioPlugin],
             urlInterrupter: url => {
                 console.log(url); return url;
             },
@@ -272,7 +276,8 @@ export class App extends React.Component<{}, {}> {
 
     private joinTestRoom = async () => {
         this.setupDebugSdk();
-        this.joinRoom({uuid: "446ffa0f7f624796ae11584937fb5cbb", roomToken: "WHITEcGFydG5lcl9pZD1OZ3pwQWNBdlhiemJERW9NY0E0Z0V3RTUwbVZxM0NIbDJYV0Ymc2lnPTRmYjcyNTdiZjIzZmE3ZDMzNmFiODZkMGNjNWY0MGZkZDc1YzBhYjE6YWRtaW5JZD0yMTYmcm9vbUlkPTQ0NmZmYTBmN2Y2MjQ3OTZhZTExNTg0OTM3ZmI1Y2JiJnRlYW1JZD0zNDEmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE1OTkzMjUxMDYmYWs9Tmd6cEFjQXZYYnpiREVvTWNBNGdFd0U1MG1WcTNDSGwyWFdGJmNyZWF0ZV90aW1lPTE1Njc3NjgxNTQmbm9uY2U9MTU2Nzc2ODE1NDEyMjAw", userPayload: {avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg"}}, () => {});
+        this.joinRoom({uuid: "8e7f4e51687e45afbf03ba42670a0dde", roomToken: "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPWI4YzIxMjI1YmVlYzU2YWI2MjQ5NmE2MWNiMmUyNzdmYWE0NjA4YjQ6YWRtaW5JZD0xNTgmcm9vbUlkPThlN2Y0ZTUxNjg3ZTQ1YWZiZjAzYmE0MjY3MGEwZGRlJnRlYW1JZD0yODMmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MDgzODk2ODMmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NzY4MzI3MzEmbm9uY2U9MTU3NjgzMjczMDY1ODAw"}, () => {});
+        // this.joinRoom({uuid: "955f6e90d03a4395a4e575917a7d46b4", roomToken: "WHITEcGFydG5lcl9pZD0xTnd5aDBsMW9ZazhaRWNuZG1kaWgwcmJjVWVsQnE1UkpPMVMmc2lnPWIzMDI5MTgwZDZlZmM1ZjcxZGZhMzFkYTAzYTA2ZGVkYTJlNDA4OWI6YWRtaW5JZD01MjEmcm9vbUlkPTk1NWY2ZTkwZDAzYTQzOTVhNGU1NzU5MTdhN2Q0NmI0JnRlYW1JZD02NDYmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MDgzODQ1MzEmYWs9MU53eWgwbDFvWWs4WkVjbmRtZGloMHJiY1VlbEJxNVJKTzFTJmNyZWF0ZV90aW1lPTE1NzY4Mjc1Nzkmbm9uY2U9MTU3NjgyNzU3ODU3MDAw", userPayload: {avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg"}}, () => {});
     }
 
     private replayTestRoom = async() => {
