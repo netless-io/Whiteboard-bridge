@@ -9,11 +9,11 @@ const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 
-module.exports = {
+config = {
   entry: './src/index',
   output: {
     path: path.join(__dirname, '/build'),
-    filename: process.env.mode === 'production' ? '[name].[contenthash:8].js' : '[name].[hash].js',
+    filename: '[name].[contenthash:8].js'
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js']
@@ -82,3 +82,10 @@ module.exports = {
     ]
   }
 };
+
+module.exports = (env, argv) => {
+  if (argv.mode === 'development') {
+    config.output.filename = '[name].[hash].js';
+  }
+  return config;
+}
