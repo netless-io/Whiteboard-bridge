@@ -3,7 +3,7 @@ import dsBridge from "dsbridge";
 import {RoomBridge} from "./Room";
 import {PlayerBridge} from "./Player";
 import "./App.css";
-import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams} from "white-web-sdk";
+import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase} from "white-web-sdk";
 import UserCursor from "./UserCursor";
 import {BaseTypeKey, Writable} from "./utils/tools";
 import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
@@ -101,6 +101,13 @@ export class App extends React.Component<{}, {}> {
             },
             onPhaseChanged: phase => {
                 dsBridge.call("room.firePhaseChanged", phase);
+
+                setTimeout(() => {
+                    if (this.roomBridge && this.roomBridge.room.phase === RoomPhase.Reconnecting) {
+                        this.logger("disconnect", "reconnecting too long, call disconnect automatically")
+                        this.roomBridge.room.disconnect();
+                    }
+                }, 35000);
             },
             onDisconnectWithError: error => {
                 dsBridge.call("room.fireDisconnectWithError", error.message);
