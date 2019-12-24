@@ -3,10 +3,19 @@ import dsBridge from "dsbridge";
 import {RoomBridge} from "./Room";
 import {PlayerBridge} from "./Player";
 import "./App.css";
-import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase} from "white-web-sdk";
+import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player} from "white-web-sdk";
 import UserCursor from "./UserCursor";
 import {BaseTypeKey, Writable} from "./utils/tools";
 import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
+
+declare global {
+    interface Window {
+      displayer? : Displayer;
+      room? : Room;
+      player? : Player;
+      whiteSdk? : any;
+    }
+  }
 
 type NativeSDKConfig = {
     /** 开启图片拦截功能 */
@@ -43,7 +52,7 @@ export class App extends React.Component<{}, {}> {
         window.addEventListener("error", (e: ErrorEvent) => {
             this.throw(e.message, e.error);
         });
-        (window as any).whiteSdk = this;
+        window.whiteSdk = this;
 
         this.cursor = new UserCursor();
 
@@ -120,8 +129,8 @@ export class App extends React.Component<{}, {}> {
             },
         }).then(room => {
 
-            (window as any).displayer = room;
-            (window as any).room = room;
+            window.displayer = room;
+            window.room = room;
 
             this.roomBridge = new RoomBridge(room, this.logger);
             if (this.container) {
@@ -191,8 +200,8 @@ export class App extends React.Component<{}, {}> {
             },
         }).then(player => {
 
-            (window as any).displayer = player;
-            (window as any).player = player;
+            window.displayer = player;
+            window.player = player;
 
             this.playerBridge = new PlayerBridge(player, this.logger);
             if (this.container) {
@@ -215,9 +224,9 @@ export class App extends React.Component<{}, {}> {
             this.roomBridge.bindHtmlElement(null);
             this.roomBridge = undefined;
         }
-        (window as any).room = undefined;
-        (window as any).player = undefined;
-        (window as any).displayer = undefined;
+        window.room = undefined;
+        window.player = undefined;
+        window.displayer = undefined;
         (window as any).displayerBridge = undefined;
     }
 
