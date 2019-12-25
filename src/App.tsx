@@ -234,6 +234,10 @@ export class App extends React.Component<{}, {}> {
     }
 
     private setContainerRef = (ref: HTMLDivElement | null): void => {
+        if (this.container === ref) {
+            return;
+        }
+
         this.container = ref;
         if (this.playerBridge) {
             this.playerBridge.bindHtmlElement(ref);
