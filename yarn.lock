@@ -768,10 +768,10 @@
     react-dom "^16.8.0"
     white-web-sdk "^2.3.18"
 
-"@netless/white-video-plugin@1.0.4":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.0.4.tgz#dbe77ee6395aa96ca21559f992f9f8f5a5f2a399"
-  integrity sha512-ooX9vL9+UzhriMAiPcsMOBM0mmfupWfUPKe9sowVupGPphKdlnWNOUSY2JF/55M5rp8AkDulyrBIHzmwJW3n2w==
+"@netless/white-video-plugin@^1.0.8":
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.0.8.tgz#dc42871cd8a3612ddb88e3fd0f8e28234cc2aa86"
+  integrity sha512-D4lGMq69fwFJniGyBawRAWRPOoz74tewFrw+BpuBVBtV0tYzV5JdnkuIl6DoNCaQtkIG5FCrXxTRsOu3Z52B+w==
   dependencies:
     react "^16.8.0"
     react-dom "^16.8.0"
