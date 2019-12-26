@@ -760,18 +760,18 @@
     to-fast-properties "^2.0.0"
 
 "@netless/white-audio-plugin@^1.0.5":
-  version "1.0.6"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.0.6.tgz#b15fd7fd26c15fb64937c3c64078f375559c994c"
-  integrity sha512-+THE2XIES9MjihOfmPSUB7BRpDGk4SZliB/MdB/8szJDJHmvi9skOcA1GNpdZQlIN/mLUycmLCVFuQUPuvMsoA==
+  version "1.0.7"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.0.7.tgz#949a6f2cf64168132b4ec3addd11a5b33f57549b"
+  integrity sha512-EwAoISwS5I3BbL4qH6GybKBGf+URXjAj/1lfH0aQDenirV5KP5iNkr4dIWtRY0lIaPEHS7MvLHuUOke0do0pdg==
   dependencies:
     react "^16.8.0"
     react-dom "^16.8.0"
     white-web-sdk "^2.3.18"
 
 "@netless/white-video-plugin@^1.0.8":
-  version "1.1.4"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.1.4.tgz#ddd72a2876f190fffec6cba38212072c155244e3"
-  integrity sha512-PqsuHH2P7r6iQIWNCmvKQT7KKAixukV6A0C+iZS+BhaTfewuX/HIxGi8nbXQeZ+6Klj2j9PhtbEzRslQKbIIIQ==
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.1.6.tgz#2ee32ac65b6d04b5612d099f746409a4ba9cdfed"
+  integrity sha512-mJKWYCOCfqx7f8gHz1rjOst+o5pfCeXLctxMdcm51bLtguc7YGkhZrD4lWE7szhWkvJ+VsvS5Nx2PgEzsVfcgQ==
   dependencies:
     react "^16.8.0"
     react-dom "^16.8.0"
