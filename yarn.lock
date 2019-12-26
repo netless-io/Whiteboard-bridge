@@ -769,9 +769,9 @@
     white-web-sdk "^2.3.18"
 
 "@netless/white-video-plugin@^1.0.8":
-  version "1.0.9"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.0.9.tgz#f655c5dbd1bf2d2663a6e55c5c0f9fd1e2ee076d"
-  integrity sha512-czh/o7+MPS8377hmT2Ak8AE8X16CnX63kVtuPsmjdQwL/9LEiZwLbroRj1lWUR+u/PgSqs2Ebm+unWYqFfukxg==
+  version "1.1.4"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.1.4.tgz#ddd72a2876f190fffec6cba38212072c155244e3"
+  integrity sha512-PqsuHH2P7r6iQIWNCmvKQT7KKAixukV6A0C+iZS+BhaTfewuX/HIxGi8nbXQeZ+6Klj2j9PhtbEzRslQKbIIIQ==
   dependencies:
     react "^16.8.0"
     react-dom "^16.8.0"
