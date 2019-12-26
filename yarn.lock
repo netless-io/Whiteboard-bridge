@@ -760,18 +760,18 @@
     to-fast-properties "^2.0.0"
 
 "@netless/white-audio-plugin@^1.0.5":
-  version "1.0.5"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.0.5.tgz#16f88e92664cf1525d9edfe98dd226a998552981"
-  integrity sha512-ktOvCCgRkFV3o6QFmrtW3Yh4iSMFCC4yhyahw2Oj1JqPay0KJ5UK2UoA5WjWuceuYjMmm827hUebuKKPbt4lig==
+  version "1.0.6"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.0.6.tgz#b15fd7fd26c15fb64937c3c64078f375559c994c"
+  integrity sha512-+THE2XIES9MjihOfmPSUB7BRpDGk4SZliB/MdB/8szJDJHmvi9skOcA1GNpdZQlIN/mLUycmLCVFuQUPuvMsoA==
   dependencies:
     react "^16.8.0"
     react-dom "^16.8.0"
     white-web-sdk "^2.3.18"
 
 "@netless/white-video-plugin@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.0.8.tgz#dc42871cd8a3612ddb88e3fd0f8e28234cc2aa86"
-  integrity sha512-D4lGMq69fwFJniGyBawRAWRPOoz74tewFrw+BpuBVBtV0tYzV5JdnkuIl6DoNCaQtkIG5FCrXxTRsOu3Z52B+w==
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.0.9.tgz#f655c5dbd1bf2d2663a6e55c5c0f9fd1e2ee076d"
+  integrity sha512-czh/o7+MPS8377hmT2Ak8AE8X16CnX63kVtuPsmjdQwL/9LEiZwLbroRj1lWUR+u/PgSqs2Ebm+unWYqFfukxg==
   dependencies:
     react "^16.8.0"
     react-dom "^16.8.0"
@@ -7028,10 +7028,10 @@ which@^1.2.14, which@^1.2.9, which@^1.3.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.3.18, white-web-sdk@^2.3.18:
-  version "2.3.18"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.3.18.tgz#eed456a7a4492f9f4aa59b77e8bf0b95ffa3cec0"
-  integrity sha512-MDjP5dCFabMoMJlojFd5IliiQGNUKqUrr83A4JYntEO5ehgjqZhcKCSYokA3QAGw92RugO76FxZwjPG64+mBZA==
+white-web-sdk@^2.3.18:
+  version "2.3.19"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.3.19.tgz#44e1b67424a96ddaa2052b7464366e0133cf8436"
+  integrity sha512-4uqW1u4MOxqr8+NMmeS+XPB600zfkAnLmpyzlMy/EpuZ9wzb0gl0yu3j6iHpnJdXrpLccThL3OQSKtBpCxvfTA==
   dependencies:
     bezier-js "^2.4.0"
     color "^3.1.2"
