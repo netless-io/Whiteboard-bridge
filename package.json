@@ -22,6 +22,7 @@
     "core-js": "3",
     "dsbridge": "^3.1.4",
     "html2canvas": "^1.0.0-rc.5",
+    "promise.any": "^2.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",

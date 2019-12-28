@@ -9,6 +9,8 @@ import {BaseTypeKey, Writable} from "./utils/tools";
 import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
 import WhiteVideoPlugin from "@netless/white-video-plugin";
 import WhiteAudioPlugin from "@netless/white-audio-plugin";
+import "./MultipleDomain";
+import multipleDomain from './MultipleDomain';
 
 declare global {
     interface Window {
