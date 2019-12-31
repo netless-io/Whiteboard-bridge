@@ -28,6 +28,8 @@ type NativeSDKConfig = {
     debug?: boolean;
     /** 是否显示用户头像 */
     userCursor?: boolean;
+    /** 路线备用，在 web-sdk 启用多域名之前的临时补充方案 */
+    routeBackup?: boolean;
 } & WhiteWebSdkConfiguration;
 
 type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
@@ -88,7 +90,10 @@ export class App extends React.Component<{}, {}> {
         this.nativeConfig = config;
 
         this.logger("newWhiteSdk", config);
-        const {debug, userCursor, enableInterrupterAPI, ...restConfig} = config;
+        const {debug, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
+        if (routeBackup) {
+            multipleDomain();
+        }
         this.webSdk = new WhiteWebSdk({
             ...restConfig,
             plugins: [WhiteVideoPlugin, WhiteAudioPlugin],
