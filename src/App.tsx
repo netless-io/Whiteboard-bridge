@@ -10,14 +10,14 @@ import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
 import WhiteVideoPlugin from "@netless/white-video-plugin";
 import WhiteAudioPlugin from "@netless/white-audio-plugin";
 import "./MultipleDomain";
-import multipleDomain from './MultipleDomain';
+import multipleDomain from "./MultipleDomain";
 
 declare global {
     interface Window {
-      displayer? : Displayer;
-      room? : Room;
-      player? : Player;
-      whiteSdk? : any;
+      displayer?: Displayer;
+      room?: Room;
+      player?: Player;
+      whiteSdk?: any;
     }
   }
 
@@ -123,7 +123,7 @@ export class App extends React.Component<{}, {}> {
 
                 setTimeout(() => {
                     if (this.roomBridge && this.roomBridge.room.phase === RoomPhase.Reconnecting) {
-                        this.logger("disconnect", "reconnecting too long, call disconnect automatically")
+                        this.logger("disconnect", "reconnecting too long, call disconnect automatically");
                         this.roomBridge.room.disconnect();
                     }
                 }, 35000);
