@@ -760,22 +760,22 @@
     to-fast-properties "^2.0.0"
 
 "@netless/white-audio-plugin@^1.0.5":
-  version "1.0.7"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.0.7.tgz#949a6f2cf64168132b4ec3addd11a5b33f57549b"
-  integrity sha512-EwAoISwS5I3BbL4qH6GybKBGf+URXjAj/1lfH0aQDenirV5KP5iNkr4dIWtRY0lIaPEHS7MvLHuUOke0do0pdg==
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.1.1.tgz#dd496da3267c98ffac5c7ca0b9fecde0fe52a19e"
+  integrity sha512-fLsFt/86KHKzeXjBhvVwIrzsft7NzbSOaKZ0Iaj5uYbYcougHWE2AaNA63KZefGwwdoaXfTO19Vvwk9N9FirMQ==
   dependencies:
     react "^16.8.0"
     react-dom "^16.8.0"
-    white-web-sdk "^2.3.18"
+    white-web-sdk "^2.5.3"
 
 "@netless/white-video-plugin@^1.0.8":
-  version "1.1.6"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.1.6.tgz#2ee32ac65b6d04b5612d099f746409a4ba9cdfed"
-  integrity sha512-mJKWYCOCfqx7f8gHz1rjOst+o5pfCeXLctxMdcm51bLtguc7YGkhZrD4lWE7szhWkvJ+VsvS5Nx2PgEzsVfcgQ==
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.1.9.tgz#e1a22e0c44580e6afbbbb0654b1af1636b4f6869"
+  integrity sha512-qbg7IV6DfolxhR5sS/vfkIp01bXBUhcdgVHb72Q2Tskz1stuNvVq5Et6EVZY+AdIkpdWJ0YtpZCYVy8kh2ffdQ==
   dependencies:
     react "^16.8.0"
     react-dom "^16.8.0"
-    white-web-sdk "^2.3.18"
+    white-web-sdk "^2.5.3"
 
 "@types/anymatch@*":
   version "1.3.1"
@@ -1271,7 +1271,7 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
-atob@^2.1.1:
+atob@^2.1.0, atob@^2.1.1:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
@@ -1343,10 +1343,10 @@ bcrypt-pbkdf@^1.0.0:
   dependencies:
     tweetnacl "^0.14.3"
 
-bezier-js@^2.4.0:
-  version "2.4.4"
-  resolved "https://registry.yarnpkg.com/bezier-js/-/bezier-js-2.4.4.tgz#2859edc31e1b1c287ba4788dcccd5d23838c4578"
-  integrity sha512-qYC9FBubdTK4VZe0m+lS7lEpf87w1fnm6g2m1FKsnlz+wfNnJy3gjQt4Y5nnI1NrjJrnQqnZt3S6Z5qjhloDNA==
+bezier-js@^2.4.4:
+  version "2.5.1"
+  resolved "https://registry.yarnpkg.com/bezier-js/-/bezier-js-2.5.1.tgz#c27addc905a9f84a09cc02a4329be8769cd638a7"
+  integrity sha512-a+U+hOQWIx1aM37TZLGbAH1Hw0YdsuBTWYNlFudz/V/CvOM56gl5RyPoH0pUwuIqg1LAhDtoA3uRVYl0ZJpi5w==
 
 big.js@^3.1.3:
   version "3.2.0"
@@ -1821,7 +1821,7 @@ color-string@^1.5.2:
     color-name "^1.0.0"
     simple-swizzle "^0.2.2"
 
-color@^3.0.0, color@^3.1.2:
+color@^3.0.0, color@^3.1.0:
   version "3.1.2"
   resolved "https://registry.yarnpkg.com/color/-/color-3.1.2.tgz#68148e7f85d41ad7649c5fa8c8106f098d229e10"
   integrity sha512-vXTJhHebByxZn3lDvDJYw4lR5+uB3vuoHsuYA5AKuxRVn5wzzIfQKGLBmgdVRHKTJYeK5rvJcHnrd0Li49CFpg==
@@ -4259,10 +4259,10 @@ map-visit@^1.0.0:
   dependencies:
     object-visit "^1.0.0"
 
-mathjs@6.2.2:
-  version "6.2.2"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.2.2.tgz#353012b40e155521a2bbf78d0aac750d4289eb9b"
-  integrity sha512-l0qw0meh1rcGaFMh248wx6NE5RVWA2bleq+5xF44XAaPMHcou+cKq/0ASBnTDsp0zNAbUYm7tGkDEe6QHbzU8g==
+mathjs@^6.2.2:
+  version "6.4.0"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.4.0.tgz#9af4bd1d1a0fbc1f294c0eaf0840fcd50bd9426b"
+  integrity sha512-o2By2NRytTwLXaDaOsE2Lf6CJZybCIj0BPfGOI3K7e+KCK9dWTfdzU809unrtlQoI8OFvCpW4DpnAb/ZlfoVKw==
   dependencies:
     complex.js "2.0.11"
     decimal.js "10.2.0"
@@ -4504,7 +4504,7 @@ mkdirp@^0.5.0, mkdirp@^0.5.1, mkdirp@~0.5.1:
   dependencies:
     minimist "0.0.8"
 
-mobx-react@^5.4.3:
+mobx-react@^5.4.0:
   version "5.4.4"
   resolved "https://registry.yarnpkg.com/mobx-react/-/mobx-react-5.4.4.tgz#b3de9c6eabcd0ed8a40036888cb0221ab9568b80"
   integrity sha512-2mTzpyEjVB/RGk2i6KbcmP4HWcAUFox5ZRCrGvSyz49w20I4C4qql63grPpYrS9E9GKwgydBHQlA4y665LuRCQ==
@@ -4512,7 +4512,7 @@ mobx-react@^5.4.3:
     hoist-non-react-statics "^3.0.0"
     react-lifecycles-compat "^3.0.2"
 
-mobx@^4.9.3:
+mobx@^4.9.0:
   version "4.15.1"
   resolved "https://registry.yarnpkg.com/mobx/-/mobx-4.15.1.tgz#492cba4c64682f6ea4e24d2d5e3c32e7b9ae1c12"
   integrity sha512-WVRLD/OmEM0fLVPDfdNih4kY+a/ZuP//eK92yqH7uRb2e6H998qf8QqHn90LDc0aXsjcJnqHJ81oVZ+e18jskA==
@@ -6899,7 +6899,7 @@ urix@^0.1.0:
   resolved "https://registry.yarnpkg.com/urix/-/urix-0.1.0.tgz#da937f7a62e21fec1fd18d49b35c2935067a6c72"
   integrity sha1-2pN/emLiH+wf0Y1Js1wpNQZ6bHI=
 
-url-parse@^1.4.3, url-parse@^1.4.6:
+url-parse@^1.4.0, url-parse@^1.4.3:
   version "1.4.7"
   resolved "https://registry.yarnpkg.com/url-parse/-/url-parse-1.4.7.tgz#a8a83535e8c00a316e403a5db4ac1b9b853ae278"
   integrity sha512-d3uaVyzDB9tQoSXFvuSUNFibTd9zxd2bkVrDRvF5TmvWWQwqE4lgYJ5m+x1DbecWkw+LK4RNl2CU1hHuOKPVlg==
@@ -6962,7 +6962,7 @@ utils-merge@1.0.1:
   resolved "https://registry.yarnpkg.com/utils-merge/-/utils-merge-1.0.1.tgz#9f95710f50a267947b2ccc124741c1028427e713"
   integrity sha1-n5VxD1CiZ5R7LMwSR0HBAoQn5xM=
 
-uuid@^3.0.1, uuid@^3.3.2:
+uuid@^3.0.1, uuid@^3.3.0, uuid@^3.3.2:
   version "3.3.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-3.3.3.tgz#4568f0216e78760ee1dbf3a4d2cf53e224112866"
   integrity sha512-pW0No1RGHgzlpHJO1nsVrHKpOEIxkGg1xB+v0ZmdNH5OAeAwzAVrCnI2/6Mtx+Uys6iaylxa+D3g4j63IKKjSQ==
@@ -6991,7 +6991,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-"video.js@^6.8.0 || ^7.0.0", video.js@^7.4.1:
+"video.js@^6.8.0 || ^7.0.0", video.js@^7.4.0:
   version "7.6.6"
   resolved "https://registry.yarnpkg.com/video.js/-/video.js-7.6.6.tgz#e7c9163d53f9b0e05ccb5ac0f79d02fa49b4d3ac"
   integrity sha512-AXzHwymhvMpS7c7rF29u0j0/3tSs+v2gIk5UY8OkiDHSEHL7T0+t3hid4JHW7aGvTruUUgwyf4C74cX2RDL1Pw==
@@ -7181,23 +7181,24 @@ which@^1.2.14, which@^1.2.9, which@^1.3.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@^2.3.18:
-  version "2.3.19"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.3.19.tgz#44e1b67424a96ddaa2052b7464366e0133cf8436"
-  integrity sha512-4uqW1u4MOxqr8+NMmeS+XPB600zfkAnLmpyzlMy/EpuZ9wzb0gl0yu3j6iHpnJdXrpLccThL3OQSKtBpCxvfTA==
+white-web-sdk@^2.5.0, white-web-sdk@^2.5.3:
+  version "2.5.3"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.5.3.tgz#24d258fc974d5f84aea9a4e1119f779350ee9d31"
+  integrity sha512-cRK3ha/kgKFzcWcciI1xBawUSdiSclidRelSeuiylrIgL/dksFuOTfvUwPfi6jFBQL5eRHiCO29Qn7AApoBHIw==
   dependencies:
-    bezier-js "^2.4.0"
-    color "^3.1.2"
-    mathjs "6.2.2"
-    mobx "^4.9.3"
-    mobx-react "^5.4.3"
+    atob "^2.1.0"
+    bezier-js "^2.4.4"
+    color "^3.1.0"
+    mathjs "^6.2.2"
+    mobx "^4.9.0"
+    mobx-react "^5.4.0"
     query-string "5"
     react "^16.8.0"
     react-dom "^16.8.0"
     spark-md5 "^3.0.0"
-    url-parse "^1.4.6"
-    uuid "^3.3.2"
-    video.js "^7.4.1"
+    url-parse "^1.4.0"
+    uuid "^3.3.0"
+    video.js "^7.4.0"
     xml-js "^1.6.11"
 
 wide-align@^1.1.0:

@@ -3,12 +3,12 @@ import dsBridge from "dsbridge";
 import {RoomBridge} from "./Room";
 import {PlayerBridge} from "./Player";
 import "./App.css";
-import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player} from "white-web-sdk";
+import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player, createPlugins} from "white-web-sdk";
 import UserCursor from "./UserCursor";
 import {BaseTypeKey, Writable} from "./utils/tools";
 import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
-import WhiteVideoPlugin from "@netless/white-video-plugin";
-import WhiteAudioPlugin from "@netless/white-audio-plugin";
+import {videoPlugin} from "@netless/white-video-plugin";
+import {audioPlugin} from "@netless/white-audio-plugin";
 import "./MultipleDomain";
 import multipleDomain from "./MultipleDomain";
 
@@ -94,9 +94,11 @@ export class App extends React.Component<{}, {}> {
         if (routeBackup) {
             multipleDomain();
         }
+
+        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
         this.webSdk = new WhiteWebSdk({
             ...restConfig,
-            plugins: [WhiteVideoPlugin, WhiteAudioPlugin],
+            plugins: plugins,
             deviceType: DeviceType.Touch,
             urlInterrupter: urlInterrupter,
         });
@@ -277,8 +279,10 @@ export class App extends React.Component<{}, {}> {
     private setupDebugSdk = () => {
         this.debug = true;
         this.nativeConfig = {debug: true, userCursor: true};
+
+        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
         this.webSdk = new WhiteWebSdk({
-            plugins: [WhiteVideoPlugin, WhiteAudioPlugin],
+            plugins: plugins,
             urlInterrupter: url => {
                 console.log(url); return url;
             },

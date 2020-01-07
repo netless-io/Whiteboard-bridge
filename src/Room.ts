@@ -29,7 +29,7 @@ type VideoPluginInfo = {
     readonly centerY: number;
     readonly width: number;
     readonly height: number;
-}
+};
 
 type EventEntry = {
     eventName: string;
@@ -76,7 +76,7 @@ export class RoomBridge extends DisplayerBridge {
                 this.room.setMemberState(memberState);
             },
             setViewMode: (viewMode: string) => {
-                let mode = ViewMode[viewMode];
+                let mode = ViewMode[viewMode] as any;
                 if (mode === undefined) {
                     mode = ViewMode.Freedom;
                 }
@@ -187,10 +187,7 @@ export class RoomBridge extends DisplayerBridge {
             },
             insertVideo: (videoInfo: VideoPluginInfo) => {
                 this.logger("insertVideo", videoInfo);
-                this.room.insertPlugin({
-                    protocal: "video",
-                    ...videoInfo,
-                });
+                // TODO: insertVideo
             },
             completeImageUpload: (uuid: string, url: string) => {
                 this.logger("completeImageUpload", uuid, url);
