@@ -14,6 +14,9 @@
     "build": "webpack --mode production",
     "check-types": "tsc"
   },
+  "resolutions": {
+    "**/white-web-sdk": "2.5.4"
+  },
   "dependencies": {
     "@netless/white-audio-plugin": "^1.0.5",
     "@netless/white-video-plugin": "^1.0.8",
@@ -26,7 +29,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "^2.5.0"
+    "white-web-sdk": "2.5.4"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
