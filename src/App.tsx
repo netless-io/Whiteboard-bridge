@@ -175,7 +175,11 @@ export class App extends React.Component<{}, {}> {
         }, {
             onPhaseChanged: phase => {
                 if (phase !== PlayerPhase.WaitingFirstFrame && this.cursorAdapter && this.playerBridge) {
-                    this.cursorAdapter.setColorAndAppliance(this.playerBridge.player.state.roomMembers);
+                    try {
+                        this.cursorAdapter.setColorAndAppliance(this.playerBridge.player.state.roomMembers);
+                    } catch (error) {
+                        console.warn(error);
+                    }
                 }
                 this.logger("onPhaseChanged:", phase);
                 dsBridge.call("player.onPhaseChanged", phase);
