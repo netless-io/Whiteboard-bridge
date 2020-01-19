@@ -39,6 +39,10 @@ export class PlayerBridge extends DisplayerBridge {
                 this.logger("setObserverMode", observerMode);
                 this.player.setObserverMode(observerMode as ObserverMode);
             },
+            setPlaybackSpeed: (rate: number) => {
+                this.logger("playbackSpeed", rate);
+                this.player.playbackSpeed = rate;
+            },
         });
 
         dsBridge.register("player.state", {
@@ -57,6 +61,10 @@ export class PlayerBridge extends DisplayerBridge {
                 } catch (error) {
                     return {};
                 }
+            },
+            playbackSpeed: () => {
+                this.logger("playbackSpeed", this.player.playbackSpeed);
+                return this.player.playbackSpeed;
             },
             timeInfo: () => {
                 const {scheduleTime, timeDuration, framesCount, beginTimestamp} = this.player;
