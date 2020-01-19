@@ -44,7 +44,7 @@ export class DisplayerBridge {
                 this.displayer.refreshViewSize();
             },
             scalePptToFit: (mode: AnimationMode) => {
-                this.logger("scalePptToFit", mode)
+                this.logger("scalePptToFit", mode);
                 this.displayer.scalePptToFit(mode);
             },
             convertToPointInWorld: (x: number, y: number) => {
