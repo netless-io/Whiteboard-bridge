@@ -6,6 +6,7 @@ import {
     Room,
     ViewMode,
     Scene,
+    SceneDefinition,
 } from "white-web-sdk";
 import { DisplayerBridge } from "./Displayer";
 
@@ -157,7 +158,7 @@ export class RoomBridge extends DisplayerBridge {
                 this.logger("disableOperations", disableOperations);
                 this.room.disableOperations = disableOperations;
             },
-            putScenes: (dir: string, scenes: Scene[], index: number, responseCallback: any) => {
+            putScenes: (dir: string, scenes: SceneDefinition[], index: number, responseCallback: any) => {
                 this.logger("putScenes", scenes);
                 this.room.putScenes(dir, scenes, index);
                 responseCallback(JSON.stringify(this.room.state.sceneState));
