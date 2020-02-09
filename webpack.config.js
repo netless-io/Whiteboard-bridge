@@ -76,7 +76,7 @@ config = {
         use: [{loader: MiniCssExtractPlugin.loader}, 'css-loader']
       },
       {
-        test: /\.svg/,
+        test: /\.(svg|png)/,
         use: ['file-loader']
       }
     ]

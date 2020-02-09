@@ -6,7 +6,7 @@ import pencil from "./assets/pencil.svg";
 import text from "./assets/text.svg";
 import eraser from "./assets/eraser.svg";
 import ellipse from "./assets/ellipse.svg";
-import rectangle from "./assets/rectangle.svg";
+import rectangle from "./assets/rectangle.png";
 
 export type CursorComponentProps = {
     roomMember: RoomMember;
