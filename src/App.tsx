@@ -3,7 +3,7 @@ import dsBridge from "dsbridge";
 import {RoomBridge} from "./Room";
 import {PlayerBridge} from "./Player";
 import "./App.css";
-import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player, createPlugins} from "white-web-sdk";
+import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode} from "white-web-sdk";
 import UserCursor from "./UserCursor";
 import {BaseTypeKey, Writable} from "./utils/tools";
 import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
@@ -61,7 +61,7 @@ export class App extends React.Component<{}, {}> {
         window.whiteSdk = this;
 
         this.cursor = new UserCursor();
-
+        setAsyncModuleLoadMode(AsyncModuleLoadMode.StoreAsBase64);
         dsBridge.registerAsyn("sdk", {
             newWhiteSdk: this.newWhiteSdk,
             joinRoom: this.joinRoom,
