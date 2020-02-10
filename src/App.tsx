@@ -295,8 +295,7 @@ export class App extends React.Component<{}, {}> {
 
     private joinTestRoom = async () => {
         this.setupDebugSdk();
-        this.joinRoom({uuid: "8e7f4e51687e45afbf03ba42670a0dde", roomToken: "WHITEcGFydG5lcl9pZD0zZHlaZ1BwWUtwWVN2VDVmNGQ4UGI2M2djVGhncENIOXBBeTcmc2lnPWI4YzIxMjI1YmVlYzU2YWI2MjQ5NmE2MWNiMmUyNzdmYWE0NjA4YjQ6YWRtaW5JZD0xNTgmcm9vbUlkPThlN2Y0ZTUxNjg3ZTQ1YWZiZjAzYmE0MjY3MGEwZGRlJnRlYW1JZD0yODMmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MDgzODk2ODMmYWs9M2R5WmdQcFlLcFlTdlQ1ZjRkOFBiNjNnY1RoZ3BDSDlwQXk3JmNyZWF0ZV90aW1lPTE1NzY4MzI3MzEmbm9uY2U9MTU3NjgzMjczMDY1ODAw"}, () => {});
-        // this.joinRoom({uuid: "955f6e90d03a4395a4e575917a7d46b4", roomToken: "WHITEcGFydG5lcl9pZD0xTnd5aDBsMW9ZazhaRWNuZG1kaWgwcmJjVWVsQnE1UkpPMVMmc2lnPWIzMDI5MTgwZDZlZmM1ZjcxZGZhMzFkYTAzYTA2ZGVkYTJlNDA4OWI6YWRtaW5JZD01MjEmcm9vbUlkPTk1NWY2ZTkwZDAzYTQzOTVhNGU1NzU5MTdhN2Q0NmI0JnRlYW1JZD02NDYmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MDgzODQ1MzEmYWs9MU53eWgwbDFvWWs4WkVjbmRtZGloMHJiY1VlbEJxNVJKTzFTJmNyZWF0ZV90aW1lPTE1NzY4Mjc1Nzkmbm9uY2U9MTU3NjgyNzU3ODU3MDAw", userPayload: {avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg"}}, () => {});
+        this.joinRoom({uuid: "955f6e90d03a4395a4e575917a7d46b4", roomToken: "WHITEcGFydG5lcl9pZD0xTnd5aDBsMW9ZazhaRWNuZG1kaWgwcmJjVWVsQnE1UkpPMVMmc2lnPWIzMDI5MTgwZDZlZmM1ZjcxZGZhMzFkYTAzYTA2ZGVkYTJlNDA4OWI6YWRtaW5JZD01MjEmcm9vbUlkPTk1NWY2ZTkwZDAzYTQzOTVhNGU1NzU5MTdhN2Q0NmI0JnRlYW1JZD02NDYmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MDgzODQ1MzEmYWs9MU53eWgwbDFvWWs4WkVjbmRtZGloMHJiY1VlbEJxNVJKTzFTJmNyZWF0ZV90aW1lPTE1NzY4Mjc1Nzkmbm9uY2U9MTU3NjgyNzU3ODU3MDAw", userPayload: {avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg"}}, () => {});
     }
 
     private replayTestRoom = async() => {
