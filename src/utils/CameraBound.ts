@@ -68,6 +68,7 @@ function convertToContentMode(modeType?: ContentModeType): ContentMode | undefin
             return contentModeAspectFitScale(scale);
         case ScaleMode.AspectFitSpace:
             return contentModeAspectFitSpace(space);
+        default:
+            return undefined;
     }
-    return undefined;
 }

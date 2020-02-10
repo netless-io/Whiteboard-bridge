@@ -4,14 +4,6 @@ import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
 import html2canvas from "html2canvas";
 import {Event as AkkoEvent } from "white-web-sdk";
 
-type NativeEvent = {
-    uuid: string;
-    eventName: string;
-    payload: any;
-    scope: string;
-    authorId: string;
-};
-
 function isRoom(displayer: Displayer): displayer is Room {
     return (displayer as Player).roomUUID === undefined;
 }
@@ -63,7 +55,7 @@ export class DisplayerBridge {
                 this.logger("addHighFrequencyEventListener", eventName, interval);
                 this.displayer.addMagixEventListener(eventName, (evts: AkkoEvent[]) => {
                     const uuid = (this.displayer as Room).uuid || (this.displayer as Player).roomUUID;
-                    const nativeEvts: NativeEvent[] = evts.map(evt => {
+                    const nativeEvts = evts.map(evt => {
                         return {uuid, eventName: evt.event, payload: evt.payload, scope: evt.scope, authorId: evt.authorId};
                     });
                     if (isRoom(this.displayer)) {
