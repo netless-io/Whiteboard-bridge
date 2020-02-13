@@ -58,6 +58,13 @@ export class App extends React.Component<{}, {}> {
         window.addEventListener("error", (e: ErrorEvent) => {
             this.throw(e.message, e.error);
         });
+
+        window.addEventListener("message", (e: any) => {
+            const data: any = e.data;
+            if (data.shapeId && data.mediaType && data.action) {
+                dsBridge.call("sdk.postMessage", JSON.stringify(e.data));
+            }
+        });
         window.whiteSdk = this;
 
         this.cursor = new UserCursor();
