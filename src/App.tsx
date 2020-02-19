@@ -40,6 +40,7 @@ type NativeJoinRoomParams = BaseTypeRoomParams & {
 type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;
 type NativeReplayParams = BaseTypeReplayParams & {
     cameraBound?: NativeCameraBound;
+    step?: number;
 };
 
 export class App extends React.Component<{}, {}> {
@@ -51,6 +52,20 @@ export class App extends React.Component<{}, {}> {
     private roomBridge?: RoomBridge;
     private playerBridge?: PlayerBridge;
     private debug: boolean = false;
+    private lastScheduleTime: number = 0;
+
+    /**
+     * 限制回调频率
+     */
+    private limitScheduleCallback = (fn: any, timestamp: number, step: number) => {
+        if (timestamp >= this.lastScheduleTime) {
+            fn();
+            this.lastScheduleTime = Math.ceil(timestamp / step) * step;
+        } else if (this.playerBridge && timestamp + this.lastScheduleTime > this.playerBridge.player.timeDuration) {
+            fn();
+            this.lastScheduleTime = timestamp;
+        }
+    }
 
     public constructor(props: {}) {
         super(props);
@@ -164,21 +179,22 @@ export class App extends React.Component<{}, {}> {
         });
     }
 
-    private replayRoom = (replayParams: NativeReplayParams, responseCallback: any) => {
+    private replayRoom = (nativeReplayParams: NativeReplayParams, responseCallback: any) => {
 
         this.removeBind();
 
         // just fix warning
-        if (replayParams.audioUrl) {
-            replayParams.mediaURL = replayParams.audioUrl;
-            replayParams.audioUrl = undefined;
+        if (nativeReplayParams.audioUrl) {
+            nativeReplayParams.mediaURL = nativeReplayParams.audioUrl;
+            nativeReplayParams.audioUrl = undefined;
         }
+        const {step = 500, ...replayParams} = nativeReplayParams;
 
-        this.logger("replayRoom", replayParams);
+        this.logger("replayRoom", nativeReplayParams);
         this.webSdk.replayRoom({
             ...replayParams,
             cursorAdapter: this.cursorAdapter,
-            cameraBound: convertToBound(replayParams.cameraBound),
+            cameraBound: convertToBound(nativeReplayParams.cameraBound),
         }, {
             onPhaseChanged: phase => {
                 if (phase !== PlayerPhase.WaitingFirstFrame && this.cursorAdapter && this.playerBridge) {
@@ -188,6 +204,7 @@ export class App extends React.Component<{}, {}> {
                         console.warn(error);
                     }
                 }
+                this.lastScheduleTime = 0;
                 this.logger("onPhaseChanged:", phase);
                 dsBridge.call("player.onPhaseChanged", phase);
             },
@@ -212,8 +229,7 @@ export class App extends React.Component<{}, {}> {
                 dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
             },
             onScheduleTimeChanged: scheduleTime => {
-                // TODO:调整回调频率，强制调用频率（或者允许设置）
-                dsBridge.call("player.onScheduleTimeChanged", scheduleTime);
+                this.limitScheduleCallback(() => {dsBridge.call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
             },
             onCatchErrorWhenAppendFrame: (userId, error) => {
                 dsBridge.call("player.onCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
@@ -307,7 +323,7 @@ export class App extends React.Component<{}, {}> {
 
     private replayTestRoom = async() => {
         this.setupDebugSdk();
-        this.replayRoom({room: "", roomToken: ""}, () => {});
+        this.replayRoom({room: "daef60b584ea4892a381c410ae15fe28", roomToken: "WHITEcGFydG5lcl9pZD1ZSEpVMmoxVXAyUzdoQTluV3dvaVlSRVZ3MlI5M21ibmV6OXcmc2lnPWJkODdlOGFkZDcwZmEzN2YzNWQ3OTAyYmViMWFlMDk2YjQ1ZWI0MmM6YWRtaW5JZD02Njcmcm9vbUlkPWRhZWY2MGI1ODRlYTQ4OTJhMzgxYzQxMGFlMTVmZTI4JnRlYW1JZD03OTImcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MTIwMzU1MTgmYWs9WUhKVTJqMVVwMlM3aEE5bld3b2lZUkVWdzJSOTNtYm5lejl3JmNyZWF0ZV90aW1lPTE1ODA0Nzg1NjYmbm9uY2U9MTU4MDQ3ODU2NTczODAw"}, () => {});
     }
 }
 
