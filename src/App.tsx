@@ -35,6 +35,7 @@ type NativeSDKConfig = {
 type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
 type NativeJoinRoomParams = BaseTypeRoomParams & {
     cameraBound?: NativeCameraBound;
+    timeout?: number;
 };
 
 type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;
@@ -131,8 +132,9 @@ export class App extends React.Component<{}, {}> {
         this.removeBind();
 
         this.logger("joinRoom", nativeParams);
+        const {timeout = 45000, ...joinRoomParms} = nativeParams;
         this.webSdk!.joinRoom({
-            ...nativeParams,
+            ...joinRoomParms,
             cameraBound: convertToBound(nativeParams.cameraBound),
             cursorAdapter: this.cursorAdapter,
         }, {
@@ -147,10 +149,10 @@ export class App extends React.Component<{}, {}> {
 
                 setTimeout(() => {
                     if (this.roomBridge && this.roomBridge.room.phase === RoomPhase.Reconnecting) {
-                        this.logger("disconnect", "reconnecting too long, call disconnect automatically");
+                        this.logger("disconnect", `reconnecting cost ${timeout} ms, sdk call disconnect automatically`);
                         this.roomBridge.room.disconnect();
                     }
-                }, 35000);
+                }, timeout);
             },
             onDisconnectWithError: error => {
                 dsBridge.call("room.fireDisconnectWithError", error.message);
