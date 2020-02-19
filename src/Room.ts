@@ -43,6 +43,19 @@ export class RoomBridge extends DisplayerBridge {
         this.room.bindHtmlElement(element);
     }
 
+    private cleanCurrentScene(retainPpt: boolean): void {
+        const sceneState = this.room.state.sceneState;
+        const scene = {
+            name: sceneState.scenes[sceneState.index].name,
+            ppt: (retainPpt ? sceneState.scenes[sceneState.index].ppt : undefined),
+        };
+        const paths: string[] = sceneState.scenePath.split("/");
+        paths.pop();
+        const path = paths.join("/");
+        this.room.putScenes(path, [scene], sceneState.index);
+        this.room.setScenePath(sceneState.scenePath);
+    }
+
     public constructor(public readonly room: Room, protected readonly logger: (funName: string, ...param: any[]) => void) {
         super(room, logger);
         dsBridge.register("ppt", {
@@ -187,7 +200,8 @@ export class RoomBridge extends DisplayerBridge {
                     retain = !!retainPpt;
                 }
                 this.logger("cleanScene", retainPpt);
-                this.room.cleanCurrentScene(retain);
+                // TODO: web sdk 2.6.1 将会修复该问题，到时候切换回去
+                this.cleanCurrentScene(retain);
             },
             insertImage: (imageInfo: ImageInformation) => {
                 this.logger("insertImage", imageInfo);
