@@ -210,7 +210,8 @@ export class RoomBridge extends DisplayerBridge {
                 this.room.timeDelay = delay;
             },
         });
-        // TODO:同步方法尽量还是放在同步方法里。不过由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
+        // FIXME:同步方法尽量还是放在同步方法里。
+        // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
         dsBridge.register("room.state", {
             getRoomState: () => {
                 return this.room.state;
@@ -220,6 +221,9 @@ export class RoomBridge extends DisplayerBridge {
             },
             getPhase: () => {
                 return this.room.phase;
+            },
+            isWritable: () => {
+                return this.room.isWritable;
             },
         });
     }
