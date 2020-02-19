@@ -98,8 +98,8 @@ export class RoomBridge extends DisplayerBridge {
                 this.room.setViewMode(mode);
             },
             setWritable: (writable: boolean, responseCallback: any) => {
-                this.room.setWritable(writable).then(str => {
-                    responseCallback(JSON.stringify({result: true}));
+                this.room.setWritable(writable).then(() => {
+                    responseCallback(JSON.stringify({isWritable: this.room.isWritable}));
                 }).catch(error => {
                     responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
                 });
