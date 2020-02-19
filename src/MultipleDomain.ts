@@ -4,13 +4,13 @@ const storages = ["https://scdncloudharestoragev3.herewhite.com", "https://expre
 const cdns = ["https://cdncloudroomv2.herewhite.com", "https://cdnroom.netless.pro"];
 const constantMock = window.fetch;
 
-function multipleDomain() {
+function multipleDomain(): void {
     window.fetch = async function(input: RequestInfo, init?: RequestInit): Promise<Response> {
         if (!needBackupRequest(input)) {
             return constantMock.call(this, input, init);
         }
         return promiseAny([constantMock.call(this, input, init), constantMock.call(this, createBackupRequest(input), init)]);
-    }
+    };
 }
 
 export default multipleDomain;
@@ -18,7 +18,7 @@ export default multipleDomain;
 function createBackupRequest(input: RequestInfo): RequestInfo {
 
     let list: string[] = [];
-    let originUrl = typeof input === "string" ? input : input.url;
+    const originUrl = typeof input === "string" ? input : input.url;
 
     if (storages.findIndex(v => originUrl.indexOf(v) !== -1) !== -1) {
         list = storages;
@@ -54,6 +54,6 @@ function needBackupRequest(input: RequestInfo): boolean {
     } else {
         return list.some(v => {
             return input.url.indexOf(v) !== -1;
-        })
+        });
     }
 }
