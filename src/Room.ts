@@ -84,6 +84,13 @@ export class RoomBridge extends DisplayerBridge {
                 this.logger("setViewMode", {viewMode, mode});
                 this.room.setViewMode(mode);
             },
+            setWritable: (writable: boolean, responseCallback: any) => {
+                this.room.setWritable(writable).then(str => {
+                    responseCallback(JSON.stringify({result: true}));
+                }).catch(error => {
+                    responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+                });
+            },
             /** get 系列 API */
             getMemberState: (responseCallback: any) => {
                 this.logger("getMemberState", this.room.state.memberState);
