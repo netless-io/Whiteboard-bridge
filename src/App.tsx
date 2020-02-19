@@ -149,8 +149,9 @@ export class App extends React.Component<{}, {}> {
 
                 setTimeout(() => {
                     if (this.roomBridge && this.roomBridge.room.phase === RoomPhase.Reconnecting) {
-                        this.logger("disconnect", `reconnecting cost ${timeout} ms, sdk call disconnect automatically`);
-                        this.roomBridge.room.disconnect();
+                        this.roomBridge.room.disconnect().then(() => {
+                            dsBridge.call("room.fireDisconnectWithError", `Reconnect time exceeds ${timeout} milsceonds, sdk call disconnect automatically`);
+                        });
                     }
                 }, timeout);
             },
