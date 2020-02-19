@@ -231,7 +231,7 @@ export class App extends React.Component<{}, {}> {
                 dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
             },
             onScheduleTimeChanged: scheduleTime => {
-                this.limitScheduleCallback(() => {dsBridge.call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
+                this.limitScheduleCallback(() => {dsBridge.call("player.onScheduleTimeChanged", scheduleTime); console.log(scheduleTime); }, scheduleTime, step);
             },
             onCatchErrorWhenAppendFrame: (userId, error) => {
                 dsBridge.call("player.onCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
@@ -320,12 +320,12 @@ export class App extends React.Component<{}, {}> {
 
     private joinTestRoom = async () => {
         this.setupDebugSdk();
-        this.joinRoom({uuid: "955f6e90d03a4395a4e575917a7d46b4", roomToken: "WHITEcGFydG5lcl9pZD0xTnd5aDBsMW9ZazhaRWNuZG1kaWgwcmJjVWVsQnE1UkpPMVMmc2lnPWIzMDI5MTgwZDZlZmM1ZjcxZGZhMzFkYTAzYTA2ZGVkYTJlNDA4OWI6YWRtaW5JZD01MjEmcm9vbUlkPTk1NWY2ZTkwZDAzYTQzOTVhNGU1NzU5MTdhN2Q0NmI0JnRlYW1JZD02NDYmcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MDgzODQ1MzEmYWs9MU53eWgwbDFvWWs4WkVjbmRtZGloMHJiY1VlbEJxNVJKTzFTJmNyZWF0ZV90aW1lPTE1NzY4Mjc1Nzkmbm9uY2U9MTU3NjgyNzU3ODU3MDAw", userPayload: {avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg"}}, () => {});
+        this.joinRoom({uuid: "", roomToken: "", userPayload: {avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/101/image/alin-rusu-1239275-unsplash_opt.jpg"}}, () => {});
     }
 
     private replayTestRoom = async() => {
         this.setupDebugSdk();
-        this.replayRoom({room: "daef60b584ea4892a381c410ae15fe28", roomToken: "WHITEcGFydG5lcl9pZD1ZSEpVMmoxVXAyUzdoQTluV3dvaVlSRVZ3MlI5M21ibmV6OXcmc2lnPWJkODdlOGFkZDcwZmEzN2YzNWQ3OTAyYmViMWFlMDk2YjQ1ZWI0MmM6YWRtaW5JZD02Njcmcm9vbUlkPWRhZWY2MGI1ODRlYTQ4OTJhMzgxYzQxMGFlMTVmZTI4JnRlYW1JZD03OTImcm9sZT1yb29tJmV4cGlyZV90aW1lPTE2MTIwMzU1MTgmYWs9WUhKVTJqMVVwMlM3aEE5bld3b2lZUkVWdzJSOTNtYm5lejl3JmNyZWF0ZV90aW1lPTE1ODA0Nzg1NjYmbm9uY2U9MTU4MDQ3ODU2NTczODAw"}, () => {});
+        this.replayRoom({room: "", roomToken: ""}, () => {});
     }
 }
 
