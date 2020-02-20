@@ -55,19 +55,6 @@ export class App extends React.Component<{}, {}> {
     private debug: boolean = false;
     private lastScheduleTime: number = 0;
 
-    /**
-     * 限制回调频率
-     */
-    private limitScheduleCallback = (fn: any, timestamp: number, step: number) => {
-        if (timestamp >= this.lastScheduleTime) {
-            fn();
-            this.lastScheduleTime = Math.ceil(timestamp / step) * step;
-        } else if (this.playerBridge && timestamp + this.lastScheduleTime > this.playerBridge.player.timeDuration) {
-            fn();
-            this.lastScheduleTime = timestamp;
-        }
-    }
-
     public constructor(props: {}) {
         super(props);
 
@@ -232,7 +219,7 @@ export class App extends React.Component<{}, {}> {
                 dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
             },
             onScheduleTimeChanged: scheduleTime => {
-                this.limitScheduleCallback(() => {dsBridge.call("player.onScheduleTimeChanged", scheduleTime); console.log(scheduleTime); }, scheduleTime, step);
+                this.limitScheduleCallback(() => {dsBridge.call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
             },
             onCatchErrorWhenAppendFrame: (userId, error) => {
                 dsBridge.call("player.onCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
@@ -270,6 +257,19 @@ export class App extends React.Component<{}, {}> {
         window.player = undefined;
         window.displayer = undefined;
         (window as any).displayerBridge = undefined;
+    }
+
+    /**
+     * 限制回调频率
+     */
+    private limitScheduleCallback = (fn: any, timestamp: number, step: number) => {
+        if (timestamp >= this.lastScheduleTime) {
+            fn();
+            this.lastScheduleTime = Math.ceil(timestamp / step) * step;
+        } else if (this.playerBridge && timestamp + step > this.playerBridge.player.timeDuration) {
+            fn();
+            this.lastScheduleTime = timestamp;
+        }
     }
 
     private setContainerRef = (ref: HTMLDivElement | null): void => {
