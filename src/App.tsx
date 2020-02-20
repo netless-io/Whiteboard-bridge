@@ -176,7 +176,7 @@ export class App extends React.Component<{}, {}> {
             if (room.state.roomMembers && this.cursorAdapter) {
                 this.cursorAdapter.setColorAndAppliance(room.state.roomMembers);
             }
-            return responseCallback(JSON.stringify({state: room.state, observerId: room.observerId}));
+            return responseCallback(JSON.stringify({state: room.state, observerId: room.observerId, isWritable: room.isWritable}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });
