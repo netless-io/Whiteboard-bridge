@@ -239,6 +239,15 @@ export class RoomBridge extends DisplayerBridge {
             isWritable: () => {
                 return this.room.isWritable;
             },
+            debugInfo: () => {
+                try {
+                    const screen = (this.room as any).screen;
+                    const {camera, visionRectangle, adaptedRectangle, divElement} = screen;
+                    return {camera, visionRectangle, adaptedRectangle, divWidth: divElement.clientWidth, divHeight: divElement.clientHeight};
+                } catch (error) {
+                    return {error: error.message};
+                }
+            },
         });
     }
 }
