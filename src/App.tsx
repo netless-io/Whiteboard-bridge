@@ -18,6 +18,7 @@ declare global {
       room?: Room;
       player?: Player;
       whiteSdk?: any;
+      __nativeTags?: any;
     }
   }
 
@@ -30,6 +31,7 @@ type NativeSDKConfig = {
     userCursor?: boolean;
     /** 路线备用，在 web-sdk 启用多域名之前的临时补充方案 */
     routeBackup?: boolean;
+    __nativeTags?: any;
 } & WhiteWebSdkConfiguration;
 
 type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
@@ -100,7 +102,12 @@ export class App extends React.Component<{}, {}> {
         this.nativeConfig = config;
 
         this.logger("newWhiteSdk", config);
-        const {debug, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
+        const {debug, __nativeTags, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
+
+        if (__nativeTags) {
+            window.__nativeTags = {... window.__nativeTags, __nativeTags};
+        }
+
         if (routeBackup) {
             multipleDomain();
         }
