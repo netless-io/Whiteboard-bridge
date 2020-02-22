@@ -3,7 +3,7 @@ import dsBridge from "dsbridge";
 import {RoomBridge} from "./Room";
 import {PlayerBridge} from "./Player";
 import "./App.css";
-import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode} from "white-web-sdk";
+import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, setupInitializeOriginsStates, InitializeStates, Origins} from "white-web-sdk";
 import UserCursor from "./UserCursor";
 import {BaseTypeKey, Writable} from "./utils/tools";
 import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
@@ -32,6 +32,8 @@ type NativeSDKConfig = {
     /** 路线备用，在 web-sdk 启用多域名之前的临时补充方案 */
     routeBackup?: boolean;
     __nativeTags?: any;
+    /** native 预热结果 */
+    initializeOriginsStates?: InitializeStates<Origins>;
 } & WhiteWebSdkConfiguration;
 
 type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
@@ -56,6 +58,7 @@ export class App extends React.Component<{}, {}> {
     private playerBridge?: PlayerBridge;
     private debug: boolean = false;
     private lastScheduleTime: number = 0;
+    private initializeOriginsStates?: InitializeStates<Origins>;
 
     public constructor(props: {}) {
         super(props);
@@ -102,10 +105,14 @@ export class App extends React.Component<{}, {}> {
         this.nativeConfig = config;
 
         this.logger("newWhiteSdk", config);
-        const {debug, __nativeTags, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
+        const {debug, __nativeTags, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
 
         if (__nativeTags) {
             window.__nativeTags = {... window.__nativeTags, __nativeTags};
+        }
+        if (!this.initializeOriginsStates && initializeOriginsStates) {
+            this.initializeOriginsStates = initializeOriginsStates;
+            setupInitializeOriginsStates(initializeOriginsStates);
         }
 
         if (routeBackup) {

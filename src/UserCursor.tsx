@@ -87,6 +87,8 @@ export default class UserCursor implements CursorAdapter {
         return {x: 16, y: 16, width: 32, height: 32};
     }
 
+    public onMovingCursor(cursor: Cursor, positionX: number, positionY: number): void {}
+
     public onAddedCursor(cursor: Cursor): void {
         for (const roomMember of this.roomMembers) {
             if (roomMember.memberId === cursor.memberId) {
