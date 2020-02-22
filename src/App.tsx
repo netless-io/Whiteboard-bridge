@@ -64,7 +64,7 @@ export class App extends React.Component<{}, {}> {
         super(props);
 
         window.addEventListener("error", (e: ErrorEvent) => {
-            this.throw(e.message, e.error);
+            this.throw({message: e.message, error: e.error});
         });
 
         window.addEventListener("message", (e: any) => {
@@ -314,10 +314,10 @@ export class App extends React.Component<{}, {}> {
         }
     }
 
-    private throw = (...param: any[]): void => {
+    private throw = (param: object): void => {
         // FIXME:有时候只有 error，没有具体信息
-        console.log(JSON.stringify({...param}));
-        dsBridge.call("sdk.throwError", {...param});
+        console.log(JSON.stringify(param));
+        dsBridge.call("sdk.throwError", param);
     }
     // DEBUG 调试专用
     private setupDebugSdk = () => {
