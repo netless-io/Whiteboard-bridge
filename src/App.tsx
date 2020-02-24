@@ -108,7 +108,7 @@ export class App extends React.Component<{}, {}> {
         const {debug, __nativeTags, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
 
         if (__nativeTags) {
-            window.__nativeTags = {... window.__nativeTags, __nativeTags};
+            window.__nativeTags = {...window.__nativeTags, ...__nativeTags};
         }
         if (!this.initializeOriginsStates && initializeOriginsStates) {
             this.initializeOriginsStates = initializeOriginsStates;
