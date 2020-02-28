@@ -21,6 +21,9 @@ export class DisplayerBridge {
             getMemberState: (memberId: number) => {
                 return JSON.stringify(displayer.memberState(memberId));
             },
+            scenePathType: (path: string) => {
+                return displayer.scenePathType(path);
+            },
             moveCamera: (camera: Partial<Camera> & Readonly<{animationMode?: AnimationMode}>) => {
                 this.logger("moveCamera: ", camera);
                 this.displayer.moveCamera(camera);
