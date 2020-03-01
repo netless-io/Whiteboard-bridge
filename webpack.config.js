@@ -19,7 +19,7 @@ config = {
     extensions: ['.ts', '.tsx', '.js']
   },
   optimization: {
-    minimizer: [new TerserJSPlugin({}), new OptimizeCSSAssetsPlugin({})],
+    minimizer: [new TerserJSPlugin({extractComments: false}), new OptimizeCSSAssetsPlugin({})],
     moduleIds: 'hashed',
     runtimeChunk: 'single',
     splitChunks: {
