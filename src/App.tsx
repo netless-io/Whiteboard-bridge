@@ -69,10 +69,16 @@ export class App extends React.Component<{}, {}> {
 
         window.addEventListener("message", (e: any) => {
             const data: any = e.data;
+
+            if (data.name === "pptImageLoadError") {
+                dsBridge.call("sdk.postMessage", JSON.stringify(data));
+            }
+
             if (data.shapeId && data.mediaType && data.action) {
-                dsBridge.call("sdk.postMessage", JSON.stringify(e.data));
+                dsBridge.call("sdk.postMessage", JSON.stringify(data));
             }
         });
+
         window.whiteSdk = this;
 
         this.cursor = new UserCursor();
