@@ -24,6 +24,9 @@ export class DisplayerBridge {
             scenePathType: (path: string) => {
                 return displayer.scenePathType(path);
             },
+            entireScenes: () => {
+                return displayer.entireScenes();
+            },
             moveCamera: (camera: Partial<Camera> & Readonly<{animationMode?: AnimationMode}>) => {
                 this.logger("moveCamera: ", camera);
                 this.displayer.moveCamera(camera);
