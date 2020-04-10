@@ -20,8 +20,8 @@
     "**/uuid": "3.4.0"
   },
   "dependencies": {
-    "@netless/white-audio-plugin": "^1.0.5",
-    "@netless/white-video-plugin": "^1.0.8",
+    "@netless/white-audio-plugin": "1.2.1",
+    "@netless/white-video-plugin": "1.2.1",
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
     "core-js": "3",

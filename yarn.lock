@@ -759,23 +759,15 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@netless/white-audio-plugin@^1.0.5":
-  version "1.1.9"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.1.9.tgz#0f36869fe37323f14e6e75cef4206a951f4a254e"
-  integrity sha512-CrwzWouWWMNc+FRKLS3AX43E7AfyGjqeK1LnY+DFReLLHq7CkjKYmLg3DlxNjZww0fdkN6ANRTMLv5xNsTUHYw==
-  dependencies:
-    react "^16.8.0"
-    react-dom "^16.8.0"
-    white-web-sdk "^2.5.9"
+"@netless/white-audio-plugin@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.1.tgz#bc1975852644c996875cf580510f1943d8412655"
+  integrity sha512-GCxlsQTvjaaWljP6SADYSffy1bW05Z1mZKI5WQjanfyODrQN+hBsW86ub1rIWI4JXsns17J3ltnpG5LqPOZaog==
 
-"@netless/white-video-plugin@^1.0.8":
-  version "1.1.16"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.1.16.tgz#7663d877f0320bb7c7fd1d1af4b3c6f448835129"
-  integrity sha512-metfRxODCZ0sVhEyBGFHQ0NWCN4xBbmSDjThaY2B+4bQ2iQzF5oHlYVlCm2t6HpNv4HTUsAkuHa2ZqtZiCCy9Q==
-  dependencies:
-    react "^16.8.0"
-    react-dom "^16.8.0"
-    white-web-sdk "^2.5.9"
+"@netless/white-video-plugin@1.2.1":
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.1.tgz#f335f7ef0d3803a5b0bf1dce3e1777c50ce0eb18"
+  integrity sha512-uQfro5FmivE8/P/OzUyn+6JAg96KJJLlQMGXU+D7bvJztYPyFH51N/DceyUVtBKkIzF/Nnp1iYcYjOCIuttZ4Q==
 
 "@types/anymatch@*":
   version "1.3.1"
@@ -7186,7 +7178,7 @@ which@^1.2.14, which@^1.2.9, which@^1.3.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.7.2, white-web-sdk@^2.5.9:
+white-web-sdk@2.7.2:
   version "2.7.2"
   resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.7.2.tgz#570b4106aeeb5f1a467a633311ec8155beacc393"
   integrity sha512-8BVIHn9VE7DhjK72xPaI13tybPFOV14T8pAZKsjGIbEOg/qpex8EU2RW2Z8QSX3SbGjECOjkX1RFaH6b9lnG6Q==
