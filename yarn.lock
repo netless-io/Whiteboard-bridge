@@ -759,15 +759,15 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@netless/white-audio-plugin@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.1.tgz#bc1975852644c996875cf580510f1943d8412655"
-  integrity sha512-GCxlsQTvjaaWljP6SADYSffy1bW05Z1mZKI5WQjanfyODrQN+hBsW86ub1rIWI4JXsns17J3ltnpG5LqPOZaog==
+"@netless/white-audio-plugin@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.2.tgz#870c9accff03dc83b58315bd615cbaba63e31dc9"
+  integrity sha512-2eTdEkfuWl1pLbeq4RlrS7CBubSnAxexejj+gkjaU081glJWakTBVplFrav1IMIcYBU/T9UyioG6xcEwecaGfw==
 
-"@netless/white-video-plugin@1.2.1":
-  version "1.2.1"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.1.tgz#f335f7ef0d3803a5b0bf1dce3e1777c50ce0eb18"
-  integrity sha512-uQfro5FmivE8/P/OzUyn+6JAg96KJJLlQMGXU+D7bvJztYPyFH51N/DceyUVtBKkIzF/Nnp1iYcYjOCIuttZ4Q==
+"@netless/white-video-plugin@1.2.2":
+  version "1.2.2"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.2.tgz#3a390142e4386b8756d19df18407515bcc2505ce"
+  integrity sha512-hKcBTdrlZ25XAwxvMTTcZP3pVSdyLdRrD9t4W2hlny0MllB2cWvM4ulml9U1MLfx13L0Xg/zxSQjry/vCXaTCQ==
 
 "@types/anymatch@*":
   version "1.3.1"
