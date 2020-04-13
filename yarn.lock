@@ -759,10 +759,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@netless/white-audio-plugin@1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.2.tgz#870c9accff03dc83b58315bd615cbaba63e31dc9"
-  integrity sha512-2eTdEkfuWl1pLbeq4RlrS7CBubSnAxexejj+gkjaU081glJWakTBVplFrav1IMIcYBU/T9UyioG6xcEwecaGfw==
+"@netless/white-audio-plugin@1.2.3":
+  version "1.2.3"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.3.tgz#9320e836cf8fadd79b9640b1d48814358883a08a"
+  integrity sha512-Ca7s9BaaFnoh3+4RoLjyJVWRPIFA49y63wiyrRcyENrrHSEbLeVDuoOzN4K2DIbh/YvNshiXLtlsc9tG2rHVNg==
 
 "@netless/white-video-plugin@1.2.2":
   version "1.2.2"
