@@ -173,6 +173,8 @@ export class App extends React.Component<{}, {}> {
             },
         }).then(room => {
 
+            this.removeBind();
+
             window.displayer = room;
             window.room = room;
 
@@ -248,6 +250,8 @@ export class App extends React.Component<{}, {}> {
                 dsBridge.call("player.onCatchErrorWhenRender", {error: err.message});
             },
         }).then(player => {
+
+            this.removeBind();
 
             window.displayer = player;
             window.player = player;
