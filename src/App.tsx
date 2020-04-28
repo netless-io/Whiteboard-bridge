@@ -20,7 +20,7 @@ declare global {
       whiteSdk?: any;
       __nativeTags?: any;
     }
-  }
+}
 
 type NativeSDKConfig = {
     /** 开启图片拦截功能 */
