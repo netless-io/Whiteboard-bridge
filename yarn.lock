@@ -7178,10 +7178,10 @@ which@^1.2.14, which@^1.2.9, which@^1.3.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.7.5:
-  version "2.7.5"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.7.5.tgz#1af5a602b0095ee0237ef7487b0e6a05030c39d2"
-  integrity sha512-D/c37iMYvnE+8FsBhguWiNhLHeDDPJ9sctwU6xg0wVyBHebiQ62L4CeBt8O2pdmpzj72HsQRwNdSapaIMEaFZQ==
+white-web-sdk@2.7.6:
+  version "2.7.6"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.7.6.tgz#e90f25b82d7748b4f79d4db9ddc42b07b30a03aa"
+  integrity sha512-VG0AA63FV9szmP43kur7wKwexCoZTmb2yrG4/bY54AVbsXPjzh+i9q9LH990hMyvgts9xEYQeCXhg+lCaAxl8Q==
   dependencies:
     atob "^2.1.0"
     base64-js "^1.3.1"
