@@ -19,6 +19,7 @@ declare global {
       player?: Player;
       whiteSdk?: any;
       __nativeTags?: any;
+      __platform?: any;
     }
 }
 
@@ -34,6 +35,7 @@ type NativeSDKConfig = {
     __nativeTags?: any;
     /** native 预热结果 */
     initializeOriginsStates?: InitializeStates<Origins>;
+    __platform: "ios" | "android";
 } & WhiteWebSdkConfiguration;
 
 type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
@@ -111,8 +113,11 @@ export class App extends React.Component<{}, {}> {
         this.nativeConfig = config;
 
         this.logger("newWhiteSdk", config);
-        const {debug, __nativeTags, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
+        const {debug, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
 
+        if (__platform) {
+            window.__platform = __platform;
+        }
         if (__nativeTags) {
             window.__nativeTags = {...window.__nativeTags, ...__nativeTags};
         }
