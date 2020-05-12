@@ -1,6 +1,6 @@
 {
   "name": "whiteboard-bridge",
-  "version": "2.7.2",
+  "version": "2.8.0",
   "main": "index.js",
   "private": true,
   "browserslist": [
@@ -16,8 +16,7 @@
     "check-types": "tsc"
   },
   "resolutions": {
-    "**/white-web-sdk": "2.7.8",
-    "**/uuid": "3.4.0"
+    "**/white-web-sdk": "2.8.0"
   },
   "dependencies": {
     "@netless/white-audio-plugin": "1.2.3",
@@ -31,7 +30,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.7.8"
+    "white-web-sdk": "2.8.0"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
