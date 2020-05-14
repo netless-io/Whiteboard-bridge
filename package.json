@@ -16,7 +16,7 @@
     "check-types": "tsc"
   },
   "resolutions": {
-    "**/white-web-sdk": "2.7.8",
+    "**/white-web-sdk": "2.7.9",
     "**/uuid": "3.4.0"
   },
   "dependencies": {
@@ -31,7 +31,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.7.8"
+    "white-web-sdk": "2.7.9"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
