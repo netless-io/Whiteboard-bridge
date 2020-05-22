@@ -3,7 +3,7 @@ import dsBridge from "dsbridge";
 import {RoomBridge} from "./Room";
 import {PlayerBridge} from "./Player";
 import "./App.css";
-import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, setupInitializeOriginsStates, InitializeStates, Origins} from "white-web-sdk";
+import {DeviceType, WhiteWebSdk, WhiteWebSdkConfiguration, ReplayRoomParams, PlayerPhase, JoinRoomParams, RoomPhase, Displayer, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode} from "white-web-sdk";
 import UserCursor from "./UserCursor";
 import {BaseTypeKey, Writable} from "./utils/tools";
 import {NativeCameraBound, convertToBound} from "./utils/CameraBound";
@@ -33,8 +33,8 @@ type NativeSDKConfig = {
     /** 路线备用，在 web-sdk 启用多域名之前的临时补充方案 */
     routeBackup?: boolean;
     __nativeTags?: any;
-    /** native 预热结果 */
-    initializeOriginsStates?: InitializeStates<Origins>;
+    /** native 预热结果，web sdk 升级至 2.8.0 后，该功能不再需要主动测一遍。保留该字段，是为了兼容，以及抽离选项 */
+    initializeOriginsStates?: any;
     __platform: "ios" | "android";
 } & WhiteWebSdkConfiguration;
 
@@ -60,7 +60,6 @@ export class App extends React.Component<{}, {}> {
     private playerBridge?: PlayerBridge;
     private debug: boolean = false;
     private lastScheduleTime: number = 0;
-    private initializeOriginsStates?: InitializeStates<Origins>;
 
     public constructor(props: {}) {
         super(props);
@@ -120,10 +119,6 @@ export class App extends React.Component<{}, {}> {
         }
         if (__nativeTags) {
             window.__nativeTags = {...window.__nativeTags, ...__nativeTags};
-        }
-        if (!this.initializeOriginsStates && initializeOriginsStates) {
-            this.initializeOriginsStates = initializeOriginsStates;
-            setupInitializeOriginsStates(initializeOriginsStates);
         }
 
         if (routeBackup) {
@@ -337,11 +332,12 @@ export class App extends React.Component<{}, {}> {
     // DEBUG 调试专用
     private setupDebugSdk = () => {
         this.debug = true;
-        this.nativeConfig = {debug: true, userCursor: true};
+        this.nativeConfig = {debug: true, userCursor: true, __platform: "ios", appIdentifier: "PLEASE REPLACE ME"};
 
         const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
         this.webSdk = new WhiteWebSdk({
             plugins: plugins,
+            appIdentifier: "PLEASE REPLACE ME",
             urlInterrupter: url => {
                 console.log(url); return url;
             },

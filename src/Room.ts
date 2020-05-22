@@ -5,7 +5,6 @@ import {
     MemberState,
     Room,
     ViewMode,
-    Scene,
     SceneDefinition,
 } from "white-web-sdk";
 import { DisplayerBridge } from "./Displayer";
