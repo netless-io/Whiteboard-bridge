@@ -13,7 +13,7 @@
     "start": "webpack-dev-server --mode development --open --hot --host 0.0.0.0 --useLocalIp",
     "upgrade-plugin": "yarn upgrade @netless/white-audio-plugin @netless/white-video-plugin",
     "build": "tsc && webpack --mode production",
-    "check-types": "tsc"
+    "check": "tsc"
   },
   "resolutions": {
     "**/white-web-sdk": "2.9.0"
