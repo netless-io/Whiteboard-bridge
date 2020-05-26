@@ -163,7 +163,7 @@ export class RoomBridge extends DisplayerBridge {
             },
             zoomChange: (scale: number) => {
                 this.logger("zoomChange");
-                this.room.zoomChange(scale);
+                this.room.moveCamera({scale});
             },
             disableCameraTransform: (disableCamera: boolean) => {
                 this.logger("disableCameraTransform", disableCamera);
@@ -175,7 +175,8 @@ export class RoomBridge extends DisplayerBridge {
             },
             disableOperations: (disableOperations: boolean) => {
                 this.logger("disableOperations", disableOperations);
-                this.room.disableOperations = disableOperations;
+                this.room.disableCameraTransform = disableOperations;
+                this.room.disableDeviceInputs = disableOperations;
             },
             putScenes: (dir: string, scenes: SceneDefinition[], index: number, responseCallback: any) => {
                 this.logger("putScenes", scenes);

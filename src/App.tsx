@@ -195,11 +195,6 @@ export class App extends React.Component<{}, {}> {
 
         this.removeBind();
 
-        // just fix warning
-        if (nativeReplayParams.audioUrl) {
-            nativeReplayParams.mediaURL = nativeReplayParams.audioUrl;
-            nativeReplayParams.audioUrl = undefined;
-        }
         const {step = 500, ...replayParams} = nativeReplayParams;
 
         this.logger("replayRoom", nativeReplayParams);
