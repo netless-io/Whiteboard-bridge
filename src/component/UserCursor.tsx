@@ -1,12 +1,12 @@
 import * as React from "react";
 import {CursorAdapter, CursorDescription, Cursor, RoomMember} from "white-web-sdk";
 import "./UserCursor.less";
-import selector from "./assets/selector.svg";
-import pencil from "./assets/pencil.svg";
-import text from "./assets/text.svg";
-import eraser from "./assets/eraser.svg";
-import ellipse from "./assets/ellipse.svg";
-import rectangle from "./assets/rectangle.png";
+import selector from "../assets/selector.svg";
+import pencil from "../assets/pencil.svg";
+import text from "../assets/text.svg";
+import eraser from "../assets/eraser.svg";
+import ellipse from "../assets/ellipse.svg";
+import rectangle from "../assets/rectangle.png";
 
 export type CursorComponentProps = {
     roomMember: RoomMember;

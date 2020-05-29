@@ -1,33 +1,7 @@
 import {CameraBound, ContentMode, contentModeScale, contentModeAspectFit, contentModeAspectFill, contentModeAspectFillScale, contentModeAspectFitScale, contentModeAspectFitSpace} from "white-web-sdk";
-import {NumberType} from "./tools";
+import {NativeCameraBound, ContentModeType, ScaleMode} from "./ParamTypes";
 
-// Android 使用 enum 名称，请勿随意改动
-enum ScaleMode  {
-    Scale,
-    AspectFit,
-    AspectFitScale,
-    AspectFitSpace,
-    AspectFill,
-    AspectFillScale,
-}
-
-type ScaleModeKey = keyof typeof ScaleMode;
-
-type ContentModeType = {
-    mode: ScaleMode | ScaleModeKey;
-    scale?: number;
-    space?: number;
-};
-
-type NumberCameraBound = NumberType<CameraBound>;
-
-/** 移除掉两个方法属性，使用自定义类替换 */
-export type NativeCameraBound = NumberCameraBound & {
-    maxContentMode?: ContentModeType;
-    minContentMode?: ContentModeType;
-};
-
-export function convertToBound(nativeBound?: NativeCameraBound): CameraBound | undefined {
+export function convertBound(nativeBound?: NativeCameraBound): CameraBound | undefined {
     if (!nativeBound) {
         return undefined;
     }
