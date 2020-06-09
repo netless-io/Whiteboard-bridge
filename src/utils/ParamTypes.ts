@@ -19,7 +19,7 @@ export type NativeSDKConfig = {
     /** 开启图片拦截功能 */
     enableInterrupterAPI?: boolean;
     /** 是否开启 debug 模式，打印命令输出 */
-    debug?: boolean;
+    log?: boolean;
     /** 是否显示用户头像 */
     userCursor?: boolean;
     /** 路线备用，在 web-sdk 启用多域名之前的临时补充方案 */

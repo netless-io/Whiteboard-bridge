@@ -42,14 +42,14 @@ export default function App() {
 
     function testRoom() {
         showLog = true;
-        nativeConfig = {debug: true, userCursor: true, __platform: "ios", appIdentifier: ""};
+        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier: ""};
         newWhiteSdk(nativeConfig);
         joinRoom({uuid: "", roomToken: ""}, () => {});
     }
 
     function testReplay() {
         showLog = true;
-        nativeConfig = {debug: true, userCursor: true, __platform: "ios", appIdentifier: "792/uaYcRG0I7ctP9A"};
+        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier: "792/uaYcRG0I7ctP9A"};
         newWhiteSdk(nativeConfig);
         replayRoom({room: "", roomToken: ""}, () => {});
     }
@@ -77,9 +77,9 @@ export default function App() {
             return url;
         } : undefined;
 
-        const {debug, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
+        const {log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
 
-        showLog = !!debug;
+        showLog = !!log;
         nativeConfig = config;
 
         logger("newWhiteSdk", config);
