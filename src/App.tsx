@@ -8,7 +8,8 @@ import {audioPlugin} from "@netless/white-audio-plugin";
 import multipleDomain from "./utils/MultipleDomain";
 import {convertBound} from "./utils/BoundConvert";
 import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
-import UserCursor from './component/UserCursor';
+// import UserCursor from './component/UserCursor';
+import {UserCursor} from "@netless/cursor-adapter";
 import "./App.css";
 
 let showLog = false;
