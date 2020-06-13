@@ -89,7 +89,7 @@ export default function App() {
             window.__platform = __platform;
         }
         
-        cursorAdapter = userCursor ? undefined : new UserCursor();
+        cursorAdapter = !!userCursor ? new UserCursor() : undefined;
 
         if (__nativeTags) {
             window.__nativeTags = {...window.__nativeTags, ...__nativeTags};
