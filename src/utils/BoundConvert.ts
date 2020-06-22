@@ -19,8 +19,8 @@ function convertToContentMode(modeType?: ContentModeType): ContentMode | undefin
     if (!modeType) {
         return undefined;
     }
-    const scale = modeType.scale ? modeType.scale : 1.0;
-    const space = modeType.space ? modeType.space : 0;
+    const scale = modeType.scale === undefined ? 1.0 : modeType.scale;
+    const space = modeType.space === undefined ? 0 : modeType.space;
 
     let scaleMode = ScaleMode.Scale;
     // Android 传 string 比较方便，gson 传数字太繁琐
