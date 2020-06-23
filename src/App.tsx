@@ -153,7 +153,7 @@ export default function App() {
             onLoadFirstFrame,
             onPlayerStateChanged,
             onStoppedWithError,
-            onScheduleTimeChanged: (scheduleTime) => onScheduleTimeChanged(scheduleTime, step),
+            onProgressTimeChanged: (scheduleTime) => onProgressTimeChanged(scheduleTime, step),
             onCatchErrorWhenAppendFrame,
             onCatchErrorWhenRender,
             onPPTLoadProgress,
@@ -232,7 +232,7 @@ export default function App() {
         dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
     }
 
-    function onScheduleTimeChanged(scheduleTime, step) {
+    function onProgressTimeChanged(scheduleTime, step) {
         limitScheduleCallback(() => {dsBridge.call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
     }
 

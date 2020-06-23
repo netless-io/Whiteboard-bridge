@@ -239,7 +239,44 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             room.pptPreviousStep();
         },
     });
+    dsBridge.register("room.sync", {
+        /** 客户端本地效果，会导致 web 2.9.2 和 native 2.9.3 以下出现问题。*/
+        disableSerialization: (disable: boolean) => {
+            room.disableSerialization = disable;
+        },
+        copy: () => {
+            room.copy();
+        },
+        paste: () => {
+            room.paste();
+        },
+        duplicate: () => {
+            room.duplicate();
+        },
+        delete: () => {
+            room.delete();
+        },
+        disableEraseImage: (disable) => {
+            room.disableEraseImage = disable;
+        },
+    });
     dsBridge.registerAsyn("room", {
+        /** 取消撤回 */
+        redo: (responseCallback: any) => {
+            const count = room.redo();
+            responseCallback(count);
+        },
+        /** 撤回 */
+        undo: (responseCallback: any) => {
+            const count = room.undo();
+            responseCallback(count);
+        },
+        canRedoSteps: (responseCallback: any) => {
+            responseCallback(room.canRedoSteps);
+        },
+        canUndoSteps: (responseCallback: any) => {
+            responseCallback(room.canUndoSteps);
+        },
         /** set 系列API */
         /** 暂时无用，不再有具体内容 */
         setGlobalState: (modifyState: Partial<GlobalState>) => {
