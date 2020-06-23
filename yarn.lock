@@ -865,10 +865,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@netless/cursor-adapter@^0.0.5":
-  version "0.0.5"
-  resolved "https://registry.yarnpkg.com/@netless/cursor-adapter/-/cursor-adapter-0.0.5.tgz#78514ac10c22bdcae743f3abbffe50aed2ba09c9"
-  integrity sha512-xCEFll8LaJ4jnINs23qVd+NxJ++bhAk9eK7nEiWr4rpWMV/ei8GqpJLX9FLOJWc6An8HYdpNihFbTVIHyKbO7w==
+"@netless/cursor-adapter@0.0.6":
+  version "0.0.6"
+  resolved "https://registry.yarnpkg.com/@netless/cursor-adapter/-/cursor-adapter-0.0.6.tgz#beeea2d050abe67d325e70012c89cfcfeadf9789"
+  integrity sha512-CLWW6zuFhepm6MfRMZ3RmwMfQSpZwLSL6lXpvIGHeDfjfKMZjoHKbljZg+VK/HSVKbqAo9b1nUokXchb3Vj1dQ==
   dependencies:
     "@netless/identicon" "^0.0.2"
     white-web-sdk "^2.6.3"
@@ -880,15 +880,15 @@
   dependencies:
     md5-typescript "^1.0.5"
 
-"@netless/white-audio-plugin@1.2.3":
-  version "1.2.3"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.3.tgz#9320e836cf8fadd79b9640b1d48814358883a08a"
-  integrity sha512-Ca7s9BaaFnoh3+4RoLjyJVWRPIFA49y63wiyrRcyENrrHSEbLeVDuoOzN4K2DIbh/YvNshiXLtlsc9tG2rHVNg==
+"@netless/white-audio-plugin@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.4.tgz#b6fd338c3f822554e0735ac6dc4e1a6ef373c1e5"
+  integrity sha512-KdY9hUEaLCOfXDmKBJs5z/PrNcwY7QpqaY3RmgRhGHm0hAYAXD0QFvddkQMKSLrAi+lLF2SLScUTndeAGaTwHQ==
 
-"@netless/white-video-plugin@1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.2.tgz#3a390142e4386b8756d19df18407515bcc2505ce"
-  integrity sha512-hKcBTdrlZ25XAwxvMTTcZP3pVSdyLdRrD9t4W2hlny0MllB2cWvM4ulml9U1MLfx13L0Xg/zxSQjry/vCXaTCQ==
+"@netless/white-video-plugin@^1.2.4":
+  version "1.2.4"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.4.tgz#021bc54020aba3739ce1cce5a9529b793c135fac"
+  integrity sha512-xHo9w8KWYlonfXSo71k5qz9472MCcxnCOB3NLwSz5NA1Z1/qm6f8X8jY8StDDm3tOEo0BGqJS6w20Pi9lOg8Mw==
 
 "@types/anymatch@*":
   version "1.3.1"
