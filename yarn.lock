@@ -881,14 +881,14 @@
     md5-typescript "^1.0.5"
 
 "@netless/white-audio-plugin@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.4.tgz#b6fd338c3f822554e0735ac6dc4e1a6ef373c1e5"
-  integrity sha512-KdY9hUEaLCOfXDmKBJs5z/PrNcwY7QpqaY3RmgRhGHm0hAYAXD0QFvddkQMKSLrAi+lLF2SLScUTndeAGaTwHQ==
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.6.tgz#95462dd67c53f50fd7067f7f9abb0ea7372a6cb6"
+  integrity sha512-FhxeDafDj8RSmPPsZiNAkl5KjO4I99pNgCrUmjQVuzxNZ5/tXMiNckQb7lRrgI9dStRNcW0FPgRcuf0GZI5LiQ==
 
 "@netless/white-video-plugin@^1.2.4":
-  version "1.2.4"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.4.tgz#021bc54020aba3739ce1cce5a9529b793c135fac"
-  integrity sha512-xHo9w8KWYlonfXSo71k5qz9472MCcxnCOB3NLwSz5NA1Z1/qm6f8X8jY8StDDm3tOEo0BGqJS6w20Pi9lOg8Mw==
+  version "1.2.6"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.6.tgz#01eea79b94e6ed666ec77e4ec6898f9816f9d4d7"
+  integrity sha512-s/fLhPLjWBZRoTNq7mSkUdnMJp+octTNGFx9pOtZwPrms2CbxkABPeXERmnaqJrUDrrlwKsQm4kla6+syVLVFQ==
 
 "@types/anymatch@*":
   version "1.3.1"
