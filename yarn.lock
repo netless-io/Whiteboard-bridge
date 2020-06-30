@@ -865,6 +865,11 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@netless/canvas-polyfill@^0.0.3":
+  version "0.0.3"
+  resolved "https://registry.yarnpkg.com/@netless/canvas-polyfill/-/canvas-polyfill-0.0.3.tgz#caf77b6b1b666db54cde5edda3751ee292bc088a"
+  integrity sha512-X3KodHfvMAIrmVBsj7kbWdcWA+eCr/uhqpix10GKXE+UovIyJd05KyFNMKIAXOMQI79NJrYiHcPBLszRRogygA==
+
 "@netless/cursor-adapter@0.0.6":
   version "0.0.6"
   resolved "https://registry.yarnpkg.com/@netless/cursor-adapter/-/cursor-adapter-0.0.6.tgz#beeea2d050abe67d325e70012c89cfcfeadf9789"

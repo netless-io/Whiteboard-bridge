@@ -1,3 +1,4 @@
+import "@netless/canvas-polyfill";
 import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {WhiteWebSdk, PlayerPhase, RoomPhase, Displayer, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType} from "white-web-sdk";
@@ -8,7 +9,6 @@ import {audioPlugin} from "@netless/white-audio-plugin";
 import multipleDomain from "./utils/MultipleDomain";
 import {convertBound} from "./utils/BoundConvert";
 import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
-// import UserCursor from './component/UserCursor';
 import {UserCursor} from "@netless/cursor-adapter";
 import "./App.css";
 
