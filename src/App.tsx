@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {WhiteWebSdk, PlayerPhase, RoomPhase, Displayer, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType} from "white-web-sdk";
 import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils/ParamTypes";
-import {registerPlayer, registerRoom} from "./utils/Register";
+import {registerPlayer, registerRoom} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
 import multipleDomain from "./utils/MultipleDomain";
