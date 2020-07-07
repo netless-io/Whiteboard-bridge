@@ -17,6 +17,9 @@ let lastScheduleTime = 0;
 let nativeConfig: NativeSDKConfig | undefined = undefined;
 let sdk: WhiteWebSdk | undefined = undefined;
 let cursorAdapter: UserCursor | undefined = undefined;
+let appIdentifier = "";
+let testRoomUUID = "";
+let testRoomToken = "";
 
 export default function App() {
     // state hook
@@ -43,16 +46,16 @@ export default function App() {
 
     function testRoom() {
         showLog = true;
-        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier: ""};
+        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier};
         newWhiteSdk(nativeConfig);
-        joinRoom({uuid: "", roomToken: ""}, () => {});
+        joinRoom({uuid: testRoomUUID, roomToken: testRoomToken}, () => {});
     }
 
     function testReplay() {
         showLog = true;
-        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier: "792/uaYcRG0I7ctP9A"};
+        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier};
         newWhiteSdk(nativeConfig);
-        replayRoom({room: "", roomToken: ""}, () => {});
+        replayRoom({room: testRoomUUID, roomToken: testRoomToken}, () => {});
     }
 
     window.testRoom = testRoom;
