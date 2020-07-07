@@ -257,17 +257,16 @@ export default function App() {
         }
     }
 
-    // TODO: 增加 ppt 回调
     function onPPTLoadProgress(uuid: string, progress: number) {
-
+        // dsBridge.call("sdk.onPPTLoadProgress", {uuid, progress});
     }
 
     function onPPTMediaPlay(shapeId: string, type: MediaType) {
-
+        // dsBridge.call("sdk.onPPTMediaPlay", {shapeId, type});
     }
     
     function onPPTMediaPause(shapeId: string, type: MediaType) {
-
+        // dsBridge.call("sdk.onPPTMediaPause", {shapeId, type});
     }
 
     // effect hook
