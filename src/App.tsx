@@ -258,15 +258,15 @@ export default function App() {
     }
 
     function onPPTLoadProgress(uuid: string, progress: number) {
-        // dsBridge.call("sdk.onPPTLoadProgress", {uuid, progress});
+        // 不推荐用户使用这种预加载，native 端使用 zip 包的形式
     }
 
     function onPPTMediaPlay(shapeId: string, type: MediaType) {
-        // dsBridge.call("sdk.onPPTMediaPlay", {shapeId, type});
+        dsBridge.call("sdk.onPPTMediaPlay", {shapeId, type});
     }
     
     function onPPTMediaPause(shapeId: string, type: MediaType) {
-        // dsBridge.call("sdk.onPPTMediaPause", {shapeId, type});
+        dsBridge.call("sdk.onPPTMediaPause", {shapeId, type});
     }
 
     // effect hook
