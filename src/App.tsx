@@ -290,6 +290,6 @@ export default function App() {
 
     const fullStyle: React.CSSProperties = {position: "absolute", left: 0, top: 0, right: 0, bottom: 0, zIndex: 1};
     return (
-        <div ref={divRef} style={fullStyle}></div>
+        <div id="whiteboard-container" ref={divRef} style={fullStyle}></div>
     )
 }

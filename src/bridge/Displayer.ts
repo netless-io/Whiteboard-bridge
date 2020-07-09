@@ -27,6 +27,12 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
     const screenshot = (scenePath: string, fn: (scenePath: string, div: HTMLElement, width: number, height: number) => void, responseCallback: any) => {
         const div = document.createElement("div");
         div.setAttribute("class", "shadow");
+        const whiteboard = document.getElementById("whiteboard-container");
+        if (whiteboard) {
+            const color = window.getComputedStyle(whiteboard).backgroundColor;
+            div.style.background = color;
+        }
+
         document.body.appendChild(div);
         fn(scenePath, div, div.clientWidth, div.clientHeight);
         html2canvas(div, {useCORS: true, onclone: function(div: Document): void {
