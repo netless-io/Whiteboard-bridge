@@ -264,10 +264,12 @@ export default function App() {
     }
 
     function onPPTMediaPlay(shapeId: string, type: MediaType) {
+        logger("onPPTMediaPlay", shapeId, type);
         dsBridge.call("sdk.onPPTMediaPlay", {shapeId, type});
     }
     
     function onPPTMediaPause(shapeId: string, type: MediaType) {
+        logger("onPPTMediaPause", shapeId, type);
         dsBridge.call("sdk.onPPTMediaPause", {shapeId, type});
     }
 
