@@ -107,6 +107,10 @@ export default function App() {
             ...restConfig,
             plugins: plugins,
             urlInterrupter: urlInterrupter,
+            onWhiteSetupFailed: e => {
+                logger("onWhiteSetupFailed",  e);
+                dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
+            }
         });
     }
 
