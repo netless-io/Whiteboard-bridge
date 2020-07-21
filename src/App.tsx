@@ -121,6 +121,10 @@ export default function App() {
     }
 
     function joinRoom(nativeParams: NativeJoinRoomParams, responseCallback: any) {
+        if (!sdk) {
+            responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
+            return;
+        }
         removeBind();
         logger("joinRoom", nativeParams);
         const {timeout = 45000, cameraBound, ...joinRoomParms} = nativeParams;
@@ -154,6 +158,11 @@ export default function App() {
     }
 
     function replayRoom(nativeReplayParams: NativeReplayParams, responseCallback: any) {
+
+        if (!sdk) {
+            responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
+            return;
+        }
 
         const {step = 500, cameraBound, ...replayParams} = nativeReplayParams;
         removeBind();
