@@ -103,15 +103,21 @@ export default function App() {
         }
 
         const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
-        sdk = new WhiteWebSdk({
-            ...restConfig,
-            plugins: plugins,
-            urlInterrupter: urlInterrupter,
-            onWhiteSetupFailed: e => {
-                logger("onWhiteSetupFailed",  e);
-                dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
-            }
-        });
+        try {
+            sdk = new WhiteWebSdk({
+                ...restConfig,
+                plugins: plugins,
+                urlInterrupter: urlInterrupter,
+                onWhiteSetupFailed: e => {
+                    logger("onWhiteSetupFailed",  e);
+                    dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
+                }
+            });
+            window.sdk = sdk;
+        } catch (e) {
+            logger("onWhiteSetupFailed", e);
+            dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
+        }
     }
 
     function joinRoom(nativeParams: NativeJoinRoomParams, responseCallback: any) {

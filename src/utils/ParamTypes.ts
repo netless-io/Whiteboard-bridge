@@ -1,10 +1,11 @@
 
-import {WhiteWebSdkConfiguration, ReplayRoomParams, JoinRoomParams, Room, Player, CameraBound} from "white-web-sdk";
+import {WhiteWebSdkConfiguration, ReplayRoomParams, JoinRoomParams, Room, Player, CameraBound, WhiteWebSdk} from "white-web-sdk";
 import {BaseTypeKey, Writable, NumberType} from "./GenericHelper";
 
 declare global {
     interface Window {
       room?: Room;
+      sdk?: WhiteWebSdk;
       player?: Player;
       bridge?: any;
       __nativeTags?: any;
