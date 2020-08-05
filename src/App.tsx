@@ -3,7 +3,7 @@ import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {WhiteWebSdk, PlayerPhase, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType} from "white-web-sdk";
 import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils/ParamTypes";
-import {registerPlayer, registerRoom} from "./bridge";
+import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
 import multipleDomain from "./utils/MultipleDomain";
@@ -20,6 +20,7 @@ let cursorAdapter: UserCursor | undefined = undefined;
 let appIdentifier = "";
 let testRoomUUID = "";
 let testRoomToken = "";
+let rtcClient = new Rtc();
 
 export default function App() {
     // state hook
@@ -81,7 +82,7 @@ export default function App() {
             return url;
         } : undefined;
 
-        const {log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, ...restConfig} = config;
+        const {log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, ...restConfig} = config;
 
         showLog = !!log;
         nativeConfig = config;
@@ -102,6 +103,11 @@ export default function App() {
             multipleDomain();
         }
 
+        const pptParams = restConfig.pptParams;
+        if (enableRtcIntercept) {
+            (pptParams as any).rtcClient = rtcClient;
+        }
+
         const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
         try {
             sdk = new WhiteWebSdk({
@@ -111,7 +117,8 @@ export default function App() {
                 onWhiteSetupFailed: e => {
                     logger("onWhiteSetupFailed",  e);
                     dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
-                }
+                },
+                pptParams,
             });
             window.sdk = sdk;
         } catch (e) {
