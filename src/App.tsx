@@ -103,7 +103,7 @@ export default function App() {
             multipleDomain();
         }
 
-        const pptParams = restConfig.pptParams;
+        const pptParams = restConfig.pptParams || {};
         if (enableRtcIntercept) {
             (pptParams as any).rtcClient = rtcClient;
         }
