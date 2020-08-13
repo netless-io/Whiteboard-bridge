@@ -2,13 +2,40 @@ import dsBridge from "dsbridge";
 
 export class Rtc {
 
-    private mixCallback?: (state: number, errorCode: number) => void;
+    static kStartAudioMixing = 710;
+    static kStopAudioMixing = 713;
+    static kAudioError = 714;
+
+    private startCallback?: (state: number, errorCode: number) => void;
+    private stopCallback?: (state: number, errorCode: number) => void;
 
     public constructor() {
         dsBridge.register("rtc", {
             callback: (state: number, errorCode: number) => {
-                if (this.mixCallback) {
-                    this.mixCallback(state, errorCode);
+                switch (state) {
+                    case Rtc.kStopAudioMixing:
+                        {
+                            if (this.stopCallback) {
+                                this.stopCallback(state, errorCode);
+                            }
+                        }
+                        break;
+                    case Rtc.kStartAudioMixing:
+                        {
+                            if (this.startCallback) {
+                                this.startCallback(state, errorCode);
+                            }
+                        }
+                        break;
+                    default:
+                        {
+                            if (this.startCallback) {
+                                this.startCallback(state, errorCode);
+                            } else if (this.stopCallback) {
+                                this.stopCallback(state, errorCode);
+                            }
+                        }
+                        break;
                 }
             }
         })
@@ -24,15 +51,16 @@ export class Rtc {
             *  714: 播放失败，error code 会有具体原因
     */
 
-    public startAudioMixing = (filePath: string, loopback: boolean, replace: boolean, cycle: number, callback?: (state: number, errorCode: number) => void) => {
-        this.mixCallback = callback;
+    public startAudioMixing = (filePath: string, loopback: boolean, replace: boolean, cycle: number, callback: (state: number, errorCode: number) => void) => {
+        this.startCallback = callback;
         return dsBridge.call("rtc.startAudioMixing", {filePath, loopback, replace, cycle});
     }
 
     /**
     * callback?: (state: number, errorCode: number) => void
     */
-    public stopAudioMixing() {
+    public stopAudioMixing = (callback: (state: number, errorCode: number) => void) => {
+        this.stopCallback = callback;
         return dsBridge.call("rtc.stopAudioMixing");
     }
 
