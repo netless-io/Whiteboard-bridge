@@ -1,9 +1,5 @@
 import dsBridge from "dsbridge";
 
-type RtcCallbacks = {
-    [key in string]: (state: number, errorCode: number) => void;
-}
-
 export class Rtc {
 
     private mixCallback?: (state: number, errorCode: number) => void;
