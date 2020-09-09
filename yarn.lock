@@ -886,9 +886,9 @@
     md5-typescript "^1.0.5"
 
 "@netless/white-audio-plugin@^1.2.4":
-  version "1.2.15"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.15.tgz#d495a1a8689ad9330919625fed5e30599ec2855a"
-  integrity sha512-prYPK63rU3HpG8e/Z84qiwmJnqxx42NU1DNGoNPcChXwgPGWbHgdReQIhGaHB2xmq9mPQAC+d5UTI6VEHzspxQ==
+  version "1.2.16"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.16.tgz#ee8eea3b3c370d7648579129b8e280a48825111c"
+  integrity sha512-Gst6R9kplf+t/ZrGMX7JFHOpc/M+tobKhU7TtJNIIiubYAKxILeEvFNRkbULv5+QX8BJ3qF85MJxAKatWHxztA==
 
 "@netless/white-video-plugin@^1.2.4":
   version "1.2.15"
