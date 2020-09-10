@@ -38,7 +38,7 @@ export function registerPlayer(player: Player, logger: (funName: string, ...para
         setPlaybackSpeed: (rate: number) => {
             logger("playbackSpeed", rate);
             player.playbackSpeed = rate;
-        },
+        }
     });
 
     dsBridge.register("player.state", {
@@ -57,6 +57,9 @@ export function registerPlayer(player: Player, logger: (funName: string, ...para
             } catch (error) {
                 return {};
             }
+        },
+        isPlayable: () => {
+            return player.isPlayable;
         },
         playbackSpeed: () => {
             logger("playbackSpeed", player.playbackSpeed);
