@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@netless/canvas-polyfill": "^0.0.3",
-    "@netless/cursor-adapter": "0.0.6",
+    "@netless/cursor-tool": "^0.0.4",
     "@netless/white-audio-plugin": "^1.2.4",
     "@netless/white-video-plugin": "^1.2.4",
     "@types/react": "^16.9.13",

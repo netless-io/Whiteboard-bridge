@@ -9,14 +9,15 @@ import {audioPlugin} from "@netless/white-audio-plugin";
 import multipleDomain from "./utils/MultipleDomain";
 import {convertBound} from "./utils/BoundConvert";
 import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
-import {UserCursor} from "@netless/cursor-adapter";
+import {CursorTool} from "@netless/cursor-tool";
 import "./App.css";
 
 let showLog = false;
 let lastScheduleTime = 0;
 let nativeConfig: NativeSDKConfig | undefined = undefined;
 let sdk: WhiteWebSdk | undefined = undefined;
-let cursorAdapter: UserCursor | undefined = undefined;
+let cursorAdapter: CursorTool | undefined = undefined;
+
 let appIdentifier = "";
 let testRoomUUID = "";
 let testRoomToken = "";
@@ -49,7 +50,9 @@ export default function App() {
         showLog = true;
         nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier};
         newWhiteSdk(nativeConfig);
-        joinRoom({uuid: testRoomUUID, roomToken: testRoomToken}, () => {});
+        joinRoom({uuid: testRoomUUID, roomToken: testRoomToken, userPayload: {
+            avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg"
+        }}, () => {});
     }
 
     function testReplay() {
@@ -93,7 +96,7 @@ export default function App() {
             window.__platform = __platform;
         }
         
-        cursorAdapter = !!userCursor ? new UserCursor() : undefined;
+        cursorAdapter = !!userCursor ? new CursorTool() : undefined;
 
         if (__nativeTags) {
             window.__nativeTags = {...window.__nativeTags, ...__nativeTags};
@@ -155,8 +158,8 @@ export default function App() {
             room = mRoom;
             mRoom.bindHtmlElement(divRef.current);
             registerRoom(mRoom, logger);
-            if (mRoom.state.roomMembers && cursorAdapter) {
-                cursorAdapter.setColorAndAppliance(mRoom.state.roomMembers);
+            if (!!cursorAdapter) {
+                cursorAdapter.setRoom(room);
             }
             return responseCallback(JSON.stringify({state: mRoom.state, observerId: mRoom.observerId, isWritable: mRoom.isWritable}));
         }).catch((e: Error) => {
@@ -195,6 +198,9 @@ export default function App() {
             player = mPlayer;
             registerPlayer(mPlayer, logger)
             mPlayer.bindHtmlElement(divRef.current);
+            if (!!cursorAdapter) {
+                cursorAdapter?.setPlayer(player);
+            }
             const {scheduleTime, timeDuration, framesCount, beginTimestamp} = mPlayer;
             return responseCallback(JSON.stringify({timeInfo: {scheduleTime, timeDuration, framesCount, beginTimestamp}}));
         }).catch((e: Error) => {
@@ -215,9 +221,6 @@ export default function App() {
     }
     
     function onRoomStateChanged(modifyState) {
-        if (modifyState.roomMembers && cursorAdapter) {
-            cursorAdapter.setColorAndAppliance(modifyState.roomMembers);
-        }
         dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
     }
 
@@ -231,13 +234,6 @@ export default function App() {
 
     // PlayerCallbacks
     function onPlayerPhaseChanged(phase) {
-        if (phase !== PlayerPhase.WaitingFirstFrame && cursorAdapter && player) {
-            try {
-                cursorAdapter.setColorAndAppliance(player.state.roomMembers);
-            } catch (error) {
-                console.warn(error);
-            }
-        }
         lastScheduleTime = 0;
         logger("onPhaseChanged:", phase);
         dsBridge.call("player.onPhaseChanged", phase);
@@ -253,9 +249,6 @@ export default function App() {
     }
 
     function onPlayerStateChanged(modifyState) {
-        if (modifyState.roomMembers && cursorAdapter) {
-            cursorAdapter.setColorAndAppliance(modifyState.roomMembers);
-        }
         dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
     }
 
