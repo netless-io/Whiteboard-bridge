@@ -11,12 +11,12 @@
     "bundle": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development --open --hot --host 0.0.0.0 --useLocalIp",
-    "upgrade-plugin": "yarn upgrade @netless/white-audio-plugin @netless/white-video-plugin",
+    "upgrade-plugin": "yarn upgrade @netless/white-audio-plugin @netless/white-video-plugin @netless/cursor-tool",
     "build": "tsc && webpack --mode production",
     "check": "tsc"
   },
   "resolutions": {
-    "**/white-web-sdk": "2.9.16"
+    "**/white-web-sdk": "2.9.17"
   },
   "dependencies": {
     "@netless/canvas-polyfill": "^0.0.3",
@@ -32,7 +32,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.9.16"
+    "white-web-sdk": "2.9.17"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
