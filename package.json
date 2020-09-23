@@ -11,7 +11,7 @@
     "bundle": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development --open --hot --host 0.0.0.0 --useLocalIp",
-    "upgrade-plugin": "yarn upgrade @netless/white-audio-plugin @netless/white-video-plugin @netless/cursor-tool",
+    "upgrade-plugin": "yarn upgrade --force @netless/white-audio-plugin @netless/white-video-plugin @netless/cursor-tool",
     "build": "tsc && webpack --mode production",
     "check": "tsc"
   },
@@ -20,7 +20,7 @@
   },
   "dependencies": {
     "@netless/canvas-polyfill": "^0.0.3",
-    "@netless/cursor-tool": "^0.0.4",
+    "@netless/cursor-tool": "^0.0.5",
     "@netless/white-audio-plugin": "^1.2.4",
     "@netless/white-video-plugin": "^1.2.4",
     "@types/react": "^16.9.13",

@@ -870,10 +870,10 @@
   resolved "https://registry.yarnpkg.com/@netless/canvas-polyfill/-/canvas-polyfill-0.0.3.tgz#caf77b6b1b666db54cde5edda3751ee292bc088a"
   integrity sha512-X3KodHfvMAIrmVBsj7kbWdcWA+eCr/uhqpix10GKXE+UovIyJd05KyFNMKIAXOMQI79NJrYiHcPBLszRRogygA==
 
-"@netless/cursor-tool@^0.0.4":
-  version "0.0.4"
-  resolved "https://registry.yarnpkg.com/@netless/cursor-tool/-/cursor-tool-0.0.4.tgz#206be29f30359b9bdeb0bd44f1763d63632605f9"
-  integrity sha512-hIxREuLXTda5dUBA2VLw3eSva/v7IUP7845g1/nrWF/CchN4HK4yEQkexc9dgw0kYPJDnFzSaWtmpFE7LWrBCw==
+"@netless/cursor-tool@^0.0.5":
+  version "0.0.5"
+  resolved "https://registry.npm.taobao.org/@netless/cursor-tool/download/@netless/cursor-tool-0.0.5.tgz#7ca47501cb656b3e623ade37462bf2d38450f6f2"
+  integrity sha1-fKR1Actlaz5iOt43Rivy04RQ9vI=
 
 "@netless/white-audio-plugin@^1.2.4":
   version "1.2.16"
