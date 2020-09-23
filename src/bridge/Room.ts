@@ -21,11 +21,6 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
     window.room = room;
     registerDisplayer(room, logger);
 
-    const cleanCurrentScene = (retainPpt: boolean) => {
-        logger("cleanCurrentScene: ", retainPpt);
-        room.cleanCurrentScene(retainPpt);
-    }
-
     dsBridge.register("ppt", {
         nextStep: () => {
             logger("nextStep");
@@ -205,9 +200,8 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             } else {
                 retain = !!retainPpt;
             }
-            logger("cleanScene", retainPpt);
-            // TODO: web sdk 2.6.1 将会修复该问题，到时候切换回去
-            cleanCurrentScene(retain);
+            logger("cleanCurrentScene: ", retainPpt);
+            room.cleanCurrentScene(retainPpt);
         },
         insertImage: (imageInfo: ImageInformation) => {
             logger("insertImage", imageInfo);
@@ -215,7 +209,6 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         },
         insertVideo: (videoInfo: VideoPluginInfo) => {
             logger("insertVideo", videoInfo);
-            // TODO: insertVideo
         },
         completeImageUpload: (uuid: string, url: string) => {
             logger("completeImageUpload", uuid, url);

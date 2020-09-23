@@ -150,6 +150,8 @@ export default function App() {
             onKickedWithReason,
             onCatchErrorWhenAppendFrame,
             onCatchErrorWhenRender,
+            onCanRedoStepsUpdate,
+            onCanUndoStepsUpdate,
             onPPTLoadProgress,
             onPPTMediaPlay,
             onPPTMediaPause,
@@ -218,6 +220,14 @@ export default function App() {
                 });
             }
         }, timeout);
+    }
+
+    function onCanUndoStepsUpdate(canUndoSteps: number) {
+        dsBridge.call("room.fireCanUndoStepsUpdate", canUndoSteps);
+    }
+
+    function onCanRedoStepsUpdate(canRedoSteps: number) {
+        dsBridge.call("room.fireCanRedoStepsUpdate", canRedoSteps);
     }
     
     function onRoomStateChanged(modifyState) {
