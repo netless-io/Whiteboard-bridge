@@ -1,7 +1,8 @@
 import "@netless/canvas-polyfill";
 import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
-import {WhiteWebSdk, PlayerPhase, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType} from "white-web-sdk";
+import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
+import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType} from "white-web-sdk";
 import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils/ParamTypes";
 import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
@@ -115,6 +116,8 @@ export default function App() {
         try {
             sdk = new WhiteWebSdk({
                 ...restConfig,
+                invisiblePlugins: [IframeBridge as any],
+                wrappedComponents: [IframeWrapper],
                 plugins: plugins,
                 urlInterrupter: urlInterrupter,
                 onWhiteSetupFailed: e => {
