@@ -86,7 +86,7 @@ export default function App() {
             return url;
         } : undefined;
 
-        const {log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, ...restConfig} = config;
+        const {log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableIFramePlugin, ...restConfig} = config;
 
         showLog = !!log;
         nativeConfig = config;
@@ -116,8 +116,8 @@ export default function App() {
         try {
             sdk = new WhiteWebSdk({
                 ...restConfig,
-                invisiblePlugins: [IframeBridge as any],
-                wrappedComponents: [IframeWrapper],
+                invisiblePlugins: enableIFramePlugin ? [IframeBridge as any] : undefined,
+                wrappedComponents: enableIFramePlugin ? [IframeWrapper] : undefined,
                 plugins: plugins,
                 urlInterrupter: urlInterrupter,
                 onWhiteSetupFailed: e => {

@@ -25,6 +25,7 @@ export type NativeSDKConfig = {
     userCursor?: boolean;
     /** 路线备用，在 web-sdk 启用多域名之前的临时补充方案 */
     routeBackup?: boolean;
+    enableIFramePlugin?: boolean;
     enableRtcIntercept?: boolean;
     __nativeTags?: any;
     /** native 预热结果，web sdk 升级至 2.8.0 后，该功能不再需要主动测一遍。保留该字段，是为了兼容，以及抽离选项 */
