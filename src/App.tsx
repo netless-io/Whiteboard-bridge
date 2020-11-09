@@ -213,6 +213,20 @@ export default function App() {
         });
     }
 
+    function isPlayable(nativeReplayParams: NativeReplayParams, responseCallback: any) {
+        if (!sdk) {
+            responseCallback(false);
+            return;
+        }
+
+        const {step = 500, cameraBound, ...replayParams} = nativeReplayParams;
+        sdk!.isPlayable({
+            ...replayParams
+        }).then((isPlayable) => {
+            responseCallback(isPlayable);
+        })
+    }
+
     // RoomCallbacks
     function roomPhaseChange(phase, timeout) {
         dsBridge.call("room.firePhaseChanged", phase);
@@ -320,6 +334,7 @@ export default function App() {
         newWhiteSdk,
         joinRoom,
         replayRoom,
+        isPlayable,
     });
 
     const divRef = useRef(null);
