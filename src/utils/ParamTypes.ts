@@ -1,12 +1,14 @@
 
 import {WhiteWebSdkConfiguration, ReplayRoomParams, JoinRoomParams, Room, Player, CameraBound, WhiteWebSdk} from "white-web-sdk";
 import {BaseTypeKey, Writable, NumberType} from "./GenericHelper";
+import { CombinePlayer } from '@netless/combine-player';
 
 declare global {
     interface Window {
       room?: Room;
       sdk?: WhiteWebSdk;
       player?: Player;
+      combinePlayer?: CombinePlayer;
       bridge?: any;
       __nativeTags?: any;
       __platform?: any;
@@ -68,4 +70,5 @@ type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;
 export type NativeReplayParams = BaseTypeReplayParams & {
     cameraBound?: NativeCameraBound;
     step?: number;
+    mediaURL?: string;
 };

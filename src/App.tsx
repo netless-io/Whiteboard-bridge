@@ -11,7 +11,9 @@ import multipleDomain from "./utils/MultipleDomain";
 import {convertBound} from "./utils/BoundConvert";
 import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
 import {CursorTool} from "@netless/cursor-tool";
+import CombinePlayerFactory from "@netless/combine-player";
 import "./App.css";
+import { registerDisplayer } from 'bridge/Displayer';
 
 let showLog = false;
 let lastScheduleTime = 0;
@@ -179,9 +181,10 @@ export default function App() {
             return;
         }
 
-        const {step = 500, cameraBound, ...replayParams} = nativeReplayParams;
+        const {step = 500, cameraBound, mediaURL, ...replayParams} = nativeReplayParams;
         removeBind();
         logger("replayRoom", nativeReplayParams);
+
         sdk!.replayRoom({
             ...replayParams,
             cursorAdapter: cursorAdapter,
@@ -201,7 +204,15 @@ export default function App() {
         }).then(mPlayer => {
             removeBind();
             player = mPlayer;
-            registerPlayer(mPlayer, logger)
+            if (mediaURL) {
+                const combinePlayerFactory = new CombinePlayerFactory(player, {
+                    url: mediaURL
+                });
+                const combinePlayer = combinePlayerFactory.create();
+                registerPlayer(mPlayer, combinePlayer, logger);
+            } else {
+                registerPlayer(mPlayer, undefined, logger)
+            }
             mPlayer.bindHtmlElement(divRef.current);
             if (!!cursorAdapter) {
                 cursorAdapter?.setPlayer(player);
