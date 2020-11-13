@@ -34,6 +34,10 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
                 }
                 case PublicCombinedStatus.Disabled: {
                     dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": message}));
+                    break;
+                }
+                default: {
+                    break;
                 }
             }
         });
