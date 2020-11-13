@@ -1,27 +1,46 @@
 import dsBridge from "dsbridge";
-import {Player, ObserverMode} from "white-web-sdk";
-import { registerDisplayer } from "../bridge/Displayer";
-import {CombinePlayer} from "@netless/combine-player";
-import { CombinePlayerStatus } from '@netless/combine-player/dist/StatusContant';
+import { ObserverMode, Player, PlayerPhase } from "white-web-sdk";
+import { registerDisplayer } from "./Displayer";
+import { CombinePlayer, PublicCombinedStatus } from "@netless/combine-player";
 
-export function registerPlayer(player: Player, combinePlayer: CombinePlayer | undefined, logger: (funName: string, ...param: any[]) => void) {
+export function registerPlayer(player: Player, combinePlayer: CombinePlayer | undefined, lastSchedule: { time: number }, logger: (funName: string, ...param: any[]) => void): void {
     window.player = player;
     window.combinePlayer = combinePlayer;
-    //FIXME:CombinePlayer 目前没有获取播放速率的接口
-    let playbackRate = 1;
     registerDisplayer(player, logger);
     if (combinePlayer) {
         combinePlayer.setOnStatusChange((status, message) => {
+            lastSchedule.time = 0;
+            logger("onPhaseChanged:", status);
+
             switch (status) {
-                case CombinePlayerStatus.Pause:
-                case CombinePlayerStatus.PauseBuffering:
-                case CombinePlayerStatus.Disabled:
-                case CombinePlayerStatus.Ended:
-                case CombinePlayerStatus.Playing:
-                case CombinePlayerStatus.PlayingBuffering:
-                case CombinePlayerStatus.PlayingSeeking:
+                case PublicCombinedStatus.Pause: {
+                    dsBridge.call("player.onPhaseChanged", PlayerPhase.Pause);
+                    break;
+                }
+                case PublicCombinedStatus.PauseBuffering:
+                case PublicCombinedStatus.PauseSeeking:
+                case PublicCombinedStatus.PlayingBuffering:
+                case PublicCombinedStatus.PlayingSeeking: {
+                    dsBridge.call("player.onPhaseChanged", PlayerPhase.Buffering);
+                    break;
+                }
+                case PublicCombinedStatus.Ended: {
+                    dsBridge.call("player.onPhaseChanged", PlayerPhase.Ended);
+                    break;
+                }
+                case PublicCombinedStatus.Playing: {
+                    dsBridge.call("player.onPhaseChanged", PlayerPhase.Playing);
+                    break;
+                }
+                case PublicCombinedStatus.Disabled: {
+                    dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": message}));
+                    break;
+                }
+                default: {
+                    break;
+                }
             }
-        })
+        });
     }
 
     dsBridge.registerAsyn("player", {
@@ -64,8 +83,7 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
         setPlaybackSpeed: (rate: number) => {
             logger("playbackSpeed", rate);
             if (combinePlayer) {
-                playbackRate = rate;
-                combinePlayer.playbackSpeed(rate);
+                combinePlayer.playbackRate = rate;
             } else {
                 player.playbackSpeed = rate;
             }
@@ -94,7 +112,7 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
         },
         playbackSpeed: () => {
             if (combinePlayer) {
-                return playbackRate;
+                return combinePlayer.playbackRate;
             }
             logger("playbackSpeed", player.playbackSpeed);
             return player.playbackSpeed;
