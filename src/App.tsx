@@ -2,7 +2,7 @@ import "@netless/canvas-polyfill";
 import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
-import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType} from "white-web-sdk";
+import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType, PlayerPhase} from "white-web-sdk";
 import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils/ParamTypes";
 import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
@@ -16,7 +16,9 @@ import "./App.css";
 import { registerDisplayer } from 'bridge/Displayer';
 
 let showLog = false;
-let lastScheduleTime = 0;
+const lastSchedule = {
+    time: 0,
+};
 let nativeConfig: NativeSDKConfig | undefined = undefined;
 let sdk: WhiteWebSdk | undefined = undefined;
 let cursorAdapter: CursorTool | undefined = undefined;
@@ -69,12 +71,12 @@ export default function App() {
     window.testReplay = testReplay;
 
     function limitScheduleCallback(fn: any, timestamp: number, step: number) {
-        if (timestamp >= lastScheduleTime) {
+        if (timestamp >= lastSchedule.time) {
             fn();
-            lastScheduleTime = Math.ceil(timestamp / step) * step;
+            lastSchedule.time = Math.ceil(timestamp / step) * step;
         } else if (player && timestamp + step > player.timeDuration) {
             fn();
-            lastScheduleTime = timestamp;
+            lastSchedule.time = timestamp;
         }
     }
 
@@ -191,7 +193,7 @@ export default function App() {
             disableAutoResize: true,
             cameraBound: convertBound(cameraBound),
         }, {
-            onPhaseChanged: onPlayerPhaseChanged,
+            onPhaseChanged: onPlayerPhaseChanged(!!mediaURL),
             onLoadFirstFrame,
             onPlayerStateChanged,
             onStoppedWithError,
@@ -209,9 +211,9 @@ export default function App() {
                     url: mediaURL
                 });
                 const combinePlayer = combinePlayerFactory.create();
-                registerPlayer(mPlayer, combinePlayer, logger);
+                registerPlayer(mPlayer, combinePlayer, lastSchedule, logger);
             } else {
-                registerPlayer(mPlayer, undefined, logger)
+                registerPlayer(mPlayer, undefined, lastSchedule, logger);
             }
             mPlayer.bindHtmlElement(divRef.current);
             if (!!cursorAdapter) {
@@ -271,11 +273,26 @@ export default function App() {
     }
 
     // PlayerCallbacks
-    function onPlayerPhaseChanged(phase) {
-        lastScheduleTime = 0;
-        logger("onPhaseChanged:", phase);
-        dsBridge.call("player.onPhaseChanged", phase);
+    function onPlayerPhaseChanged(hasMediaURL: boolean): (phase: PlayerPhase) => void {
+        return (phase: PlayerPhase): void => {
+            const handle = (phase: PlayerPhase) => {
+                lastSchedule.time = 0;
+                logger("onPhaseChanged:", phase);
+                dsBridge.call("player.onPhaseChanged", phase);
+            };
+
+            // 因 combine-player 没有 WaitingFirstFrame 和 Stopped 两个状态，所以这里需要让其通过
+            if (hasMediaURL) {
+                if (phase === PlayerPhase.WaitingFirstFrame || phase === PlayerPhase.Stopped) {
+                    handle(phase);
+                }
+            } else {
+                // 没有 mediaURL 是不会用到 combine-player 的，所以这里正常的让其调用
+                handle(phase);
+            }
+        };
     }
+
 
     function onLoadFirstFrame() {
         logger("onLoadFirstFrame");
