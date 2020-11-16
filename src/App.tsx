@@ -281,13 +281,13 @@ export default function App() {
                 dsBridge.call("player.onPhaseChanged", phase);
             };
 
-            // 因 combine-player 没有 WaitingFirstFrame 和 Stopped 两个状态，所以这里需要让其通过
+            // combine-player 没有 WaitingFirstFrame 和 Stopped 两个状态，这里根据原始 player 进行触发。
+            // 其他状态，均由 combine-player 将内部混合的状态，进行映射触发
             if (hasMediaURL) {
                 if (phase === PlayerPhase.WaitingFirstFrame || phase === PlayerPhase.Stopped) {
                     handle(phase);
                 }
             } else {
-                // 没有 mediaURL 是不会用到 combine-player 的，所以这里正常的让其调用
                 handle(phase);
             }
         };
