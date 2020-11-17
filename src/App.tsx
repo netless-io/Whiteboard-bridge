@@ -207,8 +207,17 @@ export default function App() {
             removeBind();
             player = mPlayer;
             if (mediaURL) {
+                // FIXME: 多次初始化，会造成一些问题
+                const videoDom = document.createElement("video");
+                videoDom.setAttribute("x5-video-player-type", "h5-page");
+                videoDom.setAttribute("playsInline", "");
+                videoDom.setAttribute("style", "display:none;");
+                videoDom.setAttribute("class", "video-js");
+                document.body.appendChild(videoDom);
+
                 const combinePlayerFactory = new CombinePlayerFactory(player, {
-                    url: mediaURL
+                    url: mediaURL,
+                    videoDOM: videoDom,
                 });
                 const combinePlayer = combinePlayerFactory.create();
                 registerPlayer(mPlayer, combinePlayer, lastSchedule, logger);
