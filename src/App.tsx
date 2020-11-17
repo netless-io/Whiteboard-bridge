@@ -13,7 +13,6 @@ import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
 import {CursorTool} from "@netless/cursor-tool";
 import CombinePlayerFactory from "@netless/combine-player";
 import "./App.css";
-import { registerDisplayer } from 'bridge/Displayer';
 
 let showLog = false;
 const lastSchedule = {
