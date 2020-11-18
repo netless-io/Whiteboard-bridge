@@ -10,7 +10,6 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
     if (combinePlayer) {
         combinePlayer.setOnStatusChange((status, message) => {
             lastSchedule.time = 0;
-            logger("onPhaseChanged:", status);
 
             switch (status) {
                 case PublicCombinedStatus.Pause: {
