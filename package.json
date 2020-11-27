@@ -16,11 +16,11 @@
     "check": "tsc"
   },
   "resolutions": {
-    "**/white-web-sdk": "2.11.3"
+    "**/white-web-sdk": "2.11.5"
   },
   "dependencies": {
     "@netless/canvas-polyfill": "^0.0.3",
-    "@netless/combine-player": "^1.0.2",
+    "@netless/combine-player": "1.1.1",
     "@netless/cursor-tool": "^0.0.5",
     "@netless/iframe-bridge": "^0.0.1",
     "@netless/white-audio-plugin": "^1.2.4",
@@ -34,7 +34,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.11.3"
+    "white-web-sdk": "2.11.5"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
