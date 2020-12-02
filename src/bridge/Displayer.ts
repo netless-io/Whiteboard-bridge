@@ -15,7 +15,7 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
         logger("setCameraBound bound", bound);
         displayer.setCameraBound(bound!);
     }
-    
+
     const pageCover = (scenePath: string, responseCallback: any) => {
         screenshot(scenePath, displayer.fillSceneSnapshot.bind(displayer), responseCallback);
     }

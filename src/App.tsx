@@ -27,6 +27,9 @@ let testRoomUUID = "";
 let testRoomToken = "";
 let rtcClient = new Rtc();
 
+const textareaCSSId = "whiteboard-native-css"
+const nativeFontFaceCSS = "whiteboard-native-font-face";
+
 export default function App() {
     // state hook
     let room: Room | undefined = undefined;
@@ -248,6 +251,67 @@ export default function App() {
         })
     }
 
+    // sdk api
+    const asyncInsertFontFaces = (fontFaces: any[], responseCallback: any) => {
+        logger("aysncInsertFontFaces", fontFaces);
+        for (const f of fontFaces) {
+            const fontWeight = f["font-weigth"];
+            const fontStyle = f["font-style"];
+            const unicodeRange = f["unicode-range"];
+            const description = JSON.parse(JSON.stringify({weight: fontWeight, style: fontStyle, unicodeRange}));
+            const font = new FontFace(f["font-family"], f.src, description);
+            font.load().then(fontFaces => {
+                logger("aysncInsertFontFaces load font success", JSON.stringify(f));
+                document.fonts.add(font);
+                responseCallback({success: true, fontFace: f});
+            }).catch(e => {
+                logger("aysncInsertFontFaces load font failed", JSON.stringify(f));
+                responseCallback({success: false, fontFace: f, error: e});
+            })
+        }
+    }
+
+    const updateNativeFontFaceCSS = (fontFaces: any[]) => {
+        logger("insertFontFaces", fontFaces);
+        let sheet = document.getElementById(nativeFontFaceCSS);
+        if (!sheet) {
+            sheet = document.createElement("style");
+            sheet.id = nativeFontFaceCSS;
+            document.body.appendChild(sheet);
+        }
+        const fontCss = fontFaces.map(v => {
+            const css = Object.keys(v).reduce((p, c) => {
+                const value: string = v[c];
+                // 部分字段有空格，需要使用""包裹，但有"会导致 src 字段等出现问题，不能无脑包裹
+                if (value.includes(" ")) {
+                    return `${p}\n${c}: "${v[c]}";`;
+                } else {
+                    return `${p}\n${c}: ${v[c]};`;
+                }
+            }, "");
+            return `@font-face {
+                ${css}
+            }`;
+        })
+        sheet.innerHTML = fontCss.join("\n");
+    }
+
+    const updateNativeTextareaFont = (fonts: string[]) => {
+        logger("updateTextFont", fonts);
+        let sheet = document.getElementById(textareaCSSId);
+        if (!sheet) {
+            sheet = document.createElement("style");
+            sheet.id = textareaCSSId;
+            document.body.appendChild(sheet);
+        }
+        
+        let fontNames = fonts.map(f => `"${f}"`).join(",");
+
+        sheet!.innerHTML = `.netless-whiteboard textarea {
+            font-family: ${fontNames}; 
+        }`;
+    }
+
     // RoomCallbacks
     function roomPhaseChange(phase, timeout) {
         dsBridge.call("room.firePhaseChanged", phase);
@@ -300,7 +364,6 @@ export default function App() {
             }
         };
     }
-
 
     function onLoadFirstFrame() {
         logger("onLoadFirstFrame");
@@ -371,6 +434,9 @@ export default function App() {
         joinRoom,
         replayRoom,
         isPlayable,
+        asyncInsertFontFaces,
+        updateNativeFontFaceCSS,
+        updateNativeTextareaFont,
     });
 
     const divRef = useRef(null);
