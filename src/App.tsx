@@ -255,7 +255,7 @@ export default function App() {
     const asyncInsertFontFaces = (fontFaces: any[], responseCallback: any) => {
         logger("aysncInsertFontFaces", fontFaces);
         for (const f of fontFaces) {
-            const fontWeight = f["font-weigth"];
+            const fontWeight = f["font-weight"];
             const fontStyle = f["font-style"];
             const unicodeRange = f["unicode-range"];
             const description = JSON.parse(JSON.stringify({weight: fontWeight, style: fontStyle, unicodeRange}));
