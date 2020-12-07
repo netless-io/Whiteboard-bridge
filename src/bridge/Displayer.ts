@@ -51,6 +51,12 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
     }
 
     dsBridge.register("displayer", {
+        // 尝试让 native 端直接传入 json 格式
+        postMessage: (payload: any) => {
+            const message = {name: "parentWindow", payload: payload};
+            logger("postmessage", message);
+            window.postMessage(message, "*");
+        },
         setDisableCameraTransform: (disable: boolean) => {
             displayer.disableCameraTransform = disable;
         },

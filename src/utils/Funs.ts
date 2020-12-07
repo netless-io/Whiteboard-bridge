@@ -21,6 +21,10 @@ export function postCustomMessage(e: any) {
         dsBridge.call("sdk.postMessage", JSON.stringify(data));
     }
 
+    if (data.name === "iframe") {
+        dsBridge.call("sdk.postMessage", JSON.stringify(data));
+    }
+
     if (data.shapeId && data.mediaType && data.action) {
         dsBridge.call("sdk.postMessage", JSON.stringify(data));
     }
