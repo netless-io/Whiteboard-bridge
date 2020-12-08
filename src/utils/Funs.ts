@@ -17,6 +17,7 @@ export function globalErrorEvent(e: ErrorEvent) {
 
 export function postCustomMessage(e: any) {
     const data: any = e.data;
+    // 目前在 Android 端，默认所有的发送事件是 JSON 格式的。目前的确有这个保证，以后新增通道需要注意。
     if (data.name === "pptImageLoadError") {
         dsBridge.call("sdk.postMessage", JSON.stringify(data));
     }
