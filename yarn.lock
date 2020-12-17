@@ -895,9 +895,9 @@
   integrity sha1-fKR1Actlaz5iOt43Rivy04RQ9vI=
 
 "@netless/iframe-bridge@^1.0.3":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@netless/iframe-bridge/-/iframe-bridge-1.0.3.tgz#8d68312ad9d2e61c8987f8f3e83b649fc2b2dbf6"
-  integrity sha512-Ow7Z5Y+dbiH0NwiSg6QUpxTIg3ZJ+5yEvF9Ieb0LySbGmbr16ml7Gz5gXRMBjOI2qadmgEQsD5IP6Wz6S88uDQ==
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/@netless/iframe-bridge/-/iframe-bridge-1.0.4.tgz#5f82e5f3b8372bed93d72732fc36b86b4ac8145b"
+  integrity sha512-GRIKZS2J/CCKAgysbzXzrvs6l4cPspCYgmwN/0NLgY+0tsudWcQkk6kf0zxUPmqoUXOjtv0bM2Bxht6rwAUtmw==
   dependencies:
     eventemitter2 "^6.4.3"
     react "^16.13.1"
