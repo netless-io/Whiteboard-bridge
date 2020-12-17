@@ -894,10 +894,10 @@
   resolved "https://registry.npm.taobao.org/@netless/cursor-tool/download/@netless/cursor-tool-0.0.5.tgz#7ca47501cb656b3e623ade37462bf2d38450f6f2"
   integrity sha1-fKR1Actlaz5iOt43Rivy04RQ9vI=
 
-"@netless/iframe-bridge@^1.0.3":
-  version "1.0.4"
-  resolved "https://registry.yarnpkg.com/@netless/iframe-bridge/-/iframe-bridge-1.0.4.tgz#5f82e5f3b8372bed93d72732fc36b86b4ac8145b"
-  integrity sha512-GRIKZS2J/CCKAgysbzXzrvs6l4cPspCYgmwN/0NLgY+0tsudWcQkk6kf0zxUPmqoUXOjtv0bM2Bxht6rwAUtmw==
+"@netless/iframe-bridge@^1.0.5":
+  version "1.0.5"
+  resolved "https://registry.yarnpkg.com/@netless/iframe-bridge/-/iframe-bridge-1.0.5.tgz#2178f6f9af10f5c002cc7bd91a6e19abeca5a8e9"
+  integrity sha512-vrEOQno9LhIKhja/k++jPhNhs5hghkESQnlUM93WBAmdAauGGJcSo+XzS3LAFpuxK2GgiLteU4zpYsmtzaL/AQ==
   dependencies:
     eventemitter2 "^6.4.3"
     react "^16.13.1"
