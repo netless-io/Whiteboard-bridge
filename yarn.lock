@@ -891,8 +891,8 @@
 
 "@netless/cursor-tool@^0.0.5":
   version "0.0.5"
-  resolved "https://registry.npm.taobao.org/@netless/cursor-tool/download/@netless/cursor-tool-0.0.5.tgz#7ca47501cb656b3e623ade37462bf2d38450f6f2"
-  integrity sha1-fKR1Actlaz5iOt43Rivy04RQ9vI=
+  resolved "https://registry.yarnpkg.com/@netless/cursor-tool/-/cursor-tool-0.0.5.tgz#7ca47501cb656b3e623ade37462bf2d38450f6f2"
+  integrity sha512-Nmf9ksGzFbrkuG9dlod8V7ODbQgfM8LYrkT7azM3Jiid/X/GuWQSBO/tI6b44hJXTFH1tQCJ487jcYC1myvCaQ==
 
 "@netless/iframe-bridge@^1.0.6":
   version "1.0.6"
@@ -903,14 +903,14 @@
     react "^16.13.1"
 
 "@netless/white-audio-plugin@^1.2.4":
-  version "1.2.16"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.16.tgz#ee8eea3b3c370d7648579129b8e280a48825111c"
-  integrity sha512-Gst6R9kplf+t/ZrGMX7JFHOpc/M+tobKhU7TtJNIIiubYAKxILeEvFNRkbULv5+QX8BJ3qF85MJxAKatWHxztA==
+  version "1.2.17"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.17.tgz#1e8c3683f8843023028a2f2e5c1285460c973dc8"
+  integrity sha512-NEe6dUi9CUs7RIjRue/WwcJmNpV1ppFABGp/FogpCNT9fBGLNs6BI405LVzKFNEOz6SLaziGJQgiM6AvVIUr5w==
 
 "@netless/white-video-plugin@^1.2.4":
-  version "1.2.15"
-  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.15.tgz#99bbfeb058e898faec636f477a0c609f789746cb"
-  integrity sha512-nuuuRfqP+u2zhQYzxUXBtZTf0ywyQ3GrUtkf2Eas27A/A8wcXoodnwnRE+KddeMGsMQt6T3uYDhqT/K9Wb2XDA==
+  version "1.2.16"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.16.tgz#98764e20e070d43fc88d4b0ee9785f9f593e7f0f"
+  integrity sha512-oYPnht/ISE2s2injRBmm6O3G1qUyg/G/H+1hDjwZL/n3adPg50uBw70/9ZXodwQn9naxn3oPERu4eFIHXrnFrA==
 
 "@types/anymatch@*":
   version "1.3.1"
