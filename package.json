@@ -16,7 +16,6 @@
     "check": "tsc"
   },
   "dependencies": {
-    "@netless/canvas-polyfill": "^0.0.3",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.0.5",
     "@netless/iframe-bridge": "^1.0.6",
@@ -32,7 +31,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.11.11"
+    "white-web-sdk": "2.11.12"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
