@@ -18,7 +18,7 @@
   "dependencies": {
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.0.5",
-    "@netless/iframe-bridge": "^1.0.6",
+    "@netless/iframe-bridge": "1.1.1",
     "@netless/white-audio-plugin": "^1.2.4",
     "@netless/white-video-plugin": "^1.2.4",
     "@types/css-font-loading-module": "^0.0.4",
