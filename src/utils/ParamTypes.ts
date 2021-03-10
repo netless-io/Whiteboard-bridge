@@ -19,6 +19,8 @@ declare global {
 }
 
 export type NativeSDKConfig = {
+    /** enableImgErrorCallback */
+    enableImgErrorCallback?: boolean;
     /** 开启图片拦截功能 */
     enableInterrupterAPI?: boolean;
     /** 是否开启 debug 模式，打印命令输出 */

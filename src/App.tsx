@@ -13,6 +13,7 @@ import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
 import {CursorTool} from "@netless/cursor-tool";
 import CombinePlayerFactory from "@netless/combine-player";
 import "./App.css";
+import { hookCreateElement } from './utils/ImgError';
 
 let showLog = false;
 const lastSchedule = {
@@ -92,7 +93,7 @@ export default function App() {
             return url;
         } : undefined;
 
-        const {log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableIFramePlugin, ...restConfig} = config;
+        const {log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, ...restConfig} = config;
 
         showLog = !!log;
         nativeConfig = config;
@@ -101,6 +102,10 @@ export default function App() {
 
         if (__platform) {
             window.__platform = __platform;
+        }
+
+        if (enableImgErrorCallback) {
+            hookCreateElement();
         }
         
         cursorAdapter = !!userCursor ? new CursorTool() : undefined;

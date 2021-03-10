@@ -17,7 +17,7 @@ export function globalErrorEvent(e: ErrorEvent) {
 
 export function postCustomMessage(e: any) {
     const data: any = e.data;
-    // 目前在 Android 端，默认所有的发送事件是 JSON 格式的。目前的确有这个保证，以后新增通道需要注意。
+    // 目前在 Android 端，默认所有的发送事件是 JSON 格式的，这里的字符串都需要能序列换成 JSONObject
     if (data.name === "pptImageLoadError") {
         dsBridge.call("sdk.postMessage", JSON.stringify(data));
     }
@@ -27,6 +27,11 @@ export function postCustomMessage(e: any) {
     }
 
     if (data.shapeId && data.mediaType && data.action) {
+        dsBridge.call("sdk.postMessage", JSON.stringify(data));
+    }
+
+    // 自定义的口子，目前只有监听 image 的用了
+    if (!!data.customMessage) {
         dsBridge.call("sdk.postMessage", JSON.stringify(data));
     }
 }
