@@ -5,7 +5,7 @@ import html2canvas from "html2canvas";
 import {isRoom} from "../utils/Funs";
 import {NativeCameraBound} from "../utils/ParamTypes";
 import {Event as AkkoEvent } from "white-web-sdk";
-
+import {postIframeMessage} from "../utils/iFrame";
 
 export function registerDisplayer(displayer: Displayer, logger: (funName: string, ...param: any[]) => void) {
 
@@ -51,19 +51,9 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
     }
 
     dsBridge.register("displayer", {
-        // 尝试让 native 端直接传入 json 格式
+        // native 端直接传入 json 格式
         postMessage: (payload: any) => {
-            const message = {name: "parentWindow", payload: payload};
-            const iframes = document.getElementsByTagName("iframe");
-            if (iframes.length > 0 && iframes[0].contentWindow) {
-                const iframe = iframes[0];
-                logger("postmessage", message);
-                iframe.contentWindow!.postMessage(message, "*");
-            } else if (iframes.length == 0) {
-                logger("postmessage", "no frames exist");
-            } else {
-                logger("postmessage", "no conentWindow");
-            }
+            postIframeMessage(payload, logger);
         },
         setDisableCameraTransform: (disable: boolean) => {
             displayer.disableCameraTransform = disable;

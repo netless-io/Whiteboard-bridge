@@ -14,6 +14,7 @@ import {CursorTool} from "@netless/cursor-tool";
 import CombinePlayerFactory from "@netless/combine-player";
 import "./App.css";
 import { hookCreateElement } from './utils/ImgError';
+import { postIframeMessage } from './utils/iFrame';
 
 let showLog = false;
 const lastSchedule = {
@@ -356,6 +357,9 @@ export default function App() {
                 lastSchedule.time = 0;
                 logger("onPhaseChanged:", phase);
                 dsBridge.call("player.onPhaseChanged", phase);
+                if (nativeConfig?.enableIFramePlugin) {
+                    postIframeMessage({eventName: "onPhaseChanged", params: [phase]}, logger);
+                }
             };
 
             // combine-player 没有 WaitingFirstFrame 和 Stopped 两个状态，这里根据原始 player 进行触发。
@@ -377,18 +381,30 @@ export default function App() {
         // 2. Android 目前 playState diff 的正确性。
         dsBridge.call("player.onPlayerStateChanged", JSON.stringify(player!.state));
         dsBridge.call("player.onLoadFirstFrame");
+        if (nativeConfig?.enableIFramePlugin) {
+            postIframeMessage({eventName: "onLoadFirstFrame", params: []}, logger);
+        }
     }
 
     function onPlayerStateChanged(modifyState) {
         dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
+        if (nativeConfig?.enableIFramePlugin) {
+            postIframeMessage({eventName: "onPlayerStateChanged", params: [modifyState]}, logger);
+        }
     }
 
     function onStoppedWithError(error) {
         dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
+        if (nativeConfig?.enableIFramePlugin) {
+            postIframeMessage({eventName: "onStoppedWithError", params: [error]}, logger);
+        }
     }
 
     function onProgressTimeChanged(scheduleTime, step) {
         limitScheduleCallback(() => {dsBridge.call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
+        if (nativeConfig?.enableIFramePlugin) {
+            postIframeMessage({eventName: "onProgressTimeChanged", params: [scheduleTime]}, logger);
+        }
     }
 
     // DisplayerCallbacks
