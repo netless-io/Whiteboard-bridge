@@ -19,6 +19,6 @@ export function hookCreateElement() {
 
 function imageError(this: HTMLElement, error: ErrorEvent) {
     const img: HTMLImageElement = this as HTMLImageElement;
-    const data = {error, message: error.message, src: img.currentSrc, customMessage: true, name: "imageLoadError"};
-    postCustomMessage(data);
+    const payload = {error, message: error.message, src: img.currentSrc, customMessage: true, name: "imageLoadError"};
+    postCustomMessage({data: payload});
 }
