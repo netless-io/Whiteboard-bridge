@@ -51,9 +51,19 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
     }
 
     dsBridge.register("displayer", {
-        // native 端直接传入 json 格式
+        // 尝试让 native 端直接传入 json 格式
         postMessage: (payload: any) => {
-            postIframeMessage(payload, logger);
+            const message = {name: "parentWindow", payload: payload};
+            const iframes = document.getElementsByTagName("iframe");
+            if (iframes.length > 0 && iframes[0].contentWindow) {
+                const iframe = iframes[0];
+                logger("postmessage", message);
+                iframe.contentWindow!.postMessage(message, "*");
+            } else if (iframes.length == 0) {
+                logger("postmessage", "no frames exist");
+            } else {
+                logger("postmessage", "no conentWindow");
+            }
         },
         setDisableCameraTransform: (disable: boolean) => {
             displayer.disableCameraTransform = disable;
