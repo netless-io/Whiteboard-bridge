@@ -409,10 +409,12 @@ export default function App() {
 
     // DisplayerCallbacks
     function onCatchErrorWhenAppendFrame(userId: number, error: Error) {
+        logger("onCatchErrorWhenAppendFrame", [userId, error.message]);
+        // TODO: 在初始化 room 过程中，就回调该方法的话，对于 room 的判断会存在问题
         if (room) {
             dsBridge.call("room.fireCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
         } else {
-            dsBridge.call("player.fireCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
+            // dsBridge.call("player.fireCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
         }
     }
 
