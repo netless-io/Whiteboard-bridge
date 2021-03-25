@@ -5,7 +5,7 @@ import html2canvas from "html2canvas";
 import {isRoom} from "../utils/Funs";
 import {NativeCameraBound} from "../utils/ParamTypes";
 import {Event as AkkoEvent } from "white-web-sdk";
-import {postIframeMessage} from "../utils/iFrame";
+import {IframeBridge} from "@netless/iframe-bridge";
 
 export function registerDisplayer(displayer: Displayer, logger: (funName: string, ...param: any[]) => void) {
 
@@ -14,6 +14,13 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
         const bound = convertBound(nativeBound);
         logger("setCameraBound bound", bound);
         displayer.setCameraBound(bound!);
+    }
+
+    const scaleIframeToFit = () => {
+        const iframeBridge = displayer.getInvisiblePlugin("IframeBridge") as IframeBridge | null;
+        if (iframeBridge) {
+            iframeBridge.scaleIframeToFit();
+        }
     }
 
     const pageCover = (scenePath: string, responseCallback: any) => {
@@ -65,6 +72,7 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
                 logger("postmessage", "no conentWindow");
             }
         },
+        scaleIframeToFit: scaleIframeToFit,
         setDisableCameraTransform: (disable: boolean) => {
             displayer.disableCameraTransform = disable;
         },
