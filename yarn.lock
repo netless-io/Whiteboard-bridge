@@ -889,10 +889,10 @@
   resolved "https://registry.yarnpkg.com/@netless/cursor-tool/-/cursor-tool-0.0.7.tgz#bab2ef0e68130ddd76008fc66fdb1d119c67707e"
   integrity sha512-GhzOcIIZvsHsjHNm35otbJC1kOsXzpTOKbN172wctI8nE+3W50M4lXsTAeHEIg+Z8fPGKUgLSISGACt7c2/e/Q==
 
-"@netless/iframe-bridge@2.0.5":
-  version "2.0.5"
-  resolved "https://registry.yarnpkg.com/@netless/iframe-bridge/-/iframe-bridge-2.0.5.tgz#f74c6e6c084db41cedbcd5033f3c68e7c710fa71"
-  integrity sha512-JgdplYOxnO+RCYjVL8mYTSNTC+kTp6NCbe+kN5QFVHpGvbWPrwCwpXusnvMoMYEbHNl+5SqjD9nwxCbaUIoXJg==
+"@netless/iframe-bridge@2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@netless/iframe-bridge/-/iframe-bridge-2.0.7.tgz#74dc3825c9d634b34f63857b3534f5cd4dac9026"
+  integrity sha512-u4HYhQayKNPnmY3+yidJJkoS3u6x0P3pI1yASWECapng9Ix+obQo80XmN0oUxcirvkgoFq30Dmz001AZAR7RFw==
   dependencies:
     eventemitter2 "^6.4.3"
     react "^16.13.1"
