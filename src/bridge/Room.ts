@@ -146,11 +146,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             return responseCallback(JSON.stringify(room.state.sceneState.scenes));
         },
         getZoomScale: (responseCallback: any) => {
-            logger("getZoomScale", room.state.zoomScale);
+            logger("getZoomScale", room.state.cameraState.scale);
             return responseCallback(JSON.stringify(room.state.zoomScale));
         },
         getBroadcastState: (responseCallback: any) => {
-            logger("getBroadcastState", room.state.zoomScale);
+            logger("getBroadcastState", room.state.broadcastState);
             return responseCallback(JSON.stringify(room.state.broadcastState));
         },
         getRoomPhase: (responseCallback: any) => {
