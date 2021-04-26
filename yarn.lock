@@ -897,10 +897,20 @@
     eventemitter2 "^6.4.3"
     react "^16.13.1"
 
+"@netless/white-audio-plugin2@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin2/-/white-audio-plugin2-2.0.4.tgz#661af49e67779dbfee293506f81112d8aa08be1d"
+  integrity sha512-A1ATk3jM8KeXlVpsaG0t/qXVePFdoDRdf6ly3qCSTo6lreiYnhqT1mMPYnedfyqI9gG+rMj4WtQ2lxbCp4I0SQ==
+
 "@netless/white-audio-plugin@^1.2.4":
   version "1.2.23"
   resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.23.tgz#8867c4a90a23f297a8cb01701ce068846b847c67"
   integrity sha512-qwUVDhJheKaQnXiVIJVEuL5lMil82nIdBoh8QW4K/HFxWz8z4ok7xAOQj16nkH+3627Usk0YXKqK5RzErSSvCg==
+
+"@netless/white-video-plugin2@^2.0.4":
+  version "2.0.4"
+  resolved "https://registry.yarnpkg.com/@netless/white-video-plugin2/-/white-video-plugin2-2.0.4.tgz#501a2b58ab745eb70f8a9371d80579e166c8bf5f"
+  integrity sha512-NdN/VTdbYgg4VBDY9R0ofEknUOdARyCj+NXp6ffaR8I4NVUyjf8g0UPIuwwAVmqFoO9XpCRsi3bk7ebasu0l2A==
 
 "@netless/white-video-plugin@^1.2.4":
   version "1.2.21"

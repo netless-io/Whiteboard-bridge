@@ -7,6 +7,8 @@ import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils
 import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
+import {videoPlugin as videoPlugin2} from "@netless/white-video-plugin";
+import {audioPlugin as audioPlugin2} from "@netless/white-audio-plugin";
 import multipleDomain from "./utils/MultipleDomain";
 import {convertBound} from "./utils/BoundConvert";
 import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
@@ -124,7 +126,7 @@ export default function App() {
             (pptParams as any).rtcClient = rtcClient;
         }
 
-        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin});
+        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin, "video2": videoPlugin2, "audio2": audioPlugin2});
         try {
             sdk = new WhiteWebSdk({
                 ...restConfig,
