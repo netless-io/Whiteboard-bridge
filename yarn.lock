@@ -898,9 +898,9 @@
     react "^16.13.1"
 
 "@netless/white-audio-plugin@^1.2.4":
-  version "1.2.21"
-  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.21.tgz#8a9b4e6a8a4f7094ac576e55a3480f67436c09f4"
-  integrity sha512-YDukS7K1L06zvnmsbOFZz6azg8EW+D8qpq521lMRqEEhL+6S8ZgFpAvopHfe13lXFM1laEjCG0JH6tuuG/L53A==
+  version "1.2.23"
+  resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.23.tgz#8867c4a90a23f297a8cb01701ce068846b847c67"
+  integrity sha512-qwUVDhJheKaQnXiVIJVEuL5lMil82nIdBoh8QW4K/HFxWz8z4ok7xAOQj16nkH+3627Usk0YXKqK5RzErSSvCg==
 
 "@netless/white-video-plugin@^1.2.4":
   version "1.2.21"
