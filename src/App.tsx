@@ -7,8 +7,8 @@ import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils
 import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
-import {videoPlugin as videoPlugin2} from "@netless/white-video-plugin";
-import {audioPlugin as audioPlugin2} from "@netless/white-audio-plugin";
+import {videoPlugin2} from "@netless/white-video-plugin2";
+import {audioPlugin2} from "@netless/white-audio-plugin2";
 import multipleDomain from "./utils/MultipleDomain";
 import {convertBound} from "./utils/BoundConvert";
 import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
