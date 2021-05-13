@@ -30,7 +30,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.12.14"
+    "white-web-sdk": "2.12.17"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
