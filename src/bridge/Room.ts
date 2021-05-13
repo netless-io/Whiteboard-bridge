@@ -32,6 +32,9 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         },
     });
     dsBridge.register("room.sync", {
+        syncBlockTimstamp: (timestamp: number) => {
+            room.syncBlockTimstamp(timestamp);
+        },
         /** 客户端本地效果，会导致 web 2.9.2 和 native 2.9.3 以下出现问题。*/
         disableSerialization: (disable: boolean) => {
             room.disableSerialization = disable;
