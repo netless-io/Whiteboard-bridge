@@ -26,7 +26,6 @@
 			"es2017.object",
 			"dom"
 		],
-		"skipLibCheck": true,
         "module": "es6",
 		"removeComments": true,
 		"alwaysStrict": true,
