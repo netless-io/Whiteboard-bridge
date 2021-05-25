@@ -884,10 +884,10 @@
   dependencies:
     video.js "^7.8.4"
 
-"@netless/cursor-tool@^0.0.7":
-  version "0.0.7"
-  resolved "https://registry.yarnpkg.com/@netless/cursor-tool/-/cursor-tool-0.0.7.tgz#bab2ef0e68130ddd76008fc66fdb1d119c67707e"
-  integrity sha512-GhzOcIIZvsHsjHNm35otbJC1kOsXzpTOKbN172wctI8nE+3W50M4lXsTAeHEIg+Z8fPGKUgLSISGACt7c2/e/Q==
+"@netless/cursor-tool@^0.0.9":
+  version "0.0.9"
+  resolved "https://registry.yarnpkg.com/@netless/cursor-tool/-/cursor-tool-0.0.9.tgz#83b15ce6ceff864d8eaedfa80dc2d8c363c2190d"
+  integrity sha512-DCzS5geUv7H4gZ2yibue6a0SBqIvuTZmtqEEbvuYfdeTYM4YawiDpCai1auWOqTC8NNYVzRQXWH758lC3ESqgA==
 
 "@netless/iframe-bridge@2.0.17":
   version "2.0.17"
