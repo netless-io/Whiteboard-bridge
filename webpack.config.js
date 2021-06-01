@@ -19,7 +19,8 @@ config = {
     filename: `[name].[contenthash:8]-${gitHash}.js`
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js']
+    extensions: ['.ts', '.tsx', '.js'],
+    mainFields: ["main", "module"]
   },
   optimization: {
     minimizer: [new TerserJSPlugin({extractComments: false}), new OptimizeCSSAssetsPlugin({})],
