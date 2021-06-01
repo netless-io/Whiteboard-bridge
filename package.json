@@ -11,7 +11,7 @@
     "bundle": "webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "webpack-dev-server --mode development --open --hot --host 0.0.0.0 --useLocalIp",
-    "upgrade-plugin": "yarn upgrade --force @netless/white-audio-plugin @netless/white-video-plugin @netless/cursor-tool @netless/white-audio-plugin2 @netless/white-video-plugin2",
+    "upgrade-plugin": "yarn upgrade --force @netless/white-audio-plugin @netless/white-video-plugin @netless/cursor-tool @netless/white-audio-plugin2 @netless/white-video-plugin2 @netless/video-js-plugin",
     "build": "tsc && webpack --mode production",
     "check": "tsc"
   },
