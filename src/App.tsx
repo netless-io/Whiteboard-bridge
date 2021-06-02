@@ -16,6 +16,7 @@ import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
 import {CursorTool} from "@netless/cursor-tool";
 import CombinePlayerFactory from "@netless/combine-player";
 import "./App.css";
+import 'video.js/dist/video-js.css';
 import { hookCreateElement } from './utils/ImgError';
 import { postIframeMessage } from './utils/iFrame';
 
@@ -128,6 +129,8 @@ export default function App() {
         }
 
         const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin, "video2": videoPlugin2, "audio2": audioPlugin2, "video.js": videoJsPlugin});
+        plugins.setPluginContext("video.js", { identity: "observer" });
+
         try {
             sdk = new WhiteWebSdk({
                 ...restConfig,
