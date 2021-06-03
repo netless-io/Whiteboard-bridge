@@ -898,9 +898,9 @@
     react "^16.13.1"
 
 "@netless/video-js-plugin@^0.1.1":
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/@netless/video-js-plugin/-/video-js-plugin-0.1.3.tgz#597d912352a30a4e8f7d3ffee9cb1da54c20174c"
-  integrity sha512-r5VuJJD1WfyfSQTxy/ADiJc/86LP1bNj+MP8WE905S3omz81IwkfVm1eLYPGkF1Z+gj6Yag550c8QmtbfVxp7Q==
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@netless/video-js-plugin/-/video-js-plugin-0.1.5.tgz#ac82f5f9d990ba9374c5b189b88534232f745abc"
+  integrity sha512-2Nd8AW3sJHI4mqoKlV5K8L6eUlTFGq7SRT+eWMsE5DYuvCn5d85NaU3PRa51rW+OOnwNG8sHTWjynhDfC6CUgg==
 
 "@netless/white-audio-plugin2@^2.0.4":
   version "2.0.5"
