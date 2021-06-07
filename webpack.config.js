@@ -10,13 +10,11 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const OptimizeCSSAssetsPlugin = require('optimize-css-assets-webpack-plugin');
 const child_progress = require("child_process");
 
-const gitHash = child_progress.execSync("git rev-parse --short HEAD").toString().trim();
-
 config = {
   entry: './src/index',
   output: {
     path: path.join(__dirname, '/build'),
-    filename: `[name].[contenthash:8]-${gitHash}.js`
+    filename: `[name].[contenthash:8].js`
   },
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
@@ -52,7 +50,7 @@ config = {
     }),
     new MiniCssExtractPlugin({
       filename: `[name].css`,
-      chunkFilename: `[name].[contenthash:8]-${gitHash}.css`,
+      chunkFilename: `[name].[contenthash:8].css`,
       ignoreOrder: false, // Enable to remove warnings about conflicting order
     }),
   ],
