@@ -176,6 +176,8 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         disableDeviceInputs: (disable: boolean) => {
             logger("disableDeviceInputs", disable);
             room.disableDeviceInputs = disable;
+            room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).computedZindex();
+            room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
         },
         disableOperations: (disableOperations: boolean) => {
             logger("disableOperations", disableOperations);
