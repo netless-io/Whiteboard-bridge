@@ -82,10 +82,12 @@ export class WebSocketBridge implements FakeWebSocket {
         this.registerBridge();
     }
 
+    // TODO:测试该状态
     public get readyState(): ReadyState {
         return this._readyState;
     }
 
+    // TODO:实现该值
     public get bufferedAmount(): number {
         return this._bufferedAmount;
     }
@@ -107,12 +109,15 @@ export class WebSocketBridge implements FakeWebSocket {
         }
     }
 
+    // TODO:确认正常 websocket 主动调用 close，是否也会回调 onClose 事件，然后实现对应逻辑
     public close(code?: number, reason?: string): void {
         console.log("close: ", {code, reason});
         this._readyState = ReadyState.CLOSING;
         dsBridge.call("ws.close", {code, reason});
     }
 
+
+    // FIXME:实现option 以及 once 等操作逻辑
     public addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: FakeWebSocket, evt: WebSocketEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void {
         if (!(type in this.listeners)) {
             this.listeners[type] = [];
