@@ -52,18 +52,24 @@ function hookWebSocket() {
 
 hookWebSocket();
 
-function ab2str(buf: ArrayBuffer) {
-    console.log(new Uint16Array(buf));
-    return String.fromCharCode.apply(null, new Uint16Array(buf) as any);
-}
-
-function str2ab(str: string) {
-    var buf = new ArrayBuffer(str.length * 2); // 2 bytes for each char
-    var bufView = new Uint16Array(buf);
-    for (var i = 0, strLen = str.length; i < strLen; i++) {
-      bufView[i] = str.charCodeAt(i);
+function encodeArrayBufferAsBase64(ab) {
+    var arr = new Uint8Array(ab);
+    var binary = '';
+    var len = arr.length;
+    for (var i = 0; i < len; i++) {
+        binary += String.fromCharCode(arr[i]);
     }
-    return buf;
+    return window.btoa(binary);
+};
+
+function base64ToArrayBuffer(base64) {
+    var binary_string = window.atob(base64);
+    var len = binary_string.length;
+    var bytes = new Uint8Array(len);
+    for (var i = 0; i < len; i++) {
+        bytes[i] = binary_string.charCodeAt(i);
+    }
+    return bytes.buffer;
 }
 
 // 最终应该在底层把 akko-socket 拆解掉比较好
@@ -89,12 +95,12 @@ export class WebSocketBridge implements FakeWebSocket {
     private listeners: {[K in string]: any} = {};
     
     public send(data: string | ArrayBuffer | Buffer): void {
-        console.log("send: ", data);
         // string 可以直接传，其他不可以
         if (data instanceof Buffer) {
             
         } else if (data instanceof ArrayBuffer) {
-            const str = ab2str(data)
+            const str = encodeArrayBufferAsBase64(data)
+            console.log("send data: ", data, " str: ", str);
             dsBridge.call("ws.send", {data: str, type: "arraybuffer"});
         } else {
             dsBridge.call("ws.send", {data, type: "string"});
@@ -150,7 +156,7 @@ export class WebSocketBridge implements FakeWebSocket {
     private _onMessage = (message: {data: string, type: BinaryType}) => {
         console.log("_onMessage: ", message);
         if (message.type === "arraybuffer") {
-            this.dispatchEvent("message", {data: str2ab(message.data)});
+            this.dispatchEvent("message", {data: base64ToArrayBuffer(message.data)});
         } else {
             this.dispatchEvent("message", {data: message.data});
         }
