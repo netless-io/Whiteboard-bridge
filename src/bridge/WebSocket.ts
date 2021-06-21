@@ -26,9 +26,13 @@ export interface FakeWebSocket {
 }
 
 function hookWebSocket() {
-    (WebSocket as any) = function(url) {
-        // TODO: 最好有开关
-        return new WebSocketBridge(url);
+    const originConstructor = WebSocket;
+    (WebSocket as any) = function(url, protocols?) {
+        if (window.fpa) {
+            return new WebSocketBridge(url);
+        } else {
+            return new originConstructor(url, protocols);
+        }
     }
 }
 
