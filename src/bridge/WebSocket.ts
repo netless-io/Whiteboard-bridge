@@ -1,17 +1,5 @@
 import dsBridge from "dsbridge";
 
-// 以下 interface 与 akko 中的 websocket interface 保持一致
-interface MessageEvent {
-    readonly data: string | ArrayBuffer;
-}
-
-interface WebSocketEventMap {
-    close: CloseEvent;
-    error: Event;
-    message: MessageEvent;
-    open: Event;
-}
-
 enum ReadyState {
     CONNECTING = 0,
     OPEN = 1,
@@ -29,13 +17,12 @@ export interface FakeWebSocket {
     send(data: string | ArrayBuffer | Buffer): void;
     close(code?: number, reason?: string): void;
 
-    addEventListener<K extends keyof WebSocketEventMap>(
-        type: K, listener: (this: FakeWebSocket, ev: WebSocketEventMap[K]) => any,
-        options?: boolean | AddEventListenerOptions): void;
+    // 以下接口与 akko 中的 websocket interface 保持一致，没有与 web 端的 websocket 接口保持完全一致
+    // 1. 不支持 EventListenerObject
+    // 2. event 仅实现了上层对应 Event，没有实现 Event 那一些的接口。
+    addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: FakeWebSocket, ev: WebSocketEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void;
 
-    removeEventListener<K extends keyof WebSocketEventMap>(
-        type: K, listener: (this: FakeWebSocket, ev: WebSocketEventMap[K]) => any,
-        options?: boolean | EventListenerOptions): void;
+    removeEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: FakeWebSocket, ev: WebSocketEventMap[K]) => any, options?: boolean | EventListenerOptions): void;
 }
 
 function hookWebSocket() {
@@ -92,12 +79,9 @@ export class WebSocketBridge implements FakeWebSocket {
     private listeners: {[K in string]: any[]} = {};
     private onceListeners: {[K in string]: any[]} = {};
     
-    public send(data: string | ArrayBuffer | Buffer): void {
-        // string 可以直接传，其他不可以
-        if (data instanceof Buffer) {
-            
-        } else if (data instanceof ArrayBuffer) {
-            const str = encodeArrayBufferAsBase64(data)
+    public send(data: string | ArrayBuffer): void {
+        if (data instanceof ArrayBuffer) {
+            const str = encodeArrayBufferAsBase64(data);
             console.log("send data: ", data, " str: ", str);
             dsBridge.call("ws.send", {data: str, type: "arraybuffer"});
         } else {
@@ -105,11 +89,11 @@ export class WebSocketBridge implements FakeWebSocket {
         }
     }
 
-    // TODO:确认正常 websocket 主动调用 close，是否也会回调 onClose 事件，然后实现对应逻辑
     public close(code?: number, reason?: string): void {
         console.log("close: ", {code, reason});
         this._readyState = ReadyState.CLOSING;
         dsBridge.call("ws.close", {code, reason});
+        // 主动调用 websocket 的 close 方法，web 端应该仍然会主动触发 close 事件。这部分操作，在 native 端实现
     }
 
 
@@ -169,10 +153,11 @@ export class WebSocketBridge implements FakeWebSocket {
 
     private _onMessage = (message: {data: string, type: BinaryType}) => {
         console.log("_onMessage: ", message);
+        // 因为是伪造的 Event，所以缺少 Event 中的一系列属性，用 any 替换一下
         if (message.type === "arraybuffer") {
-            this.dispatchEvent("message", {data: base64ToArrayBuffer(message.data)});
+            this.dispatchEvent("message", {data: base64ToArrayBuffer(message.data)} as any);
         } else {
-            this.dispatchEvent("message", {data: message.data});
+            this.dispatchEvent("message", {data: message.data} as any);
         }
     }
 
@@ -194,6 +179,6 @@ export class WebSocketBridge implements FakeWebSocket {
             onMessage: this._onMessage,
             onClose: this._onClose,
             onOpen: this._onOpen,    
-        })
+        });
     }
 }
