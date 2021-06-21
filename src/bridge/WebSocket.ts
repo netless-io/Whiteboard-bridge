@@ -89,7 +89,8 @@ export class WebSocketBridge implements FakeWebSocket {
 
     private _readyState = ReadyState.CONNECTING;
     private _bufferedAmount = 0;
-    private listeners: {[K in string]: any} = {};
+    private listeners: {[K in string]: any[]} = {};
+    private onceListeners: {[K in string]: any[]} = {};
     
     public send(data: string | ArrayBuffer | Buffer): void {
         // string 可以直接传，其他不可以
@@ -112,12 +113,14 @@ export class WebSocketBridge implements FakeWebSocket {
     }
 
 
-    // FIXME:实现option 以及 once 等操作逻辑
     public addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: FakeWebSocket, evt: WebSocketEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void {
-        if (!(type in this.listeners)) {
-            this.listeners[type] = [];
+        if (options && options !== true && options.once) {
+            this.onceListeners[type] = this.onceListeners[type] || [];
+            this.onceListeners[type].push(listener);
+        } else {
+            this.listeners[type] = this.listeners[type] || [];
+            this.listeners[type].push(listener);
         }
-        this.listeners[type].push(listener);
     }
 
     public removeEventListener<K extends keyof WebSocketEventMap>(
@@ -126,11 +129,18 @@ export class WebSocketBridge implements FakeWebSocket {
         if (!(type in this.listeners)) {
             return;
         }
-        var stack = this.listeners[type];
-        for (var i = 0, l = stack.length; i < l; i++) {
+        const stack = this.listeners[type];
+        for (let i = 0, l = stack.length; i < l; i++) {
             if (stack[i] === listener){
                 stack.splice(i, 1);
-                return;
+                break;
+            }
+        }
+        const onceStack = this.onceListeners[type];
+        for (let i = 0, l = onceStack.length; i < l; i++) {
+            if (onceStack[i] === listener){
+                onceStack.splice(i, 1);
+                break;
             }
         }
     }
@@ -139,10 +149,14 @@ export class WebSocketBridge implements FakeWebSocket {
         if (!(type in this.listeners)) {
             return true;
         }
-        var stack = this.listeners[type].slice();
-        
-        for (var i = 0, l = stack.length; i < l; i++) {
+        const stack = this.listeners[type].slice();
+        for (let i = 0, l = stack.length; i < l; i++) {
             stack[i].call(this, event);
+        }
+        const onceStack = this.onceListeners[type].slice();
+        for (let i = 0, l = onceStack.length; i < l; i++) {
+            onceStack[i].call(this, event);
+            onceStack.splice(i, 1);
         }
         return true;
     }
