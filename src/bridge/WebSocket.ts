@@ -7,14 +7,9 @@ interface MessageEvent {
 
 interface WebSocketEventMap {
     close: CloseEvent;
-    error: {};
+    error: Event;
     message: MessageEvent;
-    open: {};
-}
-
-interface AddEventListenerOptions extends EventListenerOptions {
-    once?: boolean;
-    passive?: boolean;
+    open: Event;
 }
 
 enum ReadyState {
@@ -176,7 +171,7 @@ export class WebSocketBridge implements FakeWebSocket {
     private _onOpen = () => {
         console.log("_onOpen");
         this._readyState = ReadyState.OPEN;
-        this.dispatchEvent("open", {});
+        this.dispatchEvent("open", {} as any);
     }
 
     private registerBridge() {
