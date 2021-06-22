@@ -63,9 +63,10 @@ export class WebSocketBridge implements FakeWebSocket {
     // "arraybuffer" | "blob";
     public binaryType = "blob" as const;
 
+    // TODO:考虑一个正在 close，另一个在初始化，此时 native 回调前后交错。
     public constructor(url: string) {
-        dsBridge.call("ws.setup", url);
         this.registerBridge();
+        dsBridge.call("ws.setup", url);
     }
 
     // TODO:测试该状态
