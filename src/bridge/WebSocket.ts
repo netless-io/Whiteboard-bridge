@@ -103,11 +103,11 @@ export class WebSocketBridge implements FakeWebSocket {
 
 
     public addEventListener<K extends keyof WebSocketEventMap>(type: K, listener: (this: FakeWebSocket, evt: WebSocketEventMap[K]) => any, options?: boolean | AddEventListenerOptions): void {
+        this.listeners[type] = this.listeners[type] || [];
+        this.onceListeners[type] = this.onceListeners[type] || [];
         if (options && options !== true && options.once) {
-            this.onceListeners[type] = this.onceListeners[type] || [];
             this.onceListeners[type].push(listener);
         } else {
-            this.listeners[type] = this.listeners[type] || [];
             this.listeners[type].push(listener);
         }
     }
