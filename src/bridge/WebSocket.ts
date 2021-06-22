@@ -7,6 +7,10 @@ enum ReadyState {
     CLOSED = 3,
 }
 
+type BridgeMetaData = {
+    key: number;
+}
+
 export interface FakeWebSocket {
 
     binaryType: BinaryType;
@@ -58,15 +62,19 @@ function base64ToArrayBuffer(base64) {
     return bytes.buffer;
 }
 
+let generateKey = 0;
 // 最终应该在底层把 akko-socket 拆解掉比较好
 export class WebSocketBridge implements FakeWebSocket {
     // "arraybuffer" | "blob";
     public binaryType = "blob" as const;
+    private key: number;
 
     // TODO:考虑一个正在 close，另一个在初始化，此时 native 回调前后交错。
     public constructor(url: string) {
+        this.key = generateKey;
+        generateKey += 1;
         this.registerBridge();
-        dsBridge.call("ws.setup", url);
+        dsBridge.call("ws.setup", {url, key: this.key});
     }
 
     // TODO:测试该状态
@@ -88,16 +96,16 @@ export class WebSocketBridge implements FakeWebSocket {
         if (data instanceof ArrayBuffer) {
             const str = encodeArrayBufferAsBase64(data);
             console.log("send data: ", data, " str: ", str);
-            dsBridge.call("ws.send", {data: str, type: "arraybuffer"});
+            dsBridge.call("ws.send", {data: str, type: "arraybuffer", key: this.key});
         } else {
-            dsBridge.call("ws.send", {data, type: "string"});
+            dsBridge.call("ws.send", {data, type: "string", key: this.key});
         }
     }
 
     public close(code?: number, reason?: string): void {
         console.log("close: ", {code, reason});
         this._readyState = ReadyState.CLOSING;
-        dsBridge.call("ws.close", {code, reason});
+        dsBridge.call("ws.close", {code, reason, key: this.key});
         // 主动调用 websocket 的 close 方法，web 端应该仍然会主动触发 close 事件。这部分操作，在 native 端实现
     }
 
@@ -151,31 +159,41 @@ export class WebSocketBridge implements FakeWebSocket {
     }
 
     private _onError = (e: any) => {
+        if (this.key !== e.key) {
+            return;
+        }
         console.log("_onError: ", e);
         // 是否要处理 readyState
         this.dispatchEvent("error", e);
     }
 
-    private _onMessage = (message: {data: string, type: BinaryType}) => {
+    private _onMessage = (message: {data: string, type: BinaryType} & BridgeMetaData) => {
+        if (this.key !== message.key) {
+            return;
+        }
         console.log("_onMessage: ", message);
         // 因为是伪造的 Event，所以缺少 Event 中的一系列属性，用 any 替换一下
         if (message.type === "arraybuffer") {
-            this.dispatchEvent("message", {data: base64ToArrayBuffer(message.data)} as any);
+            this.dispatchEvent("message", {data: base64ToArrayBuffer(message.data), key: this.key} as any);
         } else {
-            this.dispatchEvent("message", {data: message.data} as any);
+            this.dispatchEvent("message", {data: message.data, key: this.key} as any);
         }
     }
 
-    private _onClose = (event: CloseEvent) => {
-        console.log("_onClose: ", event);
-        this._readyState = ReadyState.CLOSED;
-        this.dispatchEvent("close", event);
+    private _onClose = (event: CloseEvent & BridgeMetaData) => {
+        if (this.key === event.key) {
+            console.log("_onClose: ", event);
+            this._readyState = ReadyState.CLOSED;
+            this.dispatchEvent("close", event);
+        }
     }
 
-    private _onOpen = () => {
-        console.log("_onOpen");
-        this._readyState = ReadyState.OPEN;
-        this.dispatchEvent("open", {} as any);
+    private _onOpen = (data: BridgeMetaData) => {
+        if (this.key === data.key) {
+            console.log("_onOpen");
+            this._readyState = ReadyState.OPEN;
+            this.dispatchEvent("open", {} as any);
+        }
     }
 
     private registerBridge() {
