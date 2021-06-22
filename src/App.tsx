@@ -137,12 +137,15 @@ export default function App() {
             return url;
         } : undefined;
 
-        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
+        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, fpa, ...restConfig } = config;
 
         showLog = !!log;
         nativeConfig = config;
 
         logger("newWhiteSdk", config);
+        if (fpa) {
+            window.fpa = fpa;
+        }
 
         if (__platform) {
             window.__platform = __platform;
