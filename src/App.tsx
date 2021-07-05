@@ -35,6 +35,19 @@ let rtcClient = new Rtc();
 
 const textareaCSSId = "whiteboard-native-css"
 const nativeFontFaceCSS = "whiteboard-native-font-face";
+const whiteboardContainerId = "whiteboard-container";
+
+function setBackgroundColor(r: number, g: number, b: number, a?: number) {
+    const div = document.getElementById(whiteboardContainerId);
+    if (div) {
+        const color = (a === 1 || a === undefined) ? `rgb(${r}, ${g}, ${b})` : `rgb(${r}, ${g}, ${b})`;
+        div.style.background = color;
+    } else {
+        console.log(whiteboardContainerId, "not exist");
+    }
+}
+
+window.setBackgroundColor = setBackgroundColor;
 
 export default function App() {
     // state hook
