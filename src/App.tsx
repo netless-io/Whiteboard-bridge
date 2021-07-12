@@ -194,8 +194,6 @@ export default function App() {
             room = mRoom;
             mRoom.bindHtmlElement(divRef.current);
             registerRoom(mRoom, logger);
-            // FIXME: web sdk bug，修复后必须移除，否则反而不生效
-            (room as any).autoResize = true;
             if (!!cursorAdapter) {
                 cursorAdapter.setRoom(room);
             }
@@ -235,8 +233,6 @@ export default function App() {
         }).then(mPlayer => {
             removeBind();
             player = mPlayer;
-            // FIXME: web sdk bug，修复后必须移除，否则反而不生效
-            (player as any).autoResize = true;
             if (mediaURL) {
                 // FIXME: 多次初始化，会造成一些问题
                 const videoDom = document.createElement("video");
