@@ -142,8 +142,8 @@ export default function App() {
         }
 
         const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin, "video2": videoPlugin2, "audio2": audioPlugin2, "video.js": videoJsPlugin()});
-        plugins.setPluginContext("video.js", {});        
-
+        plugins.setPluginContext("video.js", {enable: false});
+        window.plugins = plugins;
         try {
             sdk = new WhiteWebSdk({
                 ...restConfig,

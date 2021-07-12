@@ -16,6 +16,7 @@ declare global {
       testReplay: () => void;
       html2canvas: any;
       setBackgroundColor: (r: number, g: number, b: number, a?: number | undefined) => void;
+      plugins: any;
     }
 }
 
