@@ -141,8 +141,8 @@ export default function App() {
             (pptParams as any).rtcClient = rtcClient;
         }
 
-        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin, "video2": videoPlugin2, "audio2": audioPlugin2, "video.js": videoJsPlugin});
-        plugins.setPluginContext("video.js", { identity: "observer" });
+        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin, "video2": videoPlugin2, "audio2": audioPlugin2, "video.js": videoJsPlugin()});
+        plugins.setPluginContext("video.js", {});        
 
         try {
             sdk = new WhiteWebSdk({
