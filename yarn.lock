@@ -897,10 +897,10 @@
     eventemitter2 "^6.4.3"
     react "^16.13.1"
 
-"@netless/video-js-plugin@0.3.2":
-  version "0.3.2"
-  resolved "https://registry.yarnpkg.com/@netless/video-js-plugin/-/video-js-plugin-0.3.2.tgz#e88e9bc87e3a45f14c12768239b2a369ade30ef8"
-  integrity sha512-YVa11in8f5M30xxJhU3Fy8QnypyiZDZ4UmKhSyOFliReXE3gzO3vx4hJfuNC72V+cHcRPT3l8zxDvsEWCWKXAw==
+"@netless/video-js-plugin@0.3.3":
+  version "0.3.3"
+  resolved "https://registry.yarnpkg.com/@netless/video-js-plugin/-/video-js-plugin-0.3.3.tgz#f8511b546f944c189e7d5a3136534387753e99a8"
+  integrity sha512-CFvV3wvHTDqzCvyQHcKnbUFW5vyGZ5M0uQlflk43m1qJ//ozlyCL+v0cPbX5/oNGfUq9McB3cqG474hTW2as6g==
 
 "@netless/white-audio-plugin2@^2.0.4":
   version "2.0.5"
