@@ -49,6 +49,22 @@ function setBackgroundColor(r: number, g: number, b: number, a?: number) {
 
 window.setBackgroundColor = setBackgroundColor;
 
+function report(funName: string, ...params: any[]) {
+    console.log(funName, ...params);
+    let message;
+    if (params.length === 1) {
+        // array element
+        message = params[0];
+    } else if (params.every(v => typeof v === "string" || typeof v === "number"|| typeof v === "boolean")) {
+        // string
+        message = params.join(" ");
+    } else {
+        // array
+        message = params;
+    }
+    dsBridge.call("sdk.logger", {funName, message});
+}
+
 export default function App() {
     // state hook
     let room: Room | undefined = undefined;
@@ -57,8 +73,7 @@ export default function App() {
     // private fun
     function logger(funName: string, ...params: any[]) {
         if (showLog) {
-            console.log(JSON.stringify({funName, params: {...params}}));
-            dsBridge.call("sdk.logger", {funName, params: {...params}});
+            report(funName, ...params);
         }
     }
 
@@ -141,7 +156,13 @@ export default function App() {
             (pptParams as any).rtcClient = rtcClient;
         }
 
-        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin, "video2": videoPlugin2, "audio2": audioPlugin2, "video.js": videoJsPlugin()});
+        const videoJsLogger = (message?: any, ...optionalParams: any[]) => {
+            // logger("videoJsPlugin", ...message, ...optionalParams);
+            // always report log
+            report("videoJsPlugin", message, ...optionalParams);
+        }
+
+        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin, "video2": videoPlugin2, "audio2": audioPlugin2, "video.js": videoJsPlugin({log: videoJsLogger})});
         plugins.setPluginContext("video.js", {enable: false, verbose: true});
         window.plugins = plugins;
         try {
