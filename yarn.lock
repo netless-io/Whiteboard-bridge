@@ -872,6 +872,11 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@hyrious/xml-js@1.6.14":
+  version "1.6.14"
+  resolved "https://registry.yarnpkg.com/@hyrious/xml-js/-/xml-js-1.6.14.tgz#82685fb5063f9d3d15b82802acad75bac45cf2c5"
+  integrity sha512-+B2nG+ORK9ympbaw5GKDFJWyHKZVFvNfIWl2nq3wiYnnvEVuMLZQzIzz7hx1nJIi5C9MODr3NVUEenu/O/Sxbg==
+
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@netless/canvas-polyfill/-/canvas-polyfill-0.0.4.tgz#b5f28eefeb9c1e8ff8253fa1b044ccb1dc1b7c9c"
@@ -1502,7 +1507,7 @@ asynckit@^0.4.0:
   resolved "https://registry.yarnpkg.com/asynckit/-/asynckit-0.4.0.tgz#c79ed97f7f34cb8f2ba1bc9790bcc366474b4b79"
   integrity sha1-x57Zf380y48robyXkLzDZkdLS3k=
 
-atob@^2.1.0, atob@^2.1.2:
+atob@^2.1.2:
   version "2.1.2"
   resolved "https://registry.yarnpkg.com/atob/-/atob-2.1.2.tgz#6d9517eb9e030d2436666651e86bd9f6f13533c9"
   integrity sha512-Wm6ukoaOGJi/73p/cl2GvLjTI5JM1k/O14isD73YML8StrH/7/lRFgmg8nICZgD3bZZvjwCGxtMOD3wWNAu8cg==
@@ -2226,6 +2231,11 @@ core-js@3:
   version "3.6.5"
   resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.6.5.tgz#7395dc273af37fb2e50e9bd3d9fe841285231d1a"
   integrity sha512-vZVEEwZoIsI+vPEuoF9Iqf5H7/M3eeQqWlQnYa8FSKKePuYTf5MWnxb5SDAzCa60b3JBRS5g9b+Dq7b1y/RCrA==
+
+core-js@^3.15.2:
+  version "3.16.0"
+  resolved "https://registry.yarnpkg.com/core-js/-/core-js-3.16.0.tgz#1d46fb33720bc1fa7f90d20431f36a5540858986"
+  integrity sha512-5+5VxRFmSf97nM8Jr2wzOwLqRo6zphH2aX+7KsAUONObyzakDNq2G/bgbhinxB4PoV9L3aXQYhiDKyIKWd2c8g==
 
 core-util-is@1.0.2, core-util-is@~1.0.0:
   version "1.0.2"
@@ -6257,7 +6267,7 @@ safe-regex@^1.1.0:
   resolved "https://registry.yarnpkg.com/safer-buffer/-/safer-buffer-2.1.2.tgz#44fa161b0187b9549dd84bb91802f9bd8385cd6a"
   integrity sha512-YZo3K82SD7Riyi0E1EQPojLz7kpepnSQI9IyPbHHg1XXXevb5dJI7tpyN2ADxGcQbHG7vcyRHk0cbwqcQriUtg==
 
-sax@^1.2.4, sax@~1.2.4:
+sax@~1.2.4:
   version "1.2.4"
   resolved "https://registry.yarnpkg.com/sax/-/sax-1.2.4.tgz#2816234e2378bddc4e5354fab5caa895df7100d9"
   integrity sha512-NqVDv9TpANUjFm0N8uM5GxL36UgKi9/atZw+x7YFnQ8ckwFGKrl4xX4yWtrey3UJm5nP1kUbnYgLopqWNSRhWw==
@@ -7448,15 +7458,17 @@ which@^1.2.14, which@^1.2.9, which@^1.3.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.13.12:
-  version "2.13.12"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.13.12.tgz#c247d5896f2f502ef51e72d2d13a8764959a7ee8"
-  integrity sha512-IeZCeldJWftR+81+uc/49pItEHEWm7iLxqTWJfAJZ3FvmMcvDmEFB3+kaZH0I3NLlb7CXFXtfre41LLSFs59yw==
+white-web-sdk@2.13.14:
+  version "2.13.14"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.13.14.tgz#5b4db24eb14bbc8b009d2b7d5ef2efc03d22a481"
+  integrity sha512-BYaUKKEcthBnR0UuULBmD323kBWBJSpg7kwdvy4+q0Zk+DWvgfaB87R8rHdAn3ehUXg1TJZXfsB26V46/z3LcQ==
   dependencies:
+    "@hyrious/xml-js" "1.6.14"
     "@netless/canvas-polyfill" "^0.0.4"
-    atob "^2.1.0"
+    atob "^2.1.2"
     bezier-js "^2.4.4"
     color "^3.1.0"
+    core-js "^3.15.2"
     detect-it "^3.0.5"
     es6-symbol "^3.1.1"
     eventemitter3 "^4.0.7"
@@ -7473,7 +7485,6 @@ white-web-sdk@2.13.12:
     textarea-caret-ts "^4.1.0"
     url-parse "^1.4.0"
     uuid "^7.0.3"
-    xml-js "^1.6.11"
 
 worker-farm@^1.7.0:
   version "1.7.0"
@@ -7502,13 +7513,6 @@ ws@^6.2.1:
   integrity sha512-zmhltoSR8u1cnDsD43TX59mzoMZsLKqUweyYBAIvTngR3shc0W6aOZylZmq/7hqyVxPdi+5Ud2QInblgyE72fw==
   dependencies:
     async-limiter "~1.0.0"
-
-xml-js@^1.6.11:
-  version "1.6.11"
-  resolved "https://registry.yarnpkg.com/xml-js/-/xml-js-1.6.11.tgz#927d2f6947f7f1c19a316dd8eea3614e8b18f8e9"
-  integrity sha512-7rVi2KMfwfWFl+GpPg6m80IVMWXLRjO+PxTq7V2CDhoGak0wzYzFgUY2m4XJ47OGdXd8eLE8EmwfAmdjw7lC1g==
-  dependencies:
-    sax "^1.2.4"
 
 xmldom@^0.1.27:
   version "0.1.31"
