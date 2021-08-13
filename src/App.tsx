@@ -276,7 +276,7 @@ export default function App() {
             if (!!cursorAdapter) {
                 cursorAdapter?.setPlayer(player);
             }
-            const {scheduleTime, timeDuration, framesCount, beginTimestamp} = mPlayer;
+            const {progressTime: scheduleTime, timeDuration, framesCount, beginTimestamp} = mPlayer;
             return responseCallback(JSON.stringify({timeInfo: {scheduleTime, timeDuration, framesCount, beginTimestamp}}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
@@ -299,19 +299,20 @@ export default function App() {
 
     // sdk api
     const asyncInsertFontFaces = (fontFaces: any[], responseCallback: any) => {
-        logger("aysncInsertFontFaces", fontFaces);
+        logger("asyncInsertFontFaces", fontFaces);
         for (const f of fontFaces) {
             const fontWeight = f["font-weight"];
             const fontStyle = f["font-style"];
             const unicodeRange = f["unicode-range"];
             const description = JSON.parse(JSON.stringify({weight: fontWeight, style: fontStyle, unicodeRange}));
             const font = new FontFace(f["font-family"], f.src, description);
+            // FIXME: responseCallback 只能调用一次，第二次再调用，就没有效果了
             font.load().then(fontFaces => {
-                logger("aysncInsertFontFaces load font success", JSON.stringify(f));
+                logger("asyncInsertFontFaces load font success", f);
                 document.fonts.add(font);
                 responseCallback({success: true, fontFace: f});
             }).catch(e => {
-                logger("aysncInsertFontFaces load font failed", JSON.stringify(f));
+                logger("asyncInsertFontFaces load font failed", f);
                 responseCallback({success: false, fontFace: f, error: e});
             })
         }
