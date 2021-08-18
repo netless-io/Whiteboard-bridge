@@ -1036,6 +1036,14 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
+"@netless/app-docs-viewer@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.5.tgz#fc407a841d653f7ba70874f8911edf3e49e28c94"
+  integrity sha512-e3XJV1wM2hppvmUg1ZabS7lMqj1hCXA/2Nk6Mz/P0Qns1o9l2Xlrwtjea3fAIZeMpjo5OMYeVXYUjlweOm+TJw==
+  dependencies:
+    debounce-fn "^5.0.0"
+    vanilla-lazyload "^17.4.0"
+
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
   resolved "https://registry.yarnpkg.com/@netless/canvas-polyfill/-/canvas-polyfill-0.0.4.tgz#b5f28eefeb9c1e8ff8253fa1b044ccb1dc1b7c9c"
@@ -1061,6 +1069,20 @@
     eventemitter2 "^6.4.3"
     react "^16.13.1"
 
+"@netless/synced-store@^0.0.1":
+  version "0.0.1"
+  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-0.0.1.tgz#ae361a1ec2d220f5e2689ca9ae527eb1ccb1f3e2"
+  integrity sha512-aAnJEZI+BSMB3kbFJRCLvJd1qckcH/G1+/ZYbc4W6Hyhtp8VIwAjuJUk6exI8k3PhA1pHUU2V45SXFViAswFOw==
+  dependencies:
+    eventemitter3 "^4.0.7"
+
+"@netless/telebox-insider@^0.1.1":
+  version "0.1.2"
+  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.1.2.tgz#728ba31042a152506a93c327da9e1558096a8c2d"
+  integrity sha512-azGdssuQUPDG9jY+HGdQfP9/2TblJ4J/2vxGO1x95gjcnvwA1ZICWhQiTY25Q/Ky3rGehVdEyf/him2md2owUQ==
+  dependencies:
+    eventemitter3 "^4.0.7"
+
 "@netless/video-js-plugin@0.3.4":
   version "0.3.4"
   resolved "https://registry.yarnpkg.com/@netless/video-js-plugin/-/video-js-plugin-0.3.4.tgz#21466377bd790acc4d8be1fba5e137d019a7e166"
@@ -1085,6 +1107,19 @@
   version "1.2.23"
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
+
+"@netless/window-manager@^0.1.6-canary.1":
+  version "0.1.6-canary.1"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.6-canary.1.tgz#7fc44a4374913f0df4525c0b711531f974914bd6"
+  integrity sha512-hN5QHEnB3aIqKvN1/kVhO1tqfB6Y/MDrxuNJxEJxcG/QppyBWEKGyv7IFRRopYqIxtPxo5kTfYWtIPf3CwSiqg==
+  dependencies:
+    "@netless/app-docs-viewer" "^0.1.5"
+    "@netless/telebox-insider" "^0.1.1"
+    emittery "^0.9.2"
+    localforage "^1.9.0"
+    lodash-es "^4.17.21"
+    react "^17.0.2"
+    react-dom "^17.0.2"
 
 "@netless/xml-js@1.6.15":
   version "1.6.15"
@@ -2657,6 +2692,13 @@ dashdash@^1.12.0:
   dependencies:
     assert-plus "^1.0.0"
 
+debounce-fn@^5.0.0:
+  version "5.0.0"
+  resolved "https://registry.yarnpkg.com/debounce-fn/-/debounce-fn-5.0.0.tgz#1375e6b64a871e6fb6967c6ee05efbac08b65d9e"
+  integrity sha512-y0u25m4GMdDJ1oHX4ziszas15E4ryNoeFkQuZM/Z6yTy8jB8ity/jqSNWnQUi/csBBaQIad6Zd8eI1xKwtbFzw==
+  dependencies:
+    mimic-fn "^3.0.0"
+
 debug@2.6.9, debug@^2.2.0, debug@^2.3.3:
   version "2.6.9"
   resolved "https://registry.yarnpkg.com/debug/-/debug-2.6.9.tgz#5d128515df134ff327e90a4c93f4e077a536341f"
@@ -2962,6 +3004,11 @@ elliptic@^6.0.0, elliptic@^6.5.2:
     inherits "^2.0.4"
     minimalistic-assert "^1.0.1"
     minimalistic-crypto-utils "^1.0.1"
+
+emittery@^0.9.2:
+  version "0.9.2"
+  resolved "https://registry.yarnpkg.com/emittery/-/emittery-0.9.2.tgz#0a57c40773c6da380115c85bd67d381dd9e22f6f"
+  integrity sha512-sweWHu3j4dQm+NjLPu17pv+m5lCeK7g4Ov0NgfbRUEyzLc59DYDeRYXqlxEvuolaToI0VR3ThjFAghzl7Acjfw==
 
 emoji-regex@^7.0.1:
   version "7.0.3"
@@ -3951,6 +3998,11 @@ image-size@~0.5.0:
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.5.5.tgz#09dfd4ab9d20e29eb1c3e80b8990378df9e3cb9c"
   integrity sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w=
 
+immediate@~3.0.5:
+  version "3.0.6"
+  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
+  integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
+
 import-fresh@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/import-fresh/-/import-fresh-2.0.0.tgz#d81355c15612d386c61f9ddd3922d4304822a546"
@@ -4563,6 +4615,13 @@ levenary@^1.1.1:
   dependencies:
     leven "^3.1.0"
 
+lie@3.1.1:
+  version "3.1.1"
+  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
+  integrity sha1-mkNrLMd0bKWd56QfpGmz77dr2H4=
+  dependencies:
+    immediate "~3.0.5"
+
 loader-runner@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.4.0.tgz#ed47066bfe534d7e84c4c7b9998c2a75607d9357"
@@ -4605,6 +4664,13 @@ loader-utils@^2.0.0:
     emojis-list "^3.0.0"
     json5 "^2.1.2"
 
+localforage@^1.9.0:
+  version "1.9.0"
+  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.9.0.tgz#f3e4d32a8300b362b4634cc4e066d9d00d2f09d1"
+  integrity sha512-rR1oyNrKulpe+VM9cYmcFn6tsHuokyVHFaCM3+osEmxaHTbEk8oQu6eGDfS6DQLWi/N67XRmB8ECG37OES368g==
+  dependencies:
+    lie "3.1.1"
+
 locate-path@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/locate-path/-/locate-path-3.0.0.tgz#dbec3b3ab759758071b58fe59fc41871af21400e"
@@ -4619,6 +4685,11 @@ locate-path@^5.0.0:
   integrity sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==
   dependencies:
     p-locate "^4.1.0"
+
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
 
 lodash.memoize@^4.1.2:
   version "4.1.2"
@@ -4838,6 +4909,11 @@ mimic-fn@^2.0.0:
   version "2.1.0"
   resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-2.1.0.tgz#7ed2c2ccccaf84d3ffcb7a69b57711fc2083401b"
   integrity sha512-OqbOk5oEQeAZ8WXWydlu9HJjz9WVdEIvamMCcXmuqUYjTknH/sqsWvhQ3vgwKFRR1HpjvNBKQ37nbJgYzGqGcg==
+
+mimic-fn@^3.0.0:
+  version "3.1.0"
+  resolved "https://registry.yarnpkg.com/mimic-fn/-/mimic-fn-3.1.0.tgz#65755145bbf3e36954b949c16450427451d5ca74"
+  integrity sha512-Ysbi9uYW9hFyfrThdDEQuykN4Ey6BuwPD2kpI5ES/nFTDn/98yxYNLZJcgUAKPT/mcrLLKaGzJR9YVxJrIdASQ==
 
 min-document@^2.19.0:
   version "2.19.0"
@@ -6071,6 +6147,15 @@ react-dom@^16.12.0, react-dom@^16.8.0:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
+react-dom@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react-dom/-/react-dom-17.0.2.tgz#ecffb6845e3ad8dbfcdc498f0d0a939736502c23"
+  integrity sha512-s4h96KtLDUQlsENhMn1ar8t2bEa+q/YAtj8pPPdIjPDGBDIVNsrD9aXNWqspUe6AzKCIG0C1HZZLqLV7qpOBGA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+    scheduler "^0.20.2"
+
 react-is@^16.7.0, react-is@^16.8.1:
   version "16.13.1"
   resolved "https://registry.yarnpkg.com/react-is/-/react-is-16.13.1.tgz#789729a4dc36de2999dc156dd6c1d9c18cea56a4"
@@ -6089,6 +6174,14 @@ react@^16.12.0, react@^16.13.1, react@^16.8.0:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
     prop-types "^15.6.2"
+
+react@^17.0.2:
+  version "17.0.2"
+  resolved "https://registry.yarnpkg.com/react/-/react-17.0.2.tgz#d0b5cc516d29eb3eee383f75b62864cfb6800037"
+  integrity sha512-gnhPt75i/dq/z3/6q/0asP78D0u592D5L1pd7M8P+dck6Fu/jJeL6iVVK23fptSUZj8Vjf++7wXA8UNclGQcbA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
 
 "readable-stream@1 || 2", readable-stream@^2.0.0, readable-stream@^2.0.1, readable-stream@^2.0.2, readable-stream@^2.1.5, readable-stream@^2.2.2, readable-stream@^2.3.3, readable-stream@^2.3.6, readable-stream@~2.3.6:
   version "2.3.7"
@@ -6389,6 +6482,14 @@ scheduler@^0.19.1:
   version "0.19.1"
   resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.19.1.tgz#4f3e2ed2c1a7d65681f4c854fa8c5a1ccb40f196"
   integrity sha512-n/zwRWRYSUj0/3g/otKDRPMh6qv2SYMWNq85IEa8iZyAv8od9zDYpGSnpBEjNgcMNq6Scbu5KfIPxNF72R/2EA==
+  dependencies:
+    loose-envify "^1.1.0"
+    object-assign "^4.1.1"
+
+scheduler@^0.20.2:
+  version "0.20.2"
+  resolved "https://registry.yarnpkg.com/scheduler/-/scheduler-0.20.2.tgz#4baee39436e34aa93b4874bddcbf0fe8b8b50e91"
+  integrity sha512-2eWfGgAqqWFGqtdMmcL5zCMK1U8KlXv8SQFGglL3CEtd0aDVDWgeF/YoCmvln55m5zSk3J/20hTaSBeSObsQDQ==
   dependencies:
     loose-envify "^1.1.0"
     object-assign "^4.1.1"
@@ -7335,6 +7436,11 @@ v8-compile-cache@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.0.3.tgz#00f7494d2ae2b688cfe2899df6ed2c54bef91dbe"
   integrity sha512-CNmdbwQMBjwr9Gsmohvm0pbL954tJrNzf6gWL3K+QMQf00PF7ERGrEiLgjuU3mKreLC2MeGhUsNV9ybTbLgd3w==
+
+vanilla-lazyload@^17.4.0:
+  version "17.4.0"
+  resolved "https://registry.yarnpkg.com/vanilla-lazyload/-/vanilla-lazyload-17.4.0.tgz#09d65a5be46242b82b557b9ccd886613de76f4c2"
+  integrity sha512-4IVX93uLEgQGBdSCaSE1XJgeNNT1+sV8PKiImM21EkDGJBH3tTWL9wYrMA4xT5C2EIEfw8WkinUxUG+uMY2ZyA==
 
 vary@~1.1.2:
   version "1.1.2"

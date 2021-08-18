@@ -1,3 +1,4 @@
+import { BuildinApps } from "@netless/window-manager";
 import dsBridge from "dsbridge";
 import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState } from "white-web-sdk";
 import { registerDisplayer } from "../bridge/Displayer";
@@ -227,6 +228,31 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             logger("setTimeDelay", delay);
             room.timeDelay = delay;
         },
+
+        addApp: async (dir: string, dynamic: boolean) => {
+            logger("addApp", dir);
+            if (window.manager) {
+                await window.manager.addApp({
+                    kind: BuildinApps.DocsViewer,
+                    options: {
+                        scenePath: dir,
+                        title: "appOp"
+                    },
+                    attributes: {
+                        dynamic: dynamic,
+                    }
+                });
+            }
+        },
+        safeSetAttributes: (attributes: any) => {
+            logger("safeSetAttributes", attributes);
+            window.syncedStore?.safeSetAttributes(attributes)
+        },
+
+        safeUpdateAttributes: (keys: string[], attributes: any) => {
+            logger("safeUpdateAttributes", attributes);
+            window.syncedStore?.safeUpdateAttributes(keys, attributes)
+        }
     });
     // FIXME:同步方法尽量还是放在同步方法里。
     // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
