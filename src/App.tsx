@@ -62,7 +62,7 @@ function report(funName: string, ...params: any[]) {
         // array
         message = params;
     }
-    dsBridge.call("sdk.logger", {funName, message});
+    dsBridge.call("sdk.logger", {funName, params: message});
 }
 
 export default function App() {
