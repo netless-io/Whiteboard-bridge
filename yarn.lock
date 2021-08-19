@@ -1036,10 +1036,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@netless/app-docs-viewer@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.8.tgz#252d8d46ab01dcb92dd359349bb7e675be5e0a26"
-  integrity sha512-ckYUA9zhhUQDCVVzxASmrNu2gFzGIUN2tPYCxMCKD9FlpS3QTw4NCGYCTzbV93d9H1jKtHBgZ3XneVOw+oQgUg==
+"@netless/app-docs-viewer@^0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.9.tgz#867c9161f9ba5943df8f6707bc87d42e9ee2347e"
+  integrity sha512-ztXj5IE8WeqeRyp1EY/NaZHatjWdZQsdndOr+LscVJICO8pFNrmdpXipbL+HQqj28r4Lq22SbLta4tXwCJCzWQ==
   dependencies:
     debounce-fn "^5.0.0"
     vanilla-lazyload "^17.4.0"
@@ -1109,12 +1109,12 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@^0.1.9":
-  version "0.1.9"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.9.tgz#33ec6ba64b8f54d51406f425c4c1124fd625b173"
-  integrity sha512-SQluCUirdbsdfmmROKk8gD60cL6bBX5Kbwn1Km8u7MdP2uoLG8yNywomez8h94AjpfJ2xGnrkhgMSpTHqdNpcA==
+"@netless/window-manager@^0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.11.tgz#3c6db52b5c2b31a9dd2c4e547e97b14e7f944f54"
+  integrity sha512-bWS87th4l0CO/MFLUQRbLtcPanx05hynXcoP9UXoiMK1ZxJADp5lRAb9+b71VXGGUmOIfE9gjyiryU4bC3f4Og==
   dependencies:
-    "@netless/app-docs-viewer" "^0.1.8"
+    "@netless/app-docs-viewer" "^0.1.9"
     "@netless/telebox-insider" "^0.1.5"
     emittery "^0.9.2"
     localforage "^1.9.0"
