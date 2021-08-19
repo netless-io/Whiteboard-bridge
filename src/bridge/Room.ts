@@ -1,5 +1,6 @@
+import { BuildinApps } from "@netless/window-manager";
 import dsBridge from "dsbridge";
-import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState } from "white-web-sdk";
+import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene } from "white-web-sdk";
 import { registerDisplayer } from "../bridge/Displayer";
 
 type VideoPluginInfo = {
@@ -227,6 +228,38 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             logger("setTimeDelay", delay);
             room.timeDelay = delay;
         },
+
+        addApp: (dir: string, scenes: SceneDefinition[], title: string | null,responseCallback: any) => {
+            logger("addApp", dir);
+            if (window.manager) {
+              window.manager.addApp({
+                    kind: BuildinApps.DocsViewer,
+                    options: {
+                        scenePath: dir,
+                        title: !!title ? title : undefined,
+                        scenes: scenes as WhiteScene[],
+                    },
+              }).then(appId => {
+                    responseCallback(appId)
+                });
+            }
+        },
+
+        getSyncedState: (responseCallback: any) => {
+            logger("getSyncedState");
+            let result = window.syncedStore ? window.syncedStore!.attributes : {}
+            responseCallback(JSON.stringify(result))
+        },
+
+        safeSetAttributes: (attributes: any) => {
+            logger("safeSetAttributes", attributes);
+            window.syncedStore?.safeSetAttributes(attributes)
+        },
+
+        safeUpdateAttributes: (keys: string[], attributes: any) => {
+            logger("safeUpdateAttributes", attributes);
+            window.syncedStore?.safeUpdateAttributes(keys, attributes)
+        }
     });
     // FIXME:同步方法尽量还是放在同步方法里。
     // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
