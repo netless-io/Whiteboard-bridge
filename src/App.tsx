@@ -218,7 +218,6 @@ export default function App() {
             ...joinRoomParms,
             invisiblePlugins: invisiblePlugins,
             cursorAdapter,
-            disableAutoResize: true,
             cameraBound: convertBound(cameraBound),
         }, {
             onPhaseChanged: (phase) => roomPhaseChange(phase, timeout),
@@ -278,7 +277,6 @@ export default function App() {
         sdk!.replayRoom({
             ...replayParams,
             cursorAdapter: cursorAdapter,
-            disableAutoResize: true,
             cameraBound: convertBound(cameraBound),
         }, {
             onPhaseChanged: onPlayerPhaseChanged(!!mediaURL),
