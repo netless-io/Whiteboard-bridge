@@ -1,6 +1,6 @@
 import { BuildinApps } from "@netless/window-manager";
 import dsBridge from "dsbridge";
-import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState } from "white-web-sdk";
+import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene } from "white-web-sdk";
 import { registerDisplayer } from "../bridge/Displayer";
 
 type VideoPluginInfo = {
@@ -229,21 +229,28 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             room.timeDelay = delay;
         },
 
-        addApp: async (dir: string, dynamic: boolean) => {
+        addApp: (dir: string, scenes: SceneDefinition[], title: string | null,responseCallback: any) => {
             logger("addApp", dir);
             if (window.manager) {
-                await window.manager.addApp({
+              window.manager.addApp({
                     kind: BuildinApps.DocsViewer,
                     options: {
                         scenePath: dir,
-                        title: "appOp"
+                        title: !!title ? title : undefined,
+                        scenes: scenes as WhiteScene[],
                     },
-                    attributes: {
-                        dynamic: dynamic,
-                    }
+              }).then(appId => {
+                    responseCallback(appId)
                 });
             }
         },
+
+        getSyncedState: (responseCallback: any) => {
+            logger("getSyncedState");
+            let result = window.syncedStore ? window.syncedStore!.attributes : {}
+            responseCallback(JSON.stringify(result))
+        },
+
         safeSetAttributes: (attributes: any) => {
             logger("safeSetAttributes", attributes);
             window.syncedStore?.safeSetAttributes(attributes)

@@ -73,7 +73,6 @@ export default function App() {
     // state hook
     let room: Room | undefined = undefined;
     let player: Player | undefined = undefined;
-    // let manager: WindowManager | undefined = undefined;
 
     // private fun
     function logger(funName: string, ...params: any[]) {
@@ -237,7 +236,6 @@ export default function App() {
             removeBind();
             room = mRoom;
             if (joinRoomParms.useMultiViews) {
-                logger("joinRoomParms", joinRoomParms.useMultiViews);
                 window.manager = await WindowManager.mount(
                     room,
                     divRef.current!!,
@@ -260,7 +258,7 @@ export default function App() {
             if (!!cursorAdapter) {
                 cursorAdapter.setRoom(room);
             }
-            return responseCallback(JSON.stringify({state: mRoom.state, observerId: mRoom.observerId, isWritable: mRoom.isWritable}));
+            return responseCallback(JSON.stringify({ state: mRoom.state, observerId: mRoom.observerId, isWritable: mRoom.isWritable, syncedStore : window.syncedStore?.attributes}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });

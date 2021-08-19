@@ -1036,10 +1036,10 @@
     lodash "^4.17.13"
     to-fast-properties "^2.0.0"
 
-"@netless/app-docs-viewer@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.5.tgz#fc407a841d653f7ba70874f8911edf3e49e28c94"
-  integrity sha512-e3XJV1wM2hppvmUg1ZabS7lMqj1hCXA/2Nk6Mz/P0Qns1o9l2Xlrwtjea3fAIZeMpjo5OMYeVXYUjlweOm+TJw==
+"@netless/app-docs-viewer@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.8.tgz#252d8d46ab01dcb92dd359349bb7e675be5e0a26"
+  integrity sha512-ckYUA9zhhUQDCVVzxASmrNu2gFzGIUN2tPYCxMCKD9FlpS3QTw4NCGYCTzbV93d9H1jKtHBgZ3XneVOw+oQgUg==
   dependencies:
     debounce-fn "^5.0.0"
     vanilla-lazyload "^17.4.0"
@@ -1076,12 +1076,13 @@
   dependencies:
     eventemitter3 "^4.0.7"
 
-"@netless/telebox-insider@^0.1.1":
-  version "0.1.2"
-  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.1.2.tgz#728ba31042a152506a93c327da9e1558096a8c2d"
-  integrity sha512-azGdssuQUPDG9jY+HGdQfP9/2TblJ4J/2vxGO1x95gjcnvwA1ZICWhQiTY25Q/Ky3rGehVdEyf/him2md2owUQ==
+"@netless/telebox-insider@^0.1.5":
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.1.5.tgz#facb6fc40b9049f7c48b71344c4ff14f1e9fde1b"
+  integrity sha512-JzVS5bS+x/dujv/srchANKsIKmAzC19vay1s102iuF+HqWZfiBgEWpzK05NLRsvJRWo9qI6ZwHfptes+OEadsg==
   dependencies:
     eventemitter3 "^4.0.7"
+    stylefire "^7.0.3"
 
 "@netless/video-js-plugin@0.3.4":
   version "0.3.4"
@@ -1108,13 +1109,13 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@^0.1.6-canary.1":
-  version "0.1.6-canary.1"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.6-canary.1.tgz#7fc44a4374913f0df4525c0b711531f974914bd6"
-  integrity sha512-hN5QHEnB3aIqKvN1/kVhO1tqfB6Y/MDrxuNJxEJxcG/QppyBWEKGyv7IFRRopYqIxtPxo5kTfYWtIPf3CwSiqg==
+"@netless/window-manager@^0.1.9":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.9.tgz#33ec6ba64b8f54d51406f425c4c1124fd625b173"
+  integrity sha512-SQluCUirdbsdfmmROKk8gD60cL6bBX5Kbwn1Km8u7MdP2uoLG8yNywomez8h94AjpfJ2xGnrkhgMSpTHqdNpcA==
   dependencies:
-    "@netless/app-docs-viewer" "^0.1.5"
-    "@netless/telebox-insider" "^0.1.1"
+    "@netless/app-docs-viewer" "^0.1.8"
+    "@netless/telebox-insider" "^0.1.5"
     emittery "^0.9.2"
     localforage "^1.9.0"
     lodash-es "^4.17.21"
@@ -1125,6 +1126,22 @@
   version "1.6.15"
   resolved "https://registry.yarnpkg.com/@netless/xml-js/-/xml-js-1.6.15.tgz#46516d547b21149bcca732bb199d664791b3240a"
   integrity sha512-e0emMs7YtDB/ATUns1SJ61R9n9nfVvwwFodoc539Qt0ScksaCLCaFWgpEbLloj9sr60ry6Xd8QFHKULFIZB6zA==
+
+"@popmotion/easing@^1.0.1":
+  version "1.0.2"
+  resolved "https://registry.yarnpkg.com/@popmotion/easing/-/easing-1.0.2.tgz#17d925c45b4bf44189e5a38038d149df42d8c0b4"
+  integrity sha512-IkdW0TNmRnWTeWI7aGQIVDbKXPWHVEYdGgd5ZR4SH/Ty/61p63jCjrPxX1XrR7IGkl08bjhJROStD7j+RKgoIw==
+
+"@popmotion/popcorn@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.yarnpkg.com/@popmotion/popcorn/-/popcorn-0.4.4.tgz#a5f906fccdff84526e3fcb892712d7d8a98d6adc"
+  integrity sha512-jYO/8319fKoNLMlY4ZJPiPu8Ea8occYwRZhxpaNn/kZsK4QG2E7XFlXZMJBsTWDw7I1i0uaqyC4zn1nwEezLzg==
+  dependencies:
+    "@popmotion/easing" "^1.0.1"
+    framesync "^4.0.1"
+    hey-listen "^1.0.8"
+    style-value-types "^3.1.7"
+    tslib "^1.10.0"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -3504,6 +3521,13 @@ fragment-cache@^0.2.1:
   dependencies:
     map-cache "^0.2.2"
 
+framesync@^4.0.0, framesync@^4.0.1:
+  version "4.1.0"
+  resolved "https://registry.yarnpkg.com/framesync/-/framesync-4.1.0.tgz#69a8db3ca432dc70d6a76ba882684a1497ef068a"
+  integrity sha512-MmgZ4wCoeVxNbx2xp5hN/zPDCbLSKiDt4BbbslK7j/pM2lg5S0vhTNv1v8BCVb99JPIo6hXBFdwzU7Q4qcAaoQ==
+  dependencies:
+    hey-listen "^1.0.5"
+
 fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.yarnpkg.com/fresh/-/fresh-0.5.2.tgz#3d8cadd90d976569fa835ab1f8e4b23a105605a7"
@@ -3795,6 +3819,11 @@ hex-color-regex@^1.1.0:
   version "1.1.0"
   resolved "https://registry.yarnpkg.com/hex-color-regex/-/hex-color-regex-1.1.0.tgz#4c06fccb4602fe2602b3c93df82d7e7dbf1a8a8e"
   integrity sha512-l9sfDFsuqtOqKDsQdqrMRk0U85RZc0RtOR9yPI7mRVOa4FsR/BVnZ0shmQRM96Ji99kYZP/7hn1cedc1+ApsTQ==
+
+hey-listen@^1.0.5, hey-listen@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.yarnpkg.com/hey-listen/-/hey-listen-1.0.8.tgz#8e59561ff724908de1aa924ed6ecc84a56a9aa68"
+  integrity sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==
 
 hmac-drbg@^1.0.1:
   version "1.0.1"
@@ -6970,6 +6999,25 @@ style-loader@^1.0.0:
   dependencies:
     loader-utils "^2.0.0"
     schema-utils "^2.6.6"
+
+style-value-types@^3.1.7:
+  version "3.2.0"
+  resolved "https://registry.yarnpkg.com/style-value-types/-/style-value-types-3.2.0.tgz#eb89cab1340823fa7876f3e289d29d99c92111bb"
+  integrity sha512-ih0mGsrYYmVvdDi++/66O6BaQPRPRMQHoZevNNdMMcPlP/cH28Rnfsqf1UEba/Bwfuw9T8BmIMwbGdzsPwQKrQ==
+  dependencies:
+    hey-listen "^1.0.8"
+    tslib "^1.10.0"
+
+stylefire@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.yarnpkg.com/stylefire/-/stylefire-7.0.3.tgz#9120ecbb084111788e0ddaa04074799750f20d1d"
+  integrity sha512-Q0l7NSeFz/OkX+o6/7Zg3VZxSAZeQzQpYomWmIpOehFM/rJNMSLVX5fgg6Q48ut2ETNKwdhm97mPNU643EBCoQ==
+  dependencies:
+    "@popmotion/popcorn" "^0.4.4"
+    framesync "^4.0.0"
+    hey-listen "^1.0.8"
+    style-value-types "^3.1.7"
+    tslib "^1.10.0"
 
 stylehacks@^4.0.0:
   version "4.0.3"
