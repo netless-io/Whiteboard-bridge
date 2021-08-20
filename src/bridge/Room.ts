@@ -229,17 +229,14 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             room.timeDelay = delay;
         },
 
-        addApp: (dir: string, scenes: SceneDefinition[], title: string | null,responseCallback: any) => {
-            logger("addApp", dir);
+        addApp: (kind: string, options: any, attributes: any, responseCallback: any) => {
+            logger("addApp", kind, options, attributes);
             if (window.manager) {
-              window.manager.addApp({
-                    kind: BuildinApps.DocsViewer,
-                    options: {
-                        scenePath: dir,
-                        title: !!title ? title : undefined,
-                        scenes: scenes as WhiteScene[],
-                    },
-              }).then(appId => {
+                window.manager.addApp({
+                    kind: kind,
+                    options: options,
+                    attributes : attributes
+                }).then(appId => {
                     responseCallback(appId)
                 });
             }

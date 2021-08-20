@@ -86,6 +86,9 @@ export default function App() {
             room.bindHtmlElement(null);
             // FIXME:最好执行 disconnect，但是由于如果主动执行 disconnect，会触发状态变化回调，导致一定问题，所以此处不能主动执行。
         }
+        if (window.manager) {
+            window.manager.destroy()
+        }
         if (player) {
             player.bindHtmlElement(null);
         }
@@ -231,9 +234,9 @@ export default function App() {
             onPPTLoadProgress,
             onPPTMediaPlay,
             onPPTMediaPause,
-        }).then(async mRoom => {
+        }).then(async aRoom => {
             removeBind();
-            room = mRoom;
+            room = aRoom;
             if (joinRoomParms.useMultiViews) {
                 window.manager = await WindowManager.mount(
                     room,
@@ -242,7 +245,7 @@ export default function App() {
                     { debug: true }
                 );
             } else {
-                mRoom.bindHtmlElement(divRef.current);
+                room.bindHtmlElement(divRef.current);
             }
             
             if (nativeConfig?.enableSyncedStore) {
@@ -253,11 +256,11 @@ export default function App() {
                 });
             }
 
-            registerRoom(mRoom, logger);
+            registerRoom(room, logger);
             if (!!cursorAdapter) {
                 cursorAdapter.setRoom(room);
             }
-            return responseCallback(JSON.stringify({ state: mRoom.state, observerId: mRoom.observerId, isWritable: mRoom.isWritable, syncedStore : window.syncedStore?.attributes}));
+            return responseCallback(JSON.stringify({ state: room.state, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });
