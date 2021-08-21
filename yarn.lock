@@ -1044,10 +1044,10 @@
     debounce-fn "^5.0.0"
     vanilla-lazyload "^17.4.0"
 
-"@netless/app-media-player@^0.1.0-alpha.0":
-  version "0.1.0-alpha.0"
-  resolved "https://registry.yarnpkg.com/@netless/app-media-player/-/app-media-player-0.1.0-alpha.0.tgz#4a50c8198211ddf6fc1d284b8c480926e2a1fbc3"
-  integrity sha512-U6ubldEL51Jzii8c3sLGP2NI0/87wJClKyFJxtTWKZVhlTjamQih8RwHV0mdPnKE5OHrBiMEE5ZzYCT0ypYkzw==
+"@netless/app-media-player@0.1.0-alpha.1":
+  version "0.1.0-alpha.1"
+  resolved "https://registry.yarnpkg.com/@netless/app-media-player/-/app-media-player-0.1.0-alpha.1.tgz#22c963a9fc3b55c2423b89aed5d95f9612a809b9"
+  integrity sha512-tgTx3LEX7ssQXF1l7lVQqCGpWpab0jI8KC4R0YzPIdtBSIvEe5OZfjAaa2u4sw5iQHdK+bEe+PKdV2jTwOe5ow==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1114,19 +1114,19 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@^0.1.14":
-  version "0.1.14"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.14.tgz#bc40899b61df1c257964e3f40ab3ef3da281934a"
-  integrity sha512-Cmn13jxpJJg8WO9rzjBESVjR/CDL3WvWqwyhfmH+QGNlg2M94wd2+cHRt/0qZulb8Wn3+SQmvJnbswZ5tRxI1w==
+"@netless/window-manager@0.1.16":
+  version "0.1.16"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.16.tgz#e40ccd7110198bcd66fb038757f1c67301351f5e"
+  integrity sha512-dspXVfyHywo5UZR+a0hfZhU20HW2FxmnHNixSICkM5iwKaVISHMU35JCMJ8ktjewccXmt8AadwEQSTbi7eX2zw==
   dependencies:
     "@netless/app-docs-viewer" "^0.1.10"
-    "@netless/app-media-player" "^0.1.0-alpha.0"
+    "@netless/app-media-player" "0.1.0-alpha.1"
     "@netless/telebox-insider" "^0.1.6"
     emittery "^0.9.2"
     localforage "^1.9.0"
     lodash-es "^4.17.21"
     nanoid "^3.1.25"
-    video.js "^7.14.3"
+    video.js ">=7"
 
 "@netless/xml-js@1.6.15":
   version "1.6.15"
@@ -7495,7 +7495,7 @@ verror@1.10.0:
     core-util-is "1.0.2"
     extsprintf "^1.2.0"
 
-video.js@7.10.0, "video.js@^6 || ^7", video.js@^7.14.3, video.js@^7.8.4:
+video.js@7.10.0, video.js@>=7, "video.js@^6 || ^7", video.js@^7.8.4:
   version "7.10.0"
   resolved "https://registry.yarnpkg.com/video.js/-/video.js-7.10.0.tgz#5e6f3f79ac35faf953615cb2bc89424435864e02"
   integrity sha512-Vs28MKL/06Q53CllmMkt7Z6cgbIfIJO+sv2cdX/PMDNKrZNz5hkUrqM/eCHE71/wJUxOw+hnqDtf6WbIuflceQ==
