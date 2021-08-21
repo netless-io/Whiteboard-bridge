@@ -1081,10 +1081,10 @@
   dependencies:
     eventemitter3 "^4.0.7"
 
-"@netless/telebox-insider@^0.1.6":
-  version "0.1.6"
-  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.1.6.tgz#b0f9bef7fbf78a20fbc04f4d55bca35c99e2cf44"
-  integrity sha512-CFK1c/hYdqJqYFuaqrxguTeYHfsVA8T9ABs0jpkB6d97QjIZmol6eeT2Qx7n/c8A0JuP/wdLJb9A/QH7mHgj0Q==
+"@netless/telebox-insider@^0.1.8":
+  version "0.1.8"
+  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.1.8.tgz#cce78b595e2e7324073a8d34cd634be6867dbb2e"
+  integrity sha512-R0HZLzlAYSCCI72FWEjX2m0TrGNnLpXVWok3D8xF4WQZ32HL42RDFMZV+3+kUs4nZ9ucemoxq/6fuovLaP4H0w==
   dependencies:
     eventemitter3 "^4.0.7"
     stylefire "^7.0.3"
@@ -1114,16 +1114,15 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.1.16":
-  version "0.1.16"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.16.tgz#e40ccd7110198bcd66fb038757f1c67301351f5e"
-  integrity sha512-dspXVfyHywo5UZR+a0hfZhU20HW2FxmnHNixSICkM5iwKaVISHMU35JCMJ8ktjewccXmt8AadwEQSTbi7eX2zw==
+"@netless/window-manager@0.1.18":
+  version "0.1.18"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.18.tgz#0f14e00cf6bc070eaa26f1bec31f1b4bb6ed2819"
+  integrity sha512-5LGM6HvCPKE0A5B4TkRTWdZRpRFXa+8LMPmL57+k3tglLyGOKeB5gT3APh5TyfnYrnccwAOR7lWFAapw2B1UQw==
   dependencies:
     "@netless/app-docs-viewer" "^0.1.10"
     "@netless/app-media-player" "0.1.0-alpha.1"
-    "@netless/telebox-insider" "^0.1.6"
+    "@netless/telebox-insider" "^0.1.8"
     emittery "^0.9.2"
-    localforage "^1.9.0"
     lodash-es "^4.17.21"
     nanoid "^3.1.25"
     video.js ">=7"
@@ -4033,11 +4032,6 @@ image-size@~0.5.0:
   resolved "https://registry.yarnpkg.com/image-size/-/image-size-0.5.5.tgz#09dfd4ab9d20e29eb1c3e80b8990378df9e3cb9c"
   integrity sha1-Cd/Uq50g4p6xw+gLiZA3jfnjy5w=
 
-immediate@~3.0.5:
-  version "3.0.6"
-  resolved "https://registry.yarnpkg.com/immediate/-/immediate-3.0.6.tgz#9db1dbd0faf8de6fbe0f5dd5e56bb606280de69b"
-  integrity sha1-nbHb0Pr43m++D13V5Wu2BigN5ps=
-
 import-fresh@^2.0.0:
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/import-fresh/-/import-fresh-2.0.0.tgz#d81355c15612d386c61f9ddd3922d4304822a546"
@@ -4650,13 +4644,6 @@ levenary@^1.1.1:
   dependencies:
     leven "^3.1.0"
 
-lie@3.1.1:
-  version "3.1.1"
-  resolved "https://registry.yarnpkg.com/lie/-/lie-3.1.1.tgz#9a436b2cc7746ca59de7a41fa469b3efb76bd87e"
-  integrity sha1-mkNrLMd0bKWd56QfpGmz77dr2H4=
-  dependencies:
-    immediate "~3.0.5"
-
 loader-runner@^2.4.0:
   version "2.4.0"
   resolved "https://registry.yarnpkg.com/loader-runner/-/loader-runner-2.4.0.tgz#ed47066bfe534d7e84c4c7b9998c2a75607d9357"
@@ -4698,13 +4685,6 @@ loader-utils@^2.0.0:
     big.js "^5.2.2"
     emojis-list "^3.0.0"
     json5 "^2.1.2"
-
-localforage@^1.9.0:
-  version "1.9.0"
-  resolved "https://registry.yarnpkg.com/localforage/-/localforage-1.9.0.tgz#f3e4d32a8300b362b4634cc4e066d9d00d2f09d1"
-  integrity sha512-rR1oyNrKulpe+VM9cYmcFn6tsHuokyVHFaCM3+osEmxaHTbEk8oQu6eGDfS6DQLWi/N67XRmB8ECG37OES368g==
-  dependencies:
-    lie "3.1.1"
 
 locate-path@^3.0.0:
   version "3.0.0"
