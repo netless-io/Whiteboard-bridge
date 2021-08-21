@@ -83,7 +83,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         setScenePath: (scenePath: string, responseCallback: any) => {
             try {
                 logger("setScenePath", scenePath);
-                room.setScenePath(scenePath);
+                if (window.manager) {
+                    window.manager.setMainViewScenePath(scenePath);
+                } else {
+                    room.setScenePath(scenePath);
+                }
                 responseCallback(JSON.stringify({}));
             } catch (e) {
                 return responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
@@ -139,7 +143,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         setSceneIndex: (index: number, responseCallback: any) => {
             logger("setSceneIndex", index);
             try {
-                room.setSceneIndex(index);
+                if (window.manager) {
+                    window.manager.setMainViewSceneIndex(index);
+                } else {
+                    room.setSceneIndex(index);
+                }
                 responseCallback(JSON.stringify({}));
             } catch (error) {
                 responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } }));
@@ -168,16 +176,26 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         },
         zoomChange: (scale: number) => {
             logger("zoomChange");
-            room.moveCamera({ scale });
+            if (window.manager) {
+                window.manager.mainView.moveCamera({ scale });
+            } else {
+                room.moveCamera({ scale });
+            }
         },
         disableCameraTransform: (disableCamera: boolean) => {
             logger("disableCameraTransform", disableCamera);
-            room.disableCameraTransform = disableCamera;
+            if (window.manager) {
+                window.manager.mainView.disableCameraTransform = disableCamera;
+            } else {
+                room.disableCameraTransform = disableCamera;
+            }
         },
         disableDeviceInputs: (disable: boolean) => {
             logger("disableDeviceInputs", disable);
             room.disableDeviceInputs = disable;
+            // tslint:disable-next-line:no-unused-expression
             room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).computedZindex();
+            // tslint:disable-next-line:no-unused-expression
             room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
         },
         disableOperations: (disableOperations: boolean) => {
