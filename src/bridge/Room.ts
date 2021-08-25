@@ -176,19 +176,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         },
         zoomChange: (scale: number) => {
             logger("zoomChange");
-            if (window.manager) {
-                window.manager.mainView.moveCamera({ scale });
-            } else {
-                room.moveCamera({ scale });
-            }
+            room.moveCamera({ scale });
         },
         disableCameraTransform: (disableCamera: boolean) => {
             logger("disableCameraTransform", disableCamera);
-            if (window.manager) {
-                window.manager.mainView.disableCameraTransform = disableCamera;
-            } else {
-                room.disableCameraTransform = disableCamera;
-            }
+            room.disableCameraTransform = disableCamera;
         },
         disableDeviceInputs: (disable: boolean) => {
             logger("disableDeviceInputs", disable);

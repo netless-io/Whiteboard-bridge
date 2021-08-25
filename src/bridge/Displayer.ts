@@ -13,11 +13,7 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
         logger("setCameraBound nativeBound", nativeBound);
         const bound = convertBound(nativeBound);
         logger("setCameraBound bound", bound);
-        if (window.manager) {
-            window.manager.mainView.setCameraBound(bound!);
-        } else {
-            displayer.setCameraBound(bound!);
-        }
+        displayer.setCameraBound(bound!);
     }
 
     const scaleIframeToFit = () => {
@@ -101,11 +97,7 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
             animationMode?: AnimationMode;
         }>) => {
             logger("moveCameraToContain: ", contain);
-            if (window.manager) {
-                window.manager.mainView.moveCameraToContain(contain);
-            } else {
-                displayer.moveCameraToContain(contain);
-            }
+            displayer.moveCameraToContain(contain);
         },
         refreshViewSize: () => {
             logger("refreshViewSize");
