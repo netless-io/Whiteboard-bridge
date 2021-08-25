@@ -73,6 +73,7 @@ type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
 export type NativeJoinRoomParams = BaseTypeRoomParams & {
     cameraBound?: NativeCameraBound;
     timeout?: number;
+    collectionStyle?: any;
 };
 
 type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;

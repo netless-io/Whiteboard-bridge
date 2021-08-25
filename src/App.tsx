@@ -211,7 +211,7 @@ export default function App() {
         }
         removeBind();
         logger("joinRoom", nativeParams);
-        const {timeout = 45000, cameraBound, ...joinRoomParms} = nativeParams;
+        const {timeout = 45000, cameraBound, collectionStyle, ...joinRoomParms} = nativeParams;
         
         const invisiblePlugins = [
             ...joinRoomParms.useMultiViews ? [WindowManager as any] : [],
@@ -242,7 +242,7 @@ export default function App() {
                     room,
                     divRef.current!!,
                     undefined,
-                    { debug: true }
+                    { debug: true, collectorStyles: collectionStyle }
                 );
             } else {
                 room.bindHtmlElement(divRef.current);
