@@ -1119,10 +1119,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.1.42":
-  version "0.1.42"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.42.tgz#35f416acda04db190a8d43a97faa4731a5b0d744"
-  integrity sha512-Ft1tRS3HSGYBENhMuqgBvNhmHkSeLKZNiKRqYXqSggo1L0ttcl06RJQggB+22jJT3AZoaerRbF/PakzM46Tx8g==
+"@netless/window-manager@0.1.43":
+  version "0.1.43"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.43.tgz#3d948d21fab950d74fd95d570aaa1688a2066554"
+  integrity sha512-WA2aLPw+8PQEGreCScQx2de9d+iqNmIQR9lieFzTHoEC+Yb7Lre0ZymZ+C9zzpGZ0Soa3g/2lwPXAFgf4LJVbA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/app-docs-viewer" "^0.1.16"
