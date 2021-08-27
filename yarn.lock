@@ -1041,10 +1041,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-docs-viewer@^0.1.16":
-  version "0.1.16"
-  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.16.tgz#6431e4af4ba0c20a3471dfbb9eec11f6830e28cd"
-  integrity sha512-k5EnIbrHuYGHbVXPLP369CYu4/WfslduvsQgDgOQ0bYQWLet3JVgfrJ+Q+10jasOUyEshxWGVKe2X9YEkRRyyg==
+"@netless/app-docs-viewer@^0.1.17":
+  version "0.1.17"
+  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.17.tgz#6627fb6af4da03c143e2b6526849fb5acbf0f30a"
+  integrity sha512-p1/gccT1T/JFIAPMhbrck6CZxrVwgYxCFVMoGzvmtIQI2qJY4jIagtlY1eZqLYeeUY4exynfGp//FmGmeVL/Ag==
   dependencies:
     debounce-fn "^5.0.0"
     vanilla-lazyload "^17.4.0"
@@ -1119,13 +1119,13 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.1.44":
-  version "0.1.44"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.44.tgz#4fc411f42bfda002a1f0abefc01d3829b09ec324"
-  integrity sha512-/SAQJzYArPuZbKZIk8ydQS4l92rsQmBn5+GhKNk+Qycn+JCsJ64g/MVFvbFgPvNIrWYn3lSGe7QvrwK9Uqte+A==
+"@netless/window-manager@0.1.46":
+  version "0.1.46"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.46.tgz#d6f12ada778ddf8d9840424f4e1a2857a5c83e0e"
+  integrity sha512-Fmt1SOHVh/zSEFmw8ExXuNkgLVo5hYNwTdt/FLaJLqVxPPk7/JvIy1E9ocsSA4sjy4QqeTJj5tw+uu66jLcg6g==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
-    "@netless/app-docs-viewer" "^0.1.16"
+    "@netless/app-docs-viewer" "^0.1.17"
     "@netless/app-media-player" "0.1.0-beta.4"
     "@netless/telebox-insider" "^0.1.15"
     emittery "^0.9.2"
