@@ -10,7 +10,7 @@ import {audioPlugin} from "@netless/white-audio-plugin";
 import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
-import { WindowManager, BuildinApps } from "@netless/window-manager";
+import { WindowManager } from "@netless/window-manager";
 import "@netless/window-manager/dist/style.css";
 import { SyncedStore } from "@netless/synced-store";
 
@@ -211,14 +211,14 @@ export default function App() {
         }
         removeBind();
         logger("joinRoom", nativeParams);
-        const {timeout = 45000, cameraBound, collectionStyle, ...joinRoomParms} = nativeParams;
+        const {timeout = 45000, cameraBound, windowParams, ...joinRoomParams} = nativeParams;
         
         const invisiblePlugins = [
-            ...joinRoomParms.useMultiViews ? [WindowManager as any] : [],
+            ...joinRoomParams.useMultiViews ? [WindowManager as any] : [],
         ]
 
         sdk!.joinRoom({
-            ...joinRoomParms,
+            ...joinRoomParams,
             invisiblePlugins: invisiblePlugins,
             cursorAdapter,
             cameraBound: convertBound(cameraBound),
@@ -237,13 +237,15 @@ export default function App() {
         }).then(async aRoom => {
             removeBind();
             room = aRoom;
-            if (joinRoomParms.useMultiViews) {
-                window.manager = await WindowManager.mount(
+            if (joinRoomParams.useMultiViews) {
+                window.manager = await WindowManager.mount({
                     room,
-                    divRef.current!!,
-                    undefined,
-                    { debug: true, collectorStyles: collectionStyle }
-                );
+                    container: divRef.current!!,
+                    // 高比宽
+                    containerSizeRatio: 9/16,
+                    chessboard: true,
+                    ...windowParams,
+                });
             } else {
                 room.bindHtmlElement(divRef.current);
             }

@@ -2,7 +2,7 @@
 import {WhiteWebSdkConfiguration, ReplayRoomParams, JoinRoomParams, Room, Player, CameraBound, WhiteWebSdk} from "white-web-sdk";
 import {BaseTypeKey, Writable, NumberType} from "./GenericHelper";
 import { CombinePlayer } from '@netless/combine-player';
-import { WindowManager } from "@netless/window-manager";
+import { WindowManager, MountParams } from "@netless/window-manager";
 import { SyncedStore } from "@netless/synced-store";
 
 declare global {
@@ -73,7 +73,7 @@ type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
 export type NativeJoinRoomParams = BaseTypeRoomParams & {
     cameraBound?: NativeCameraBound;
     timeout?: number;
-    collectionStyle?: any;
+    windowParams?: MountParams,
 };
 
 type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;

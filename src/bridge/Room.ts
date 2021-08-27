@@ -1,4 +1,3 @@
-import { BuildinApps } from "@netless/window-manager";
 import dsBridge from "dsbridge";
 import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene } from "white-web-sdk";
 import { registerDisplayer } from "../bridge/Displayer";
