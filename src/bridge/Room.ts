@@ -199,6 +199,9 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             room.disableCameraTransform = disableOperations;
             room.disableDeviceInputs = disableOperations;
         },
+        disableWindowOperation: (disable: boolean) => {
+            window.manager?.setReadonly(disable);
+        },
         putScenes: (dir: string, scenes: SceneDefinition[], index: number, responseCallback: any) => {
             logger("putScenes", scenes);
             room.putScenes(dir, scenes, index);
