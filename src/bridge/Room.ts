@@ -186,9 +186,8 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
 
             if (window.manager) {
                 window.manager.setReadonly(disable);
-            } else {
-                room.disableDeviceInputs = disable;
             }
+            room.disableDeviceInputs = disable;
             // tslint:disable-next-line:no-unused-expression
             room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).computedZindex();
             // tslint:disable-next-line:no-unused-expression
