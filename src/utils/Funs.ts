@@ -2,7 +2,7 @@ import dsBridge from "dsbridge";
 import { useEffect, useRef } from 'react';
 import {Displayer, Room, Player} from "white-web-sdk";
 
-function throwMesssage(message: any) {
+function throwMessage(message: any) {
     console.log(JSON.stringify(message));
     dsBridge.call("sdk.throwError", message);
 }
@@ -12,7 +12,7 @@ export function isRoom(displayer: Displayer): displayer is Room {
 }
 
 export function globalErrorEvent(e: ErrorEvent) {
-    throwMesssage({message: e.message, error: e.error});
+    throwMessage({message: e.message, error: e.error});
 }
 
 export function postCustomMessage(e: {data: any}) {
