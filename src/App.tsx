@@ -244,6 +244,7 @@ export default function App() {
                     // 高比宽
                     containerSizeRatio: 9/16,
                     chessboard: true,
+                    debug: true,
                     ...windowParams,
                 });
             } else {
