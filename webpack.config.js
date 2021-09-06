@@ -20,26 +20,34 @@ config = {
     mainFields: ["main", "module"]
   },
   optimization: {
-    minimizer: [new TerserJSPlugin({extractComments: false}), new OptimizeCSSAssetsPlugin({})],
-    moduleIds: 'hashed',
+    minimizer: [new TerserJSPlugin({extractComments: false, parallel: true}), new OptimizeCSSAssetsPlugin({})],
+    moduleIds: 'deterministic',
     runtimeChunk: 'single',
     splitChunks: {
-      cacheGroups: {
-        white : {
-          test: /[\\/]node_modules[\\/](white-web-sdk)[\\/]/,
-          name: 'web-sdk',
-          chunks: 'all',
-          priority: 10,
-          reuseExistingChunk: true
-        },
-        vendors: {
-          test: /[\\/]node_modules[\\/]/,
-          name: 'vendor',
-          chunks: 'all',
-          priority: 1,
-          reuseExistingChunk: true
+        chunks: "all",
+        cacheGroups: {
+            white: {
+                test: /[\\/]node_modules[\\/](white-web-sdk)[\\/]/,
+                name: 'web-sdk',
+                chunks: 'all',
+                priority: 10,
+                reuseExistingChunk: true
+            },
+            video: {
+                test: /video/,
+                name: 'video',
+                chunks: 'all',
+                priority: 7,
+                reuseExistingChunk: true
+            },
+            vendors: {
+                test: /[\\/]node_modules[\\/]/,
+                name: 'vendor',
+                chunks: 'all',
+                priority: 1,
+                reuseExistingChunk: true
+            }
         }
-      }
     }
   },
   plugins: [
@@ -57,9 +65,10 @@ config = {
     rules: [
       {
         test: /\.(ts|js)x?$/,
-        use: {
-          loader: 'babel-loader'
-        },
+        use: [
+            "thread-loader",
+            "babel-loader"
+        ]
       },
       {
         test: /\.less$/,
@@ -80,6 +89,9 @@ config = {
         use: ['file-loader']
       }
     ]
+  },
+  cache: {
+      type: "filesystem"
   }
 };
 
