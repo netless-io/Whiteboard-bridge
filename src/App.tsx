@@ -220,7 +220,7 @@ export default function App() {
         sdk!.joinRoom({
             ...joinRoomParams,
             invisiblePlugins: invisiblePlugins,
-            cursorAdapter,
+            cursorAdapter: joinRoomParams.useMultiViews ? undefined : cursorAdapter,
             cameraBound: convertBound(cameraBound),
         }, {
             onPhaseChanged: (phase) => roomPhaseChange(phase, timeout),
@@ -244,13 +244,17 @@ export default function App() {
                     // 高比宽
                     containerSizeRatio: 9/16,
                     chessboard: true,
+                    cursor: !!cursorAdapter,
                     debug: true,
                     ...windowParams,
                 });
             } else {
                 room.bindHtmlElement(divRef.current);
+                if (!!cursorAdapter) {
+                    cursorAdapter.setRoom(room);
+                }
             }
-            
+
             if (nativeConfig?.enableSyncedStore) {
                 window.syncedStore = await SyncedStore.create(room);
                 window.syncedStore.emitter.on("attributesUpdate", attributes => {
@@ -260,9 +264,6 @@ export default function App() {
             }
 
             registerRoom(room, logger);
-            if (!!cursorAdapter) {
-                cursorAdapter.setRoom(room);
-            }
             return responseCallback(JSON.stringify({ state: room.state, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));

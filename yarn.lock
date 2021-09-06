@@ -1041,10 +1041,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-docs-viewer@^0.1.18":
-  version "0.1.18"
-  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.18.tgz#b686d720e19795a8d3d65c6dd43537eb9fb3c1c4"
-  integrity sha512-rFLAMQSDRLWdsmGFMl75F4h5D1/U2N1TwKiODUZ8BDlrDlugqRGa8McX0bY0/toP1GTBAZ6oDGSDn8TirkxFpA==
+"@netless/app-docs-viewer@^0.1.19":
+  version "0.1.19"
+  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.19.tgz#4343a06f844433f20c6d4ed3ea734cb103ae0760"
+  integrity sha512-ZV/5q1ADMwuFW0vO/SDP81j6DR+Rbp1bLfA4cWTqqf2qrlkLLt4H5qI3WpB8qGrdWYrk4XKYqvhuRWiiZEs4mA==
   dependencies:
     debounce-fn "^5.0.0"
     vanilla-lazyload "^17.4.0"
@@ -1119,15 +1119,16 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.1.54":
-  version "0.1.54"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.54.tgz#cfad847786abb515b161c28b57ef5cfaa480d9ab"
-  integrity sha512-f5+MhnZqj4gYk0IMkeOQSi9PoOTF1mbLfzf/xJ7AOcox/2mU85fI6ih+JS+xrVBKXYyqHfyT54N1VYxPTVZngw==
+"@netless/window-manager@0.1.60":
+  version "0.1.60"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.60.tgz#cd9ac428c3e82c15c828ae6e9ea6fc7adeb37889"
+  integrity sha512-dtM4MTxLc0M0xHZDMN75VwlUhyUq6LR79d4nwgecVbvoMjXndH6tMY+NdpTxLG7iKxW1mJGTJHxdQl86HA9tPA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
-    "@netless/app-docs-viewer" "^0.1.18"
+    "@netless/app-docs-viewer" "^0.1.19"
     "@netless/app-media-player" "0.1.0-beta.5"
     "@netless/telebox-insider" "^0.1.17"
+    dexie "^3.0.3"
     emittery "^0.9.2"
     lodash-es "^4.17.21"
     nanoid "^3.1.25"
@@ -2887,6 +2888,11 @@ detect-touch-events@^2.0.1:
   version "2.0.1"
   resolved "https://registry.yarnpkg.com/detect-touch-events/-/detect-touch-events-2.0.1.tgz#365833cf0c5c40c4090a08096b8a688db00fa337"
   integrity sha1-NlgzzwxcQMQJCggJa4pojbAPozc=
+
+dexie@^3.0.3:
+  version "3.0.3"
+  resolved "https://registry.yarnpkg.com/dexie/-/dexie-3.0.3.tgz#ede63849dfe5f07e13e99bb72a040e8ac1d29dab"
+  integrity sha512-BSFhGpngnCl1DOr+8YNwBDobRMH0ziJs2vts69VilwetHYOtEDcLqo7d/XiIphM0tJZ2rPPyAGd31lgH2Ln3nw==
 
 diff@^4.0.1:
   version "4.0.2"
