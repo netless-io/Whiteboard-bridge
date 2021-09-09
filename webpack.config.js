@@ -15,6 +15,7 @@ config = {
     path: path.join(__dirname, '/build'),
     filename: `[name].[contenthash:8].js`
   },
+  target: ["web", "es5"],
   resolve: {
     extensions: ['.ts', '.tsx', '.js'],
     mainFields: ["main", "module"]
@@ -90,9 +91,9 @@ config = {
       }
     ]
   },
-  cache: {
-      type: "filesystem"
-  }
+  // cache: {
+  //     type: "filesystem"
+  // }
 };
 
 module.exports = (env, argv) => {
