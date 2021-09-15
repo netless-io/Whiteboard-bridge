@@ -2,7 +2,7 @@ import "@netless/canvas-polyfill";
 import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
-import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType, PlayerPhase} from "white-web-sdk";
+import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType, PlayerPhase, InvisiblePlugin} from "white-web-sdk";
 import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils/ParamTypes";
 import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
@@ -10,6 +10,10 @@ import {audioPlugin} from "@netless/white-audio-plugin";
 import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
+import { WindowManager } from "@netless/window-manager";
+import "@netless/window-manager/dist/style.css";
+import { SyncedStore } from "@netless/synced-store";
+
 import multipleDomain from "./utils/MultipleDomain";
 import {convertBound} from "./utils/BoundConvert";
 import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
@@ -62,7 +66,7 @@ function report(funName: string, ...params: any[]) {
         // array
         message = params;
     }
-    dsBridge.call("sdk.logger", {funName, message});
+    dsBridge.call("sdk.logger", {funName, params: message});
 }
 
 export default function App() {
@@ -81,6 +85,9 @@ export default function App() {
         if (room) {
             room.bindHtmlElement(null);
             // FIXME:最好执行 disconnect，但是由于如果主动执行 disconnect，会触发状态变化回调，导致一定问题，所以此处不能主动执行。
+        }
+        if (window.manager) {
+            window.manager.destroy()
         }
         if (player) {
             player.bindHtmlElement(null);
@@ -126,7 +133,7 @@ export default function App() {
             return url;
         } : undefined;
 
-        const {log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, ...restConfig} = config;
+        const { log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         showLog = !!log;
         nativeConfig = config;
@@ -162,13 +169,25 @@ export default function App() {
             report("videoJsPlugin", message, ...optionalParams);
         }
 
-        const plugins = createPlugins({"video": videoPlugin, "audio": audioPlugin, "video2": videoPlugin2, "audio2": audioPlugin2, "video.js": videoJsPlugin({log: videoJsLogger})});
+        const plugins = createPlugins({
+            "video": videoPlugin,
+            "audio": audioPlugin,
+            "video2": videoPlugin2,
+            "audio2": audioPlugin2,
+            "video.js": videoJsPlugin({ log: videoJsLogger }),
+        });
         plugins.setPluginContext("video.js", {enable: false, verbose: true});
         window.plugins = plugins;
+
+        const invisiblePlugins = [
+            ...enableIFramePlugin ? [IframeBridge as any] : [],
+            ...enableSyncedStore ? [SyncedStore as any] : [],
+        ]
+
         try {
             sdk = new WhiteWebSdk({
                 ...restConfig,
-                invisiblePlugins: enableIFramePlugin ? [IframeBridge as any] : undefined,
+                invisiblePlugins: invisiblePlugins,
                 wrappedComponents: enableIFramePlugin ? [IframeWrapper] : undefined,
                 plugins: plugins,
                 urlInterrupter: urlInterrupter,
@@ -192,11 +211,16 @@ export default function App() {
         }
         removeBind();
         logger("joinRoom", nativeParams);
-        const {timeout = 45000, cameraBound, ...joinRoomParms} = nativeParams;
+        const {timeout = 45000, cameraBound, windowParams, ...joinRoomParams} = nativeParams;
+        
+        const invisiblePlugins = [
+            ...joinRoomParams.useMultiViews ? [WindowManager as any] : [],
+        ]
+
         sdk!.joinRoom({
-            ...joinRoomParms,
-            cursorAdapter,
-            disableAutoResize: true,
+            ...joinRoomParams,
+            invisiblePlugins: invisiblePlugins,
+            cursorAdapter: joinRoomParams.useMultiViews ? undefined : cursorAdapter,
             cameraBound: convertBound(cameraBound),
         }, {
             onPhaseChanged: (phase) => roomPhaseChange(phase, timeout),
@@ -210,15 +234,37 @@ export default function App() {
             onPPTLoadProgress,
             onPPTMediaPlay,
             onPPTMediaPause,
-        }).then(mRoom => {
+        }).then(async aRoom => {
             removeBind();
-            room = mRoom;
-            mRoom.bindHtmlElement(divRef.current);
-            registerRoom(mRoom, logger);
-            if (!!cursorAdapter) {
-                cursorAdapter.setRoom(room);
+            room = aRoom;
+            if (joinRoomParams.useMultiViews) {
+                window.manager = await WindowManager.mount({
+                    room,
+                    container: divRef.current!!,
+                    // 高比宽
+                    containerSizeRatio: 9/16,
+                    chessboard: true,
+                    cursor: !!cursorAdapter,
+                    debug: true,
+                    ...windowParams,
+                });
+            } else {
+                room.bindHtmlElement(divRef.current);
+                if (!!cursorAdapter) {
+                    cursorAdapter.setRoom(room);
+                }
             }
-            return responseCallback(JSON.stringify({state: mRoom.state, observerId: mRoom.observerId, isWritable: mRoom.isWritable}));
+
+            if (nativeConfig?.enableSyncedStore) {
+                window.syncedStore = await SyncedStore.create(room);
+                window.syncedStore.emitter.on("attributesUpdate", attributes => {
+                    logger("attributesUpdate", attributes);
+                    onAttributesUpdate(attributes)
+                });
+            }
+
+            registerRoom(room, logger);
+            return responseCallback(JSON.stringify({ state: room.state, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });
@@ -238,7 +284,6 @@ export default function App() {
         sdk!.replayRoom({
             ...replayParams,
             cursorAdapter: cursorAdapter,
-            disableAutoResize: true,
             cameraBound: convertBound(cameraBound),
         }, {
             onPhaseChanged: onPlayerPhaseChanged(!!mediaURL),
@@ -389,6 +434,10 @@ export default function App() {
 
     function onKickedWithReason(reason: string) {
         dsBridge.call("room.fireKickedWithReason", reason);
+    }
+
+    function onAttributesUpdate(attributes) {
+        dsBridge.call("room.fireAttributesUpdate", JSON.stringify(attributes));
     }
 
     // PlayerCallbacks

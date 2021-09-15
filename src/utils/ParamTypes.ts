@@ -2,10 +2,14 @@
 import {WhiteWebSdkConfiguration, ReplayRoomParams, JoinRoomParams, Room, Player, CameraBound, WhiteWebSdk} from "white-web-sdk";
 import {BaseTypeKey, Writable, NumberType} from "./GenericHelper";
 import { CombinePlayer } from '@netless/combine-player';
+import { WindowManager, MountParams } from "@netless/window-manager";
+import { SyncedStore } from "@netless/synced-store";
 
 declare global {
     interface Window {
       room?: Room;
+      manager?: WindowManager;
+      syncedStore?: SyncedStore;
       sdk?: WhiteWebSdk;
       player?: Player;
       combinePlayer?: CombinePlayer;
@@ -33,6 +37,7 @@ export type NativeSDKConfig = {
     routeBackup?: boolean;
     enableIFramePlugin?: boolean;
     enableRtcIntercept?: boolean;
+    enableSyncedStore?: boolean;
     __nativeTags?: any;
     /** native 预热结果，web sdk 升级至 2.8.0 后，该功能不再需要主动测一遍。保留该字段，是为了兼容，以及抽离选项 */
     initializeOriginsStates?: any;
@@ -68,6 +73,7 @@ type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
 export type NativeJoinRoomParams = BaseTypeRoomParams & {
     cameraBound?: NativeCameraBound;
     timeout?: number;
+    windowParams?: MountParams,
 };
 
 type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;

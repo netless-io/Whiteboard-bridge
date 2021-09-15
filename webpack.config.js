@@ -86,6 +86,7 @@ config = {
 module.exports = (env, argv) => {
   if (argv.mode === 'development') {
     config.output.filename = '[name].[hash].js';
+    config.module.rules[0].exclude = /node_modules/;
   }
   return config;
 }

@@ -1,5 +1,5 @@
 import dsBridge from "dsbridge";
-import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState } from "white-web-sdk";
+import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene } from "white-web-sdk";
 import { registerDisplayer } from "../bridge/Displayer";
 
 type VideoPluginInfo = {
@@ -82,7 +82,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         setScenePath: (scenePath: string, responseCallback: any) => {
             try {
                 logger("setScenePath", scenePath);
-                room.setScenePath(scenePath);
+                if (window.manager) {
+                    window.manager.setMainViewScenePath(scenePath);
+                } else {
+                    room.setScenePath(scenePath);
+                }
                 responseCallback(JSON.stringify({}));
             } catch (e) {
                 return responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
@@ -138,7 +142,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         setSceneIndex: (index: number, responseCallback: any) => {
             logger("setSceneIndex", index);
             try {
-                room.setSceneIndex(index);
+                if (window.manager) {
+                    window.manager.setMainViewSceneIndex(index);
+                } else {
+                    room.setSceneIndex(index);
+                }
                 responseCallback(JSON.stringify({}));
             } catch (error) {
                 responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } }));
@@ -175,14 +183,23 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         },
         disableDeviceInputs: (disable: boolean) => {
             logger("disableDeviceInputs", disable);
+
+            if (window.manager) {
+                window.manager.setReadonly(disable);
+            }
             room.disableDeviceInputs = disable;
+            // tslint:disable-next-line:no-unused-expression
             room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).computedZindex();
+            // tslint:disable-next-line:no-unused-expression
             room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
         },
         disableOperations: (disableOperations: boolean) => {
             logger("disableOperations", disableOperations);
             room.disableCameraTransform = disableOperations;
             room.disableDeviceInputs = disableOperations;
+        },
+        disableWindowOperation: (disable: boolean) => {
+            window.manager?.setReadonly(disable);
         },
         putScenes: (dir: string, scenes: SceneDefinition[], index: number, responseCallback: any) => {
             logger("putScenes", scenes);
@@ -227,6 +244,35 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             logger("setTimeDelay", delay);
             room.timeDelay = delay;
         },
+
+        addApp: (kind: string, options: any, attributes: any, responseCallback: any) => {
+            logger("addApp", kind, options, attributes);
+            if (window.manager) {
+                window.manager.addApp({
+                    kind: kind,
+                    options: options,
+                    attributes : attributes
+                }).then(appId => {
+                    responseCallback(appId)
+                });
+            }
+        },
+
+        getSyncedState: (responseCallback: any) => {
+            logger("getSyncedState");
+            let result = window.syncedStore ? window.syncedStore!.attributes : {}
+            responseCallback(JSON.stringify(result))
+        },
+
+        safeSetAttributes: (attributes: any) => {
+            logger("safeSetAttributes", attributes);
+            window.syncedStore?.safeSetAttributes(attributes)
+        },
+
+        safeUpdateAttributes: (keys: string[], attributes: any) => {
+            logger("safeUpdateAttributes", attributes);
+            window.syncedStore?.safeUpdateAttributes(keys, attributes)
+        }
     });
     // FIXME:同步方法尽量还是放在同步方法里。
     // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。

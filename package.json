@@ -13,6 +13,7 @@
     "start": "webpack-dev-server --mode development --open --hot --host 0.0.0.0 --useLocalIp",
     "upgrade-plugin": "yarn upgrade --force @netless/white-audio-plugin @netless/white-video-plugin @netless/cursor-tool @netless/white-audio-plugin2 @netless/white-video-plugin2 @netless/video-js-plugin",
     "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
+    "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "check": "tsc"
   },
   "resolutions": {
@@ -22,11 +23,13 @@
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.0",
     "@netless/iframe-bridge": "2.1.5",
+    "@netless/synced-store": "^0.0.1",
     "@netless/video-js-plugin": "0.3.4",
     "@netless/white-audio-plugin": "^1.2.4",
     "@netless/white-audio-plugin2": "^2.0.4",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
+    "@netless/window-manager": "0.1.60",
     "core-js": "^3",
     "dsbridge": "^3.1.4",
     "html2canvas": "^1.0.0-rc.5",
