@@ -41,6 +41,13 @@ config = {
                 priority: 7,
                 reuseExistingChunk: true
             },
+            netless: {
+              test: /@netless/,
+              name: 'netless',
+              chunks: 'all',
+              priority: 7,
+              reuseExistingChunk: true
+            },
             vendors: {
                 test: /[\\/]node_modules[\\/]/,
                 name: 'vendor',
