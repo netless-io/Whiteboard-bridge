@@ -133,7 +133,7 @@ export default function App() {
             return url;
         } : undefined;
 
-        const { log, __nativeTags, __platform, initializeOriginsStates, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
+        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         showLog = !!log;
         nativeConfig = config;
@@ -196,6 +196,7 @@ export default function App() {
                     dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
                 },
                 pptParams,
+                useMobXState: useMultiViews,
             });
             window.sdk = sdk;
         } catch (e) {
@@ -212,15 +213,16 @@ export default function App() {
         removeBind();
         logger("joinRoom", nativeParams);
         const {timeout = 45000, cameraBound, windowParams, ...joinRoomParams} = nativeParams;
-        
+        const {useMultiViews} = nativeConfig!;
         const invisiblePlugins = [
-            ...joinRoomParams.useMultiViews ? [WindowManager as any] : [],
+            ...useMultiViews ? [WindowManager as any] : [],
         ]
 
         sdk!.joinRoom({
+            useMultiViews,
             ...joinRoomParams,
             invisiblePlugins: invisiblePlugins,
-            cursorAdapter: joinRoomParams.useMultiViews ? undefined : cursorAdapter,
+            cursorAdapter: useMultiViews ? undefined : cursorAdapter,
             cameraBound: convertBound(cameraBound),
         }, {
             onPhaseChanged: (phase) => roomPhaseChange(phase, timeout),
@@ -237,7 +239,8 @@ export default function App() {
         }).then(async aRoom => {
             removeBind();
             room = aRoom;
-            if (joinRoomParams.useMultiViews) {
+            /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
+            if (useMultiViews) {
                 window.manager = await WindowManager.mount({
                     room,
                     container: divRef.current!!,
