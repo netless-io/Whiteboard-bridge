@@ -1041,10 +1041,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-docs-viewer@^0.1.19":
-  version "0.1.19"
-  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.19.tgz#4343a06f844433f20c6d4ed3ea734cb103ae0760"
-  integrity sha512-ZV/5q1ADMwuFW0vO/SDP81j6DR+Rbp1bLfA4cWTqqf2qrlkLLt4H5qI3WpB8qGrdWYrk4XKYqvhuRWiiZEs4mA==
+"@netless/app-docs-viewer@^0.1.21":
+  version "0.1.21"
+  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.21.tgz#781f74070ae9b6a98f60f2935be1d4e0409bad1f"
+  integrity sha512-vz2NVpkfoqkg+0n3gx0dVziyqrdVgsuGh5Z/cSHmF9cNSjiCc+9yyERo2pQV9J6n5RB+UfL/WYTTJD2ApedIAw==
   dependencies:
     debounce-fn "^5.0.0"
     vanilla-lazyload "^17.4.0"
@@ -1119,19 +1119,20 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.1.60":
-  version "0.1.60"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.60.tgz#cd9ac428c3e82c15c828ae6e9ea6fc7adeb37889"
-  integrity sha512-dtM4MTxLc0M0xHZDMN75VwlUhyUq6LR79d4nwgecVbvoMjXndH6tMY+NdpTxLG7iKxW1mJGTJHxdQl86HA9tPA==
+"@netless/window-manager@0.1.66":
+  version "0.1.66"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.1.66.tgz#5ef9cbbc678de30c44a6432d13ec4647eea9ee68"
+  integrity sha512-LIv+4Twe3D+rGo7fFcOs/I8O/8BNUy6BaK9luGKP3cO00cUxbyxdt1slPPvclr2KBoGKrVRcDNwh3pERF0jp8Q==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
-    "@netless/app-docs-viewer" "^0.1.19"
+    "@netless/app-docs-viewer" "^0.1.21"
     "@netless/app-media-player" "0.1.0-beta.5"
     "@netless/telebox-insider" "^0.1.17"
     dexie "^3.0.3"
     emittery "^0.9.2"
-    lodash-es "^4.17.21"
+    lodash "^4.17.21"
     nanoid "^3.1.25"
+    p-retry "^4.6.1"
     video.js ">=7"
 
 "@netless/xml-js@1.6.15":
@@ -1302,6 +1303,11 @@
   dependencies:
     "@types/prop-types" "*"
     csstype "^2.2.0"
+
+"@types/retry@^0.12.0":
+  version "0.12.1"
+  resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.1.tgz#d8f1c0d0dc23afad6dc16a9e993a0865774b4065"
+  integrity sha512-xoDlM2S4ortawSWORYqsdU+2rxdh4LRW9ytc3zmT37RIKQh6IHyKwwtKhKis9ah8ol07DCkZxPt8BBvPjC6v4g==
 
 "@videojs/http-streaming@2.2.3":
   version "2.2.3"
@@ -4023,11 +4029,6 @@ locate-path@^3.0.0:
     p-locate "^3.0.0"
     path-exists "^3.0.0"
 
-lodash-es@^4.17.21:
-  version "4.17.21"
-  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
-  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
-
 lodash.memoize@^4.1.2:
   version "4.1.2"
   resolved "https://registry.yarnpkg.com/lodash.memoize/-/lodash.memoize-4.1.2.tgz#bcc6c49a42a2840ed997f323eada5ecd182e0bfe"
@@ -4588,6 +4589,14 @@ p-retry@^3.0.1:
   integrity sha512-XE6G4+YTTkT2a0UWb2kjZe8xNwf8bIbnqpc/IS/idOBVhyves0mK5OJgeocjx7q5pvX/6m23xuzVPYT1uGM73w==
   dependencies:
     retry "^0.12.0"
+
+p-retry@^4.6.1:
+  version "4.6.1"
+  resolved "https://registry.yarnpkg.com/p-retry/-/p-retry-4.6.1.tgz#8fcddd5cdf7a67a0911a9cf2ef0e5df7f602316c"
+  integrity sha512-e2xXGNhZOZ0lfgR9kL34iGlU8N/KO0xZnQxVEwdeOvpqNDQfdnxIYizvWtK8RglUa3bGqI8g0R/BdfzLMxRkiA==
+  dependencies:
+    "@types/retry" "^0.12.0"
+    retry "^0.13.1"
 
 p-try@^2.0.0:
   version "2.2.0"
@@ -5396,6 +5405,11 @@ retry@^0.12.0:
   version "0.12.0"
   resolved "https://registry.yarnpkg.com/retry/-/retry-0.12.0.tgz#1b42a6266a21f07421d1b0b54b7dc167b01c013b"
   integrity sha1-G0KmJmoh8HQh0bC1S33BZ7AcATs=
+
+retry@^0.13.1:
+  version "0.13.1"
+  resolved "https://registry.yarnpkg.com/retry/-/retry-0.13.1.tgz#185b1587acf67919d63b357349e03537b2484658"
+  integrity sha512-XQBQ3I8W1Cge0Seh+6gjj03LbmRFWuoszgK9ooCpwYIrhhoO80pfq4cUkU5DkknwfOfFteRwlZ56PYOGYyFWdg==
 
 rimraf@^2.6.3:
   version "2.7.1"
