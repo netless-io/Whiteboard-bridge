@@ -102,7 +102,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
                 mode = ViewMode.Freedom;
             }
             logger("setViewMode", { viewMode, mode });
-            room.setViewMode(mode);
+            if (window.manager) {
+                window.manager.setViewMode(mode);
+            } else {
+                room.setViewMode(mode);
+            }
         },
         setWritable: (writable: boolean, responseCallback: any) => {
             room.setWritable(writable).then(() => {
