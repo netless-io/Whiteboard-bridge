@@ -1,4 +1,9 @@
 module.exports = {
+    "exclude": [
+        // \\ for Windows, / for macOS and Linux
+        /node_modules[\\/]core-js/,
+        /node_modules[\\/]webpack[\\/]buildin/,
+      ],
     "presets": [
         ["@babel/preset-env",
         {

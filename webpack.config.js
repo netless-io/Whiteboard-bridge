@@ -16,7 +16,7 @@ config = {
     filename: `[name].[contenthash:8].js`
   },
   resolve: {
-    extensions: ['.ts', '.tsx', '.js'],
+    extensions: ['.ts', '.tsx', '.js', "cjs"],
     mainFields: ["main", "module"]
   },
   optimization: {
@@ -56,7 +56,7 @@ config = {
   module: {
     rules: [
       {
-        test: /\.(ts|js)x?$/,
+        test: /\.(ts|js|cjs)x?$/,
         use: {
           loader: 'babel-loader'
         },
