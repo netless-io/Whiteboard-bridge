@@ -1119,10 +1119,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.2.0":
-  version "0.2.0"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.2.0.tgz#6fba07ff9697a8985ac89fc78de8628653381500"
-  integrity sha512-Bm68hwwaJ1VV92FGK8bspw/i0ho9yxnGOK1xKiRikqze4sHYaZP2cPDzM8dpwUx79BA7YaiyqmkyCSMLanznrQ==
+"@netless/window-manager@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.2.3.tgz#3565fed64f4ede5d471d0a5050326d82b22fc3e0"
+  integrity sha512-BoJfqBa9Fz+jYzulUzXu4Ok0r1jgLcsug/RiH94198NIV57n1UkjgjBbr6duPyNcVAYQrKejkmsYaIf8bKDs/A==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/app-docs-viewer" "^0.1.21"
@@ -1131,7 +1131,7 @@
     emittery "^0.9.2"
     lodash "^4.17.21"
     p-retry "^4.6.1"
-    uuid "^8.3.2"
+    uuid "^7.0.3"
     video.js ">=7"
 
 "@netless/xml-js@1.6.15":
@@ -7442,11 +7442,6 @@ uuid@^7.0.3:
   version "7.0.3"
   resolved "https://registry.yarnpkg.com/uuid/-/uuid-7.0.3.tgz#c5c9f2c8cf25dc0a372c4df1441c41f5bd0c680b"
   integrity sha512-DPSke0pXhTZgoF/d+WSt2QaKMCFSfx7QegxEWT+JOuHF5aWrKEn0G+ztjuJg/gG8/ItK+rbPCD/yNv8yyih6Cg==
-
-uuid@^8.3.2:
-  version "8.3.2"
-  resolved "https://registry.yarnpkg.com/uuid/-/uuid-8.3.2.tgz#80d5b5ced271bb9af6c445f21a1a04c606cefbe2"
-  integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
 
 v8-compile-cache@2.0.3:
   version "2.0.3"
