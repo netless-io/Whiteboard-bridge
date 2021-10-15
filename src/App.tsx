@@ -212,7 +212,7 @@ export default function App() {
         }
         removeBind();
         logger("joinRoom", nativeParams);
-        const {timeout = 45000, cameraBound, windowParams, ...joinRoomParams} = nativeParams;
+        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, ...joinRoomParams} = nativeParams;
         const {useMultiViews} = nativeConfig!;
         const invisiblePlugins = [
             ...useMultiViews ? [WindowManager as any] : [],
@@ -220,6 +220,7 @@ export default function App() {
 
         sdk!.joinRoom({
             useMultiViews,
+            disableCameraTransform,
             ...joinRoomParams,
             invisiblePlugins: invisiblePlugins,
             cursorAdapter: useMultiViews ? undefined : cursorAdapter,
@@ -249,6 +250,7 @@ export default function App() {
                     chessboard: true,
                     cursor: !!cursorAdapter,
                     debug: true,
+                    disableCameraTransform,
                     ...windowParams,
                 });
             } else {
