@@ -1079,10 +1079,10 @@
     eventemitter2 "^6.4.3"
     react "^16.13.1"
 
-"@netless/synced-store@^0.0.1":
-  version "0.0.1"
-  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-0.0.1.tgz#ae361a1ec2d220f5e2689ca9ae527eb1ccb1f3e2"
-  integrity sha512-aAnJEZI+BSMB3kbFJRCLvJd1qckcH/G1+/ZYbc4W6Hyhtp8VIwAjuJUk6exI8k3PhA1pHUU2V45SXFViAswFOw==
+"@netless/synced-store@0.0.2":
+  version "0.0.2"
+  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-0.0.2.tgz#350b83ba7eb633ae3032e959800f7814d6088c06"
+  integrity sha512-4qaGyS1s9oRATR11OjQThNIZGrp+iVDesvDfSz/DjRGpYEhKbza9IgSjp9jwqe65FfR3eNp3AAjRl0JWtuuftw==
   dependencies:
     eventemitter3 "^4.0.7"
 
