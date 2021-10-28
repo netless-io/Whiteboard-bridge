@@ -1,6 +1,8 @@
 import dsBridge from "dsbridge";
 import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene } from "white-web-sdk";
 import { registerDisplayer } from "../bridge/Displayer";
+import { AddAppOptions, BuiltinApps } from "@netless/window-manager";
+import { Attributes as SlideAttributes } from "@netless/app-slide";
 
 type VideoPluginInfo = {
     readonly props?: {
@@ -16,6 +18,69 @@ type EventEntry = {
     eventName: string;
     payload: any;
 };
+
+function makeSlideParams(scenes: SceneDefinition[]): {
+    scenesWithoutPPT: SceneDefinition[];
+    taskId: string;
+    url: string;
+} {
+    const scenesWithoutPPT: SceneDefinition[] = [];
+    let taskId = "";
+    let url = "";
+
+    // e.g. "ppt(x)://cdn/prefix/dynamicConvert/{taskId}/1.slide"
+    const pptSrcRE = /^pptx?(?<prefix>:\/\/\S+?dynamicConvert)\/(?<taskId>\w+)\//;
+
+    for (const { name, ppt } of scenes) {
+        // make sure scenesWithoutPPT.length === scenes.length
+        scenesWithoutPPT.push({ name });
+
+        if (!ppt || !ppt.src.startsWith("ppt")) {
+            continue;
+        }
+        const match = pptSrcRE.exec(ppt.src);
+        if (!match || !match.groups) {
+            continue;
+        }
+        taskId = match.groups.taskId;
+        url = "https" + match.groups.prefix;
+        break;
+    }
+
+    return { scenesWithoutPPT, taskId, url };
+}
+
+function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]): Promise<string | undefined>{
+    const { scenesWithoutPPT, taskId, url } = makeSlideParams(scenes);
+    try {
+        if (taskId && url) {
+            return window.manager!.addApp({
+                kind: "Slide",
+                options: {
+                    scenePath,
+                    title,
+                    scenes: scenesWithoutPPT,
+                },
+                attributes: {
+                    taskId,
+                    url,
+                } as SlideAttributes,
+            });
+        } else {
+            return window.manager!.addApp({
+                kind: BuiltinApps.DocsViewer,
+                options: {
+                    scenePath,
+                    title,
+                    scenes,
+                },
+            });
+        }
+    } catch (err) {
+        console.log(err);
+        return Promise.reject()
+    }
+}
 
 export function registerRoom(room: Room, logger: (funName: string, ...param: any[]) => void) {
     window.room = room;
@@ -252,13 +317,21 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         addApp: (kind: string, options: any, attributes: any, responseCallback: any) => {
             logger("addApp", kind, options, attributes);
             if (window.manager) {
-                window.manager.addApp({
-                    kind: kind,
-                    options: options,
-                    attributes : attributes
-                }).then(appId => {
-                    responseCallback(appId)
-                });
+                if (kind === "Slide") {
+                    const opts = options as AddAppOptions
+                    addSlideApp(opts.scenePath!, opts.title!,opts.scenes!)
+                    .then(appId => {
+                        responseCallback(appId)
+                    })
+                } else {
+                    window.manager.addApp({
+                        kind: kind,
+                        options: options,
+                        attributes: attributes
+                    }).then(appId => {
+                        responseCallback(appId)
+                    });
+                }
             }
         },
 

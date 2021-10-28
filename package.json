@@ -29,7 +29,8 @@
     "@netless/white-audio-plugin2": "^2.0.4",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
-    "@netless/window-manager": "0.2.9",
+    "@netless/window-manager": "0.2.10",
+    "@netless/app-slide": "^0.0.2",
     "core-js": "^3",
     "dsbridge": "^3.1.4",
     "html2canvas": "^1.0.0-rc.5",
@@ -38,7 +39,7 @@
     "react-dom": "^16.12.0",
     "typescript": "^4.2.4",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.14.5"
+    "white-web-sdk": "2.14.7"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
