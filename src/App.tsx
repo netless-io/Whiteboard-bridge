@@ -10,6 +10,7 @@ import {audioPlugin} from "@netless/white-audio-plugin";
 import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
+import SlideApp from "@netless/app-slide";
 import { WindowManager } from "@netless/window-manager";
 import "@netless/window-manager/dist/style.css";
 import { SyncedStore } from "@netless/synced-store";
@@ -99,7 +100,7 @@ export default function App() {
 
     function testRoom() {
         showLog = true;
-        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier};
+        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier, useMultiViews: true};
         newWhiteSdk(nativeConfig);
         joinRoom({uuid: testRoomUUID, roomToken: testRoomToken, userPayload: {
             avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg"
@@ -181,6 +182,16 @@ export default function App() {
         });
         plugins.setPluginContext("video.js", {enable: false, verbose: true});
         window.plugins = plugins;
+
+        WindowManager.register({
+            kind: "Slide",
+            appOptions: {
+                debug: false,
+            },
+            src: async () => {
+                return SlideApp;
+            },
+        });
 
         const invisiblePlugins = [
             ...enableIFramePlugin ? [IframeBridge as any] : [],
