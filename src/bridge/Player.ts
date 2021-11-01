@@ -72,7 +72,7 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
             if (combinePlayer) {
                 combinePlayer.seek(beginTime);
             } else {
-                player.seekToScheduleTime(beginTime);
+                player.seekToProgressTime(beginTime);
             }
         },
         setObserverMode: (observerMode: string) => {
@@ -117,8 +117,8 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
             return player.playbackSpeed;
         },
         timeInfo: () => {
-            const {scheduleTime, timeDuration, framesCount, beginTimestamp} = player;
-            const info = {scheduleTime, timeDuration, framesCount, beginTimestamp};
+            const {progressTime, timeDuration, framesCount, beginTimestamp} = player;
+            const info = {scheduleTime: progressTime, timeDuration, framesCount, beginTimestamp};
             logger("timeInfo", info);
             return info;
         },
