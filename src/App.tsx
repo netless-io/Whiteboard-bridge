@@ -102,7 +102,7 @@ export default function App() {
         showLog = true;
         nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier, useMultiViews: true};
         newWhiteSdk(nativeConfig);
-        joinRoom({uuid: testRoomUUID, roomToken: testRoomToken, userPayload: {
+        joinRoom({uuid: testRoomUUID, uid: "0", roomToken: testRoomToken, userPayload: {
             avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg"
         }}, () => {});
     }

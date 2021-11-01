@@ -76,6 +76,7 @@ export type NativeJoinRoomParams = BaseTypeRoomParams & {
     cameraBound?: NativeCameraBound;
     timeout?: number;
     windowParams?: MountParams,
+    userPayload?: {[key in string]: any}
 };
 
 type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;
