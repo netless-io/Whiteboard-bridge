@@ -45,7 +45,6 @@ export type NativeSDKConfig = {
     __platform: "ios" | "android";
     /** 多窗口在初始化的时候，需要配置 useMobxState 为 true，所以在初始化 sdk 的时候，就需要知道参数 */
     useMultiViews?: boolean;
-    fpa?: boolean;
 } & WhiteWebSdkConfiguration;
 
 // Android 使用 enum 名称，请勿随意改动
@@ -77,8 +76,9 @@ type BaseTypeRoomParams = BaseTypeKey<JoinRoomParams>;
 export type NativeJoinRoomParams = BaseTypeRoomParams & {
     cameraBound?: NativeCameraBound;
     timeout?: number;
-    windowParams?: MountParams,
-    userPayload?: {[key in string]: any}
+    windowParams?: MountParams;
+    userPayload?: {[key in string]: any};
+    fpa?: boolean;
 };
 
 type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;

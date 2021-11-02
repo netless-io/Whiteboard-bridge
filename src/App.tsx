@@ -137,15 +137,12 @@ export default function App() {
             return url;
         } : undefined;
 
-        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, fpa, ...restConfig } = config;
+        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         showLog = !!log;
         nativeConfig = config;
 
         logger("newWhiteSdk", config);
-        if (fpa) {
-            window.fpa = fpa;
-        }
 
         if (__platform) {
             window.__platform = __platform;
@@ -229,11 +226,14 @@ export default function App() {
         }
         removeBind();
         logger("joinRoom", nativeParams);
-        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, ...joinRoomParams} = nativeParams;
+        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, fpa, ...joinRoomParams} = nativeParams;
         const {useMultiViews} = nativeConfig!;
         const invisiblePlugins = [
             ...useMultiViews ? [WindowManager as any] : [],
         ]
+        if (fpa) {
+            window.fpa = fpa;
+        }
 
         sdk!.joinRoom({
             useMultiViews,
