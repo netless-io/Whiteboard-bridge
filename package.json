@@ -30,7 +30,7 @@
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
     "@netless/window-manager": "0.2.19",
-    "@netless/app-slide": "^0.0.2",
+    "@netless/app-slide": "^0.0.21",
     "core-js": "^3",
     "dsbridge": "^3.1.4",
     "html2canvas": "^1.0.0-rc.5",
