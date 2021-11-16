@@ -226,8 +226,14 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             return responseCallback(JSON.stringify(room.state.sceneState.scenes));
         },
         getZoomScale: (responseCallback: any) => {
-            logger("getZoomScale", room.state.cameraState.scale);
-            return responseCallback(JSON.stringify(room.state.cameraState.scale));
+            let scale = 1;
+            if (window.manager) {
+                scale = window.manager.mainView.camera.scale;
+            } else {
+                scale = room.state.cameraState.scale;
+            }
+            logger("getZoomScale", scale);
+            return responseCallback(JSON.stringify(scale));
         },
         getBroadcastState: (responseCallback: any) => {
             logger("getBroadcastState", room.state.broadcastState);
@@ -355,6 +361,10 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
     // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
     dsBridge.register("room.state", {
         getRoomState: () => {
+            const state = room.state;
+            if (window.manager) {
+                return {...state, cameraState: {...window.manager.camera, scale: window.manager.mainView.camera.scale, ...window.manager.mainView.size}};
+            }
             return room.state;
         },
         getTimeDelay: () => {
