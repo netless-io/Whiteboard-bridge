@@ -1054,10 +1054,10 @@
   resolved "https://registry.yarnpkg.com/@netless/app-media-player/-/app-media-player-0.1.0-beta.5.tgz#13ad8680be81503f5dc48c4c4e9848ba15b76e5a"
   integrity sha512-q24tZnDGwTM8fvSs97qavuF8w8cXa4Tx3Nl7Xvig5Um4XKrfNijjLK9pI1cdctfuefl9s8wrG8JNCN2C6yqeDw==
 
-"@netless/app-slide@^0.0.22":
-  version "0.0.22"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.0.22.tgz#c16e9daa7f69df82248fe946216d782986e36d83"
-  integrity sha512-tqWx21Z+mQbdlUEFQluZSoccV6bB+lyBTZo4rmENfna34YKQSrIhw95QMlrzCwULZU1M2HF+hJ3JuA1gTGDg7w==
+"@netless/app-slide@^0.0.25":
+  version "0.0.25"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.0.25.tgz#5c616cb2287412dd24dd65172b89639b243dc537"
+  integrity sha512-GVrWxF1aVZ8RKCd8YLaRG7TOyWqjiIdciahmiHCfqd/wZUyBz3jHBwnE616jt3rMNrzjZvI/6Pqx0aVfgi2YWA==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1091,14 +1091,17 @@
   dependencies:
     eventemitter3 "^4.0.7"
 
-"@netless/telebox-insider@^0.1.19":
-  version "0.1.19"
-  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.1.19.tgz#7b05bf7cca9665fb7a5264fd3b3bd8e6cd08d231"
-  integrity sha512-xyoY/Tj+ve9qxOjZKKglF2Nf4mdzEpxqNBGXWhvRvW/KBX/5fpZ1wF0MaxCeHFZbpG9hHM+tdP/K6qbf00BQxQ==
+"@netless/telebox-insider@0.2.4":
+  version "0.2.4"
+  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.2.4.tgz#1262b94faf862693abc44884b488841d582f8f02"
+  integrity sha512-StaxotnLXU09/VSLyJVqbpaYvZVSmOTMgw0c+3++xqh9ayoSNQNLsL1eEWGoa3qqK/4ni7A3D77QpCS+VZtcQw==
   dependencies:
+    "@types/shallowequal" "^1.1.1"
     eventemitter3 "^4.0.7"
-    side-effect-manager "^0.1.3"
+    shallowequal "^1.1.0"
+    side-effect-manager "^0.1.5"
     stylefire "^7.0.3"
+    value-enhancer "^0.0.7"
 
 "@netless/video-js-plugin@0.3.4":
   version "0.3.4"
@@ -1125,15 +1128,15 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.2.19":
-  version "0.2.19"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.2.19.tgz#5e104effa356c062ca6c74d440d08b18f64ba373"
-  integrity sha512-voVwcBUbNAriOypBSUOcGjscvm0949I4DICyb1coDZboWZGH4gHNWyxUeQx4dZ88jF0Xvu368duKrfVOl5tSDw==
+"@netless/window-manager@0.3.2":
+  version "0.3.2"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.3.2.tgz#48d6602086b79e35fb3a75126fcd91d7017e4447"
+  integrity sha512-1tNPPGYz2ypkOD+6Opv3E0ie5js0PQ1ie17kaZqmv1nXDKlaYwyGvt7aMRh6qBXyP5tQBzd/Q+yGqAgr1RrCeg==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/app-docs-viewer" "^0.1.21"
     "@netless/app-media-player" "0.1.0-beta.5"
-    "@netless/telebox-insider" "^0.1.19"
+    "@netless/telebox-insider" "0.2.4"
     emittery "^0.9.2"
     lodash "^4.17.21"
     p-retry "^4.6.1"
@@ -1287,6 +1290,11 @@
   version "0.12.1"
   resolved "https://registry.yarnpkg.com/@types/retry/-/retry-0.12.1.tgz#d8f1c0d0dc23afad6dc16a9e993a0865774b4065"
   integrity sha512-xoDlM2S4ortawSWORYqsdU+2rxdh4LRW9ytc3zmT37RIKQh6IHyKwwtKhKis9ah8ol07DCkZxPt8BBvPjC6v4g==
+
+"@types/shallowequal@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@types/shallowequal/-/shallowequal-1.1.1.tgz#aad262bb3f2b1257d94c71d545268d592575c9b1"
+  integrity sha512-Lhni3aX80zbpdxRuWhnuYPm8j8UQaa571lHP/xI4W+7BAFhSIhRReXnqjEgT/XzPoXZTJkCqstFMJ8CZTK6IlQ==
 
 "@types/source-list-map@*":
   version "0.1.2"
@@ -6631,6 +6639,11 @@ sha.js@^2.4.0, sha.js@^2.4.8:
     inherits "^2.0.1"
     safe-buffer "^5.0.1"
 
+shallowequal@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/shallowequal/-/shallowequal-1.1.0.tgz#188d521de95b9087404fd4dcb68b13df0ae4e7f8"
+  integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
+
 shebang-command@^1.2.0:
   version "1.2.0"
   resolved "https://registry.yarnpkg.com/shebang-command/-/shebang-command-1.2.0.tgz#44aac65b695b03398968c39f363fee5deafdf1ea"
@@ -6651,10 +6664,10 @@ side-channel@^1.0.2:
     es-abstract "^1.17.0-next.1"
     object-inspect "^1.7.0"
 
-side-effect-manager@^0.1.3:
-  version "0.1.3"
-  resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-0.1.3.tgz#787aaf7b74f9e8967387ec7e1b1d03fa40c5c96f"
-  integrity sha512-Ej2ig3xtMkpYoQeTP94ym/qP5k0UWQE3RlIgIkQys209S1B4wZRsY7Kh+CzSwlN+R1u9Gt6Ls6d8jnclVUWm1g==
+side-effect-manager@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-0.1.5.tgz#d9b205e4317b60f90876f6ad498a1ac7e038c7d7"
+  integrity sha512-aAEXMS+9qW7rY2cwq4S6UjW3IBO/ZLWRI0sH1oGJ1eDE7YBFR1TW950qffnpx/0hByusAOVbu2zjThk9Vcjs+Q==
 
 signal-exit@^3.0.0:
   version "3.0.3"
@@ -7458,6 +7471,13 @@ v8-compile-cache@2.0.3:
   version "2.0.3"
   resolved "https://registry.yarnpkg.com/v8-compile-cache/-/v8-compile-cache-2.0.3.tgz#00f7494d2ae2b688cfe2899df6ed2c54bef91dbe"
   integrity sha512-CNmdbwQMBjwr9Gsmohvm0pbL954tJrNzf6gWL3K+QMQf00PF7ERGrEiLgjuU3mKreLC2MeGhUsNV9ybTbLgd3w==
+
+value-enhancer@^0.0.7:
+  version "0.0.7"
+  resolved "https://registry.yarnpkg.com/value-enhancer/-/value-enhancer-0.0.7.tgz#b2440bc264ea8518653e367549762951cd1f46ca"
+  integrity sha512-Gns+pJcsv2+AXHf3p4l9Vry4wKYPb52a/YsGqJ7wOe1jXYqXetTL3p/9iwUPtFesJE3p7y80hX4HuX1tb6Hj1g==
+  dependencies:
+    side-effect-manager "^0.1.5"
 
 vanilla-lazyload@^17.4.0:
   version "17.4.0"
