@@ -137,7 +137,7 @@ export default function App() {
             return url;
         } : undefined;
 
-        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
+        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, appOptions, ...restConfig } = config;
 
         showLog = !!log;
         nativeConfig = config;
@@ -187,6 +187,7 @@ export default function App() {
             kind: "Slide",
             appOptions: {
                 debug: false,
+                ...appOptions,
             },
             src: async () => {
                 return SlideApp;
