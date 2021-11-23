@@ -183,11 +183,13 @@ export default function App() {
         plugins.setPluginContext("video.js", {enable: false, verbose: true});
         window.plugins = plugins;
 
+        const slideKind = "Slide";
+        const slideAppOptions = appOptions && appOptions[slideKind] || {};
         WindowManager.register({
-            kind: "Slide",
+            kind: slideKind,
             appOptions: {
                 debug: false,
-                ...appOptions,
+                ...slideAppOptions,
             },
             src: async () => {
                 return SlideApp;
