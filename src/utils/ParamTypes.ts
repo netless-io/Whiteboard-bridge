@@ -21,7 +21,7 @@ declare global {
       html2canvas: any;
       setBackgroundColor: (r: number, g: number, b: number, a?: number | undefined) => void;
       plugins: any;
-      fpa?: boolean;
+      nativeWebSocket?: boolean;
     }
 }
 
@@ -78,7 +78,7 @@ export type NativeJoinRoomParams = BaseTypeRoomParams & {
     timeout?: number;
     windowParams?: MountParams;
     userPayload?: {[key in string]: any};
-    fpa?: boolean;
+    nativeWebSocket?: boolean;
 };
 
 type BaseTypeReplayParams = Writable<BaseTypeKey<ReplayRoomParams>>;

@@ -32,7 +32,7 @@ export interface FakeWebSocket {
 function hookWebSocket() {
     const originConstructor = WebSocket;
     (WebSocket as any) = function(url, protocols?) {
-        if (window.fpa) {
+        if (window.nativeWebSocket) {
             return new WebSocketBridge(url);
         } else {
             return new originConstructor(url, protocols);

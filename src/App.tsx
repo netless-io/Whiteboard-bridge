@@ -226,13 +226,13 @@ export default function App() {
         }
         removeBind();
         logger("joinRoom", nativeParams);
-        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, fpa, ...joinRoomParams} = nativeParams;
+        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, ...joinRoomParams} = nativeParams;
         const {useMultiViews} = nativeConfig!;
         const invisiblePlugins = [
             ...useMultiViews ? [WindowManager as any] : [],
         ]
-        if (fpa) {
-            window.fpa = fpa;
+        if (nativeWebSocket) {
+            window.nativeWebSocket = nativeWebSocket;
         }
 
         sdk!.joinRoom({
