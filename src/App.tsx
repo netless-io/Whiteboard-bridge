@@ -15,7 +15,6 @@ import { WindowManager } from "@netless/window-manager";
 import "@netless/window-manager/dist/style.css";
 import { SyncedStore } from "@netless/synced-store";
 
-import multipleDomain from "./utils/MultipleDomain";
 import {convertBound} from "./utils/BoundConvert";
 import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
 import {CursorTool} from "@netless/cursor-tool";
@@ -156,10 +155,6 @@ export default function App() {
 
         if (__nativeTags) {
             window.__nativeTags = {...window.__nativeTags, ...__nativeTags};
-        }
-
-        if (routeBackup) {
-            multipleDomain();
         }
 
         const pptParams = restConfig.pptParams || {};
