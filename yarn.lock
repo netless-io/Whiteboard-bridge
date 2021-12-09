@@ -1054,10 +1054,10 @@
   resolved "https://registry.yarnpkg.com/@netless/app-media-player/-/app-media-player-0.1.0-beta.5.tgz#13ad8680be81503f5dc48c4c4e9848ba15b76e5a"
   integrity sha512-q24tZnDGwTM8fvSs97qavuF8w8cXa4Tx3Nl7Xvig5Um4XKrfNijjLK9pI1cdctfuefl9s8wrG8JNCN2C6yqeDw==
 
-"@netless/app-slide@^0.0.35":
-  version "0.0.35"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.0.35.tgz#09c13d695e8b041912652dd211491f018e55e133"
-  integrity sha512-VRbymDqt7F0ie9H4q3qqEquVk87woJcyTpbpBfzb+oIJxQvGIQnhCoPVTamvytyRIKlFTrqflUdy6TVfeLOMuQ==
+"@netless/app-slide@^0.0.36":
+  version "0.0.36"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.0.36.tgz#9108c305eff7d740e157e9d15b4e9136bd4acbbc"
+  integrity sha512-iVoWRebcj3ZuI6GmuA4bGl9XNXSLYKQLHFGHodXgEovs3qHgNQ0EpPtgtnhgICQcIMIZr/viFpXMpnvZSuDCxQ==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1128,10 +1128,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.3.8":
-  version "0.3.8"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.3.8.tgz#a0814427a097400db06d53e12a3b55b80d1a7833"
-  integrity sha512-DicJtIK08ecAEyDGejxTqdGO9XPpL4TKyHLV71u7XW9pab4VURPjmlM/ff4rA71htpPuwfZ2njjxV59GMQmiAQ==
+"@netless/window-manager@0.3.9":
+  version "0.3.9"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.3.9.tgz#ccf77a8f582d76513b8bf5ce1bbd98014b0f01be"
+  integrity sha512-r5T9GwD/xvVYOXGa3QwdQrbPILifdZg4V+yKePfqSX/6OlZXOZ98UGwfYWRrzD3tQAdWH0UuxHe3VEBbFo3SgQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/app-docs-viewer" "^0.1.21"
