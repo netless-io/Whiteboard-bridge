@@ -6,7 +6,7 @@ export function hookCreateElement() {
         // 防止多次拦截，页面是纯净的，不会有其他拦截
         return;
     }
-    console.log("interrept document.createElement success");
+    console.log("interrupt document.createElement success");
     document.createElement = function(tagName: string, options?: ElementCreationOptions): HTMLElement {
         const element = f.call(this, tagName, options); 
         if (element.nodeName === "IMG") {
