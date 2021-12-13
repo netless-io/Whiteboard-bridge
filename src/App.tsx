@@ -85,6 +85,7 @@ export default function App() {
         if (window.manager) {
             window.manager.destroy()
             window.manager = undefined;
+            room = undefined;
         } else if (room) {
             room.bindHtmlElement(null);
             // FIXME:最好执行 disconnect，但是由于如果主动执行 disconnect，会触发状态变化回调，导致一定问题，所以此处不能主动执行。
