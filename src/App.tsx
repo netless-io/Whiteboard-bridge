@@ -442,7 +442,7 @@ export default function App() {
         setTimeout(() => {
             if (room && room.phase === RoomPhase.Reconnecting) {
                 room.disconnect().then(() => {
-                    dsBridge.call("room.fireDisconnectWithError", `Reconnect time exceeds ${timeout} milsceonds, sdk call disconnect automatically`);
+                    dsBridge.call("room.fireDisconnectWithError", `Reconnect time exceeds ${timeout} milliseconds, sdk call disconnect automatically`);
                 });
             }
         }, timeout);
