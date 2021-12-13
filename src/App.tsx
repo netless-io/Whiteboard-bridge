@@ -257,29 +257,33 @@ export default function App() {
             room = aRoom;
             /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
             if (useMultiViews) {
-                const manager = await WindowManager.mount({
-                    room,
-                    container: divRef.current!!,
-                    // 高比宽
-                    containerSizeRatio: 9/16,
-                    chessboard: true,
-                    cursor: !!cursorAdapter,
-                    debug: true,
-                    disableCameraTransform,
-                    ...windowParams,
-                });
-                // 多窗口，cameraState 不可用，通过这种方式，来替代
-                manager.mainView.callbacks.on("onCameraUpdated", (camera: Camera) => {
-                    const size = manager.mainView.size;
-                    const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
-                    dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
-                });
-                manager.mainView.callbacks.on("onSizeUpdated", (size: Size) => {
-                    const camera = manager.mainView.camera;
-                    const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
-                    dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
-                });
-                window.manager = manager;
+                try {
+                    const manager = await WindowManager.mount({
+                        room,
+                        container: divRef.current!!,
+                        // 高比宽
+                        containerSizeRatio: 9/16,
+                        chessboard: true,
+                        cursor: !!cursorAdapter,
+                        debug: true,
+                        disableCameraTransform,
+                        ...windowParams,
+                    });                    
+                    // 多窗口，cameraState 不可用，通过这种方式，来替代
+                    manager.mainView.callbacks.on("onCameraUpdated", (camera: Camera) => {
+                        const size = manager.mainView.size;
+                        const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
+                        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+                    });
+                    manager.mainView.callbacks.on("onSizeUpdated", (size: Size) => {
+                        const camera = manager.mainView.camera;
+                        const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
+                        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+                    });
+                    window.manager = manager;
+                } catch (error) {
+                    return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+                }
             } else {
                 room.bindHtmlElement(divRef.current);
                 if (!!cursorAdapter) {
