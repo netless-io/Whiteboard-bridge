@@ -86,6 +86,14 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
     window.room = room;
     registerDisplayer(room, logger);
 
+    function updateIframePluginState() {
+        // iframe 根据 disableDeviceInputs 禁用操作，主动修改该值后，需要调用 updateIframePluginState 来更新状态
+        // tslint:disable-next-line:no-unused-expression
+        room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).computedZindex();
+        // tslint:disable-next-line:no-unused-expression
+        room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
+    }
+
     dsBridge.register("ppt", {
         nextStep: () => {
             logger("nextStep");
@@ -263,15 +271,13 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
                 window.manager.setReadonly(disable);
             }
             room.disableDeviceInputs = disable;
-            // tslint:disable-next-line:no-unused-expression
-            room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).computedZindex();
-            // tslint:disable-next-line:no-unused-expression
-            room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
+            updateIframePluginState();
         },
         disableOperations: (disableOperations: boolean) => {
             logger("disableOperations", disableOperations);
             room.disableCameraTransform = disableOperations;
             room.disableDeviceInputs = disableOperations;
+            updateIframePluginState();
         },
         disableWindowOperation: (disable: boolean) => {
             window.manager?.setReadonly(disable);
