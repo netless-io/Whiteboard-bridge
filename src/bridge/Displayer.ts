@@ -83,7 +83,7 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
             } else if (iframes.length == 0) {
                 logger("postmessage", "no frames exist");
             } else {
-                logger("postmessage", "no conentWindow");
+                logger("postmessage", "no content Window");
             }
         },
         scaleIframeToFit: scaleIframeToFit,
