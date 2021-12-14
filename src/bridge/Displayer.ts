@@ -7,6 +7,19 @@ import {NativeCameraBound} from "../utils/ParamTypes";
 import {Event as AkkoEvent } from "white-web-sdk";
 import {IframeBridge} from "@netless/iframe-bridge";
 
+function urlContentToDataUri(url) {
+  return fetch(url)
+    .then((response) => response.blob())
+    .then((blob) => new Promise((callback) => {
+          let reader = new FileReader();
+          reader.onload = function () {
+            callback(this.result);
+          };
+          reader.readAsDataURL(blob);
+        })
+    );
+}
+
 export function registerDisplayer(displayer: Displayer, logger: (funName: string, ...param: any[]) => void) {
 
     const setCameraBound = (nativeBound: NativeCameraBound) => {
@@ -42,15 +55,16 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
 
         document.body.appendChild(div);
         fn(scenePath, div, div.clientWidth, div.clientHeight);
-        html2canvas(div, {useCORS: true, onclone: function(div: Document): void {
-            Array.from(div.getElementsByTagName("svg")).forEach(s => {
-                // https://github.com/eKoopmans/html2pdf.js/issues/185
-                // https://github.com/niklasvh/html2canvas/issues/1578
-                s.setAttribute("width", `${s.clientWidth}`);
-                s.setAttribute("height", `${s.clientHeight}`);
-            });
+        html2canvas(div, {useCORS: true, onclone: async function(div: Document): Promise<void> {
+            const images = Array.from(div.getElementsByTagName("image"));
+            for (const i of images) {
+                const image = i as SVGImageElement;
+                const url = image.href.baseVal;
+                // https://github.com/niklasvh/html2canvas/issues/2104
+                const dataUri = await urlContentToDataUri(url);
+                image.href.baseVal = dataUri as string;
+            }
         }}).then(canvas => {
-            (window as any).canvas = canvas;
             const data = canvas.toDataURL();
             document.body.removeChild(div);
             responseCallback(data);
