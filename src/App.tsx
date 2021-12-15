@@ -2,7 +2,7 @@ import "@netless/canvas-polyfill";
 import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
-import {WhiteWebSdk, RoomPhase, Room, Camera, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType, PlayerPhase, InvisiblePlugin, RoomState, Size} from "white-web-sdk";
+import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType, PlayerPhase} from "white-web-sdk";
 import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils/ParamTypes";
 import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
@@ -23,6 +23,7 @@ import "./App.css";
 import 'video.js/dist/video-js.css';
 import { hookCreateElement } from './utils/ImgError';
 import { postIframeMessage } from './utils/iFrame';
+import { registerManager } from "./bridge/Manager";
 
 let showLog = false;
 const lastSchedule = {
@@ -269,19 +270,8 @@ export default function App() {
                         debug: true,
                         disableCameraTransform,
                         ...windowParams,
-                    });                    
-                    // 多窗口，cameraState 不可用，通过这种方式，来替代
-                    manager.mainView.callbacks.on("onCameraUpdated", (camera: Camera) => {
-                        const size = manager.mainView.size;
-                        const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
-                        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
                     });
-                    manager.mainView.callbacks.on("onSizeUpdated", (size: Size) => {
-                        const camera = manager.mainView.camera;
-                        const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
-                        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
-                    });
-                    window.manager = manager;
+                    registerManager(manager, logger);          
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
                 }
