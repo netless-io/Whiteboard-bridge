@@ -10,7 +10,7 @@ import {audioPlugin} from "@netless/white-audio-plugin";
 import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
-import SlideApp from "@netless/app-slide";
+import SlideApp, { addHooks as addHooksSlide } from "@netless/app-slide";
 import { WindowManager } from "@netless/window-manager";
 import "@netless/window-manager/dist/style.css";
 import { SyncedStore } from "@netless/synced-store";
@@ -188,6 +188,7 @@ export default function App() {
                 debug: false,
                 ...slideAppOptions,
             },
+            addHooks: addHooksSlide,
             src: async () => {
                 return SlideApp;
             },

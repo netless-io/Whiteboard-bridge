@@ -37,6 +37,7 @@
 		"noImplicitReturns": true,
 		"noFallthroughCasesInSwitch": true,
 		"forceConsistentCasingInFileNames": true,
+		"useUnknownInCatchVariables": false,
 		"importHelpers": true
 	},
 }
