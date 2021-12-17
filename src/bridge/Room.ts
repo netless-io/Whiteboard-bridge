@@ -369,7 +369,7 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         getRoomState: () => {
             const state = room.state;
             if (window.manager) {
-                return {...state, cameraState: window.manager.cameraState};
+                return {...state, cameraState: {...window.manager.camera, scale: window.manager.mainView.camera.scale, ...window.manager.mainView.size}};
             }
             return room.state;
         },
