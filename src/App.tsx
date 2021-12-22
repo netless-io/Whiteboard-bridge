@@ -274,7 +274,7 @@ export default function App() {
                         ...windowParams,
                     });
                     registerManager(manager, logger);          
-                    roomState = {...roomState, ...{ windowBoxState : manager.boxState}}
+                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState }
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
                 }
