@@ -16,5 +16,10 @@ export function registerManager(manager: WindowManager, logger: (funName: string
         const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
         dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
     });
+
+    manager.emitter.on("boxStateChange", state => {
+        const modifyState = { windowBoxState: state }
+        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+    });
     window.manager = manager;
 }
