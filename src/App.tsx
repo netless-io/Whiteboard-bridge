@@ -258,6 +258,7 @@ export default function App() {
         }).then(async aRoom => {
             removeBind();
             room = aRoom;
+            let roomState = room.state;
             /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
             if (useMultiViews) {
                 try {
@@ -273,6 +274,7 @@ export default function App() {
                         ...windowParams,
                     });
                     registerManager(manager, logger);          
+                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState }
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
                 }
@@ -292,7 +294,7 @@ export default function App() {
             }
 
             registerRoom(room, logger);
-            return responseCallback(JSON.stringify({ state: room.state, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
+            return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });

@@ -1041,10 +1041,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-docs-viewer@0.1.23":
-  version "0.1.23"
-  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.23.tgz#2983b3f1973318240006a3c592247f8d3ea49a1e"
-  integrity sha512-edTXoqT0jwwLVxWgmzvAbgLwZLrWZMU+WpSmEQeLPk6HKWiRsqsU+dzht989ddggHFSIGBF4haVl2oCErVVz7g==
+"@netless/app-docs-viewer@0.1.24":
+  version "0.1.24"
+  resolved "https://registry.yarnpkg.com/@netless/app-docs-viewer/-/app-docs-viewer-0.1.24.tgz#90000b2f47df977b353153a4fee5be5add2fe0ec"
+  integrity sha512-0NfcTqRvWlqGXhLc451AclDobp6Uicr+J51pfJbFfapWBwCOwynF3dn1wpazlffr1YYHRP+V+CVi7MmVt4qEwA==
   dependencies:
     debounce-fn "^5.0.0"
     vanilla-lazyload "^17.5.0"
@@ -1128,13 +1128,13 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.3.14":
-  version "0.3.14"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.3.14.tgz#a8f41615764b0937d686bd329db18f5203cebc90"
-  integrity sha512-OPb8lawQA6gY4ONTYzOlSYboC2PxReTlYdhvmZJbtaygGB3dTkp9EBt1GPkJiETxEtfIxLZ5bF4RGPYGpDlINw==
+"@netless/window-manager@0.3.15":
+  version "0.3.15"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.3.15.tgz#211dc567e5bfacdabaa2cdb98682349c0bf4f58f"
+  integrity sha512-AtR3NRIVXHqXywGnqekRZQI/GBNg5uvIXyP8sYHpHUf31gj4lbio3QRMOH3gSmpX5aa+hn6mhreY62HZv7Dj7A==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
-    "@netless/app-docs-viewer" "0.1.23"
+    "@netless/app-docs-viewer" "0.1.24"
     "@netless/app-media-player" "0.1.0-beta.5"
     "@netless/telebox-insider" "0.2.10"
     emittery "^0.9.2"
