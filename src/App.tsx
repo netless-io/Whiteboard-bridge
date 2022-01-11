@@ -232,9 +232,8 @@ export default function App() {
         const invisiblePlugins = [
             ...useMultiViews ? [WindowManager as any] : [],
         ]
-        if (nativeWebSocket) {
-            window.nativeWebSocket = nativeWebSocket;
-        }
+        
+        window.nativeWebSocket = nativeWebSocket;
 
         sdk!.joinRoom({
             useMultiViews,
