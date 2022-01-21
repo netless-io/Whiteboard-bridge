@@ -7,6 +7,48 @@ function throwMessage(message: any) {
     dsBridge.call("sdk.throwError", message);
 }
 
+export function registerBridge(names: string[], logger: (funName: string, ...params: any[]) => void) {
+
+    const async = (window as any)._dsaf;
+    // async 异步方法，dsbridge 会在尾部加一个 function
+    for (const value of Object.getOwnPropertyNames(async)) {
+        if (value === "_obs") {
+            const _obj = async[value];
+            for (const name of Object.getOwnPropertyNames(_obj)) {
+                if (names.includes(name)) {
+                    const namespace = _obj[name];
+                    for (const funName of Object.getOwnPropertyNames(namespace)) {
+                        const fun = namespace[funName];
+                        namespace[funName] = (...args: any[]) => {
+                            logger(funName, ...args.slice(0, -1));
+                            return fun(...args);
+                        };
+                    }
+                }
+            }
+        }
+    }
+
+    const syn = (window as any)._dsf;
+    for (const value of Object.getOwnPropertyNames(syn)) {
+        if (value === "_obs") {
+            const _obj = syn[value];
+            for (const name of Object.getOwnPropertyNames(_obj)) {
+                if (names.includes(name)) {
+                    const namespace = _obj[name];
+                    for (const funName of Object.getOwnPropertyNames(namespace)) {
+                        const fun = namespace[funName];
+                        namespace[funName] = (...args: any[]) => {
+                            logger(funName, ...args);
+                            return fun(...args);
+                        };
+                    }
+                }
+            }
+        }
+    }
+}
+
 export function isRoom(displayer: Displayer): displayer is Room {
     return (displayer as Player).roomUUID === undefined;
 }

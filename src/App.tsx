@@ -16,7 +16,7 @@ import "@netless/window-manager/dist/style.css";
 import { SyncedStore } from "@netless/synced-store";
 
 import {convertBound} from "./utils/BoundConvert";
-import {globalErrorEvent, postCustomMessage} from "./utils/Funs";
+import {globalErrorEvent, postCustomMessage, registerBridge} from "./utils/Funs";
 import {CursorTool} from "@netless/cursor-tool";
 import CombinePlayerFactory from "@netless/combine-player";
 import "./App.css";
@@ -582,6 +582,8 @@ export default function App() {
     });
 
     const divRef = useRef(null);
+
+    registerBridge(["sdk"], logger);
 
     const fullStyle: React.CSSProperties = {position: "absolute", left: 0, top: 0, right: 0, bottom: 0, zIndex: 1};
     return (

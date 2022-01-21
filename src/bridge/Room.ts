@@ -3,6 +3,7 @@ import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalS
 import { registerDisplayer } from "../bridge/Displayer";
 import { AddAppOptions, BuiltinApps } from "@netless/window-manager";
 import { Attributes as SlideAttributes } from "@netless/app-slide";
+import { registerBridge } from "../utils/Funs";
 
 type VideoPluginInfo = {
     readonly props?: {
@@ -82,6 +83,11 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
     }
 }
 
+const pptNamespace = "ppt";
+const roomSyncNamespace = "room.sync";
+const roomNamespace = "room";
+const roomStateNamespace = "room.state";
+
 export function registerRoom(room: Room, logger: (funName: string, ...param: any[]) => void) {
     window.room = room;
     registerDisplayer(room, logger);
@@ -94,17 +100,15 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
     }
 
-    dsBridge.register("ppt", {
+    dsBridge.register(pptNamespace, {
         nextStep: () => {
-            logger("nextStep");
             room.pptNextStep();
         },
         previousStep: () => {
-            logger("previousStep");
             room.pptPreviousStep();
         },
     });
-    dsBridge.register("room.sync", {
+    dsBridge.register(roomSyncNamespace, {
         syncBlockTimestamp: (timestamp: number) => {
             room.syncBlockTimestamp(timestamp);
         },
@@ -128,7 +132,7 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             room.disableEraseImage = disable;
         },
     });
-    dsBridge.registerAsyn("room", {
+    dsBridge.registerAsyn(roomNamespace, {
         /** 取消撤回 */
         redo: (responseCallback: any) => {
             const count = room.redo();
@@ -146,15 +150,12 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             responseCallback(room.canUndoSteps);
         },
         /** set 系列API */
-        /** 暂时无用，不再有具体内容 */
         setGlobalState: (modifyState: Partial<GlobalState>) => {
-            logger("setGlobalState", modifyState);
             room.setGlobalState(modifyState);
         },
         /** 替代切换页面，设置当前场景。path 为想要设置场景的 path */
         setScenePath: (scenePath: string, responseCallback: any) => {
             try {
-                logger("setScenePath", scenePath);
                 if (window.manager) {
                     window.manager.setMainViewScenePath(scenePath);
                 } else {
@@ -166,7 +167,6 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             }
         },
         setMemberState: (memberState: Partial<MemberState>) => {
-            logger("setMemberState", memberState);
             room.setMemberState(memberState);
         },
         setViewMode: (viewMode: string) => {
@@ -174,7 +174,6 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             if (mode === undefined) {
                 mode = ViewMode.Freedom;
             }
-            logger("setViewMode", { viewMode, mode });
             if (window.manager) {
                 window.manager.setViewMode(mode);
             } else {
@@ -190,19 +189,15 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         },
         /** get 系列 API */
         getMemberState: (responseCallback: any) => {
-            logger("getMemberState", room.state.memberState);
             return responseCallback(JSON.stringify(room.state.memberState));
         },
         getGlobalState: (responseCallback: any) => {
-            logger("getGlobalState", room.state.globalState);
             return responseCallback(JSON.stringify(room.state.globalState));
         },
         getSceneState: (responseCallback: any) => {
-            logger("getSceneState", room.state.sceneState);
             return responseCallback(JSON.stringify(room.state.sceneState));
         },
         getRoomMembers: (responseCallback: any) => {
-            logger("getRoomMembers", room.state.roomMembers);
             return responseCallback(JSON.stringify(room.state.roomMembers));
         },
         /** @deprecated 使用 scenes 代替，ppt 将作为 scene 的成员变量 */
@@ -217,7 +212,6 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             return responseCallback(JSON.stringify(ppts));
         },
         setSceneIndex: (index: number, responseCallback: any) => {
-            logger("setSceneIndex", index);
             try {
                 if (window.manager) {
                     window.manager.setMainViewSceneIndex(index);
@@ -230,7 +224,6 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             }
         },
         getScenes: (responseCallback: any) => {
-            logger("getScenes", room.state.sceneState.scenes);
             return responseCallback(JSON.stringify(room.state.sceneState.scenes));
         },
         getZoomScale: (responseCallback: any) => {
@@ -240,15 +233,12 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             } else {
                 scale = room.state.cameraState.scale;
             }
-            logger("getZoomScale", scale);
             return responseCallback(JSON.stringify(scale));
         },
         getBroadcastState: (responseCallback: any) => {
-            logger("getBroadcastState", room.state.broadcastState);
             return responseCallback(JSON.stringify(room.state.broadcastState));
         },
         getRoomPhase: (responseCallback: any) => {
-            logger("getRoomPhase", JSON.stringify(room.phase));
             return responseCallback(room.phase);
         },
         disconnect: (responseCallback: any) => {
@@ -257,16 +247,12 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             });
         },
         zoomChange: (scale: number) => {
-            logger("zoomChange");
             room.moveCamera({ scale });
         },
         disableCameraTransform: (disableCamera: boolean) => {
-            logger("disableCameraTransform", disableCamera);
             room.disableCameraTransform = disableCamera;
         },
         disableDeviceInputs: (disable: boolean) => {
-            logger("disableDeviceInputs", disable);
-
             if (window.manager) {
                 window.manager.setReadonly(disable);
             }
@@ -274,7 +260,6 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             updateIframePluginState();
         },
         disableOperations: (disableOperations: boolean) => {
-            logger("disableOperations", disableOperations);
             room.disableCameraTransform = disableOperations;
             room.disableDeviceInputs = disableOperations;
             updateIframePluginState();
@@ -283,17 +268,14 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             window.manager?.setReadonly(disable);
         },
         putScenes: (dir: string, scenes: SceneDefinition[], index: number, responseCallback: any) => {
-            logger("putScenes", scenes);
             room.putScenes(dir, scenes, index);
             responseCallback(JSON.stringify(room.state.sceneState));
         },
         removeScenes: (dirOrPath: string) => {
-            logger("removeScenes", dirOrPath);
             room.removeScenes(dirOrPath);
         },
         /* 移动，重命名当前scene，参考 mv 命令 */
         moveScene: (source: string, target: string) => {
-            logger("moveScene", source, target);
             room.moveScene(source, target);
         },
         cleanScene: (retainPpt: boolean) => {
@@ -303,31 +285,24 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             } else {
                 retain = !!retainPpt;
             }
-            logger("cleanCurrentScene: ", retainPpt);
             room.cleanCurrentScene(retainPpt);
         },
         insertImage: (imageInfo: ImageInformation) => {
-            logger("insertImage", imageInfo);
             room.insertImage(imageInfo);
         },
         insertVideo: (videoInfo: VideoPluginInfo) => {
-            logger("insertVideo", videoInfo);
         },
         completeImageUpload: (uuid: string, url: string) => {
-            logger("completeImageUpload", uuid, url);
             room.completeImageUpload(uuid, url);
         },
         dispatchMagixEvent: (event: EventEntry) => {
-            logger("dispatchMagixEvent", event);
             room.dispatchMagixEvent(event.eventName, event.payload);
         },
         setTimeDelay: (delay: number) => {
-            logger("setTimeDelay", delay);
             room.timeDelay = delay;
         },
 
         addApp: (kind: string, options: any, attributes: any, responseCallback: any) => {
-            logger("addApp", kind, options, attributes);
             if (window.manager) {
                 if (kind === "Slide") {
                     const opts = options as AddAppOptions
@@ -348,24 +323,21 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         },
 
         getSyncedState: (responseCallback: any) => {
-            logger("getSyncedState");
             let result = window.syncedStore ? window.syncedStore!.attributes : {}
             responseCallback(JSON.stringify(result))
         },
 
         safeSetAttributes: (attributes: any) => {
-            logger("safeSetAttributes", attributes);
             window.syncedStore?.safeSetAttributes(attributes)
         },
 
         safeUpdateAttributes: (keys: string[], attributes: any) => {
-            logger("safeUpdateAttributes", attributes);
             window.syncedStore?.safeUpdateAttributes(keys, attributes)
         }
     });
     // FIXME:同步方法尽量还是放在同步方法里。
     // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
-    dsBridge.register("room.state", {
+    dsBridge.register(roomStateNamespace, {
         getRoomState: () => {
             const state = room.state;
             if (window.manager) {
@@ -392,4 +364,5 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             }
         },
     });
+    registerBridge([pptNamespace, roomNamespace, roomStateNamespace, roomSyncNamespace], logger);
 }

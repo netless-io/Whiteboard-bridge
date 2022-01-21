@@ -2,7 +2,7 @@ import dsBridge from "dsbridge";
 import {Displayer, Camera, AnimationMode, Rectangle, Player, Room} from "white-web-sdk";
 import {convertBound} from "../utils/BoundConvert";
 import html2canvas from "html2canvas";
-import {isRoom} from "../utils/Funs";
+import {isRoom, registerBridge} from "../utils/Funs";
 import {NativeCameraBound} from "../utils/ParamTypes";
 import {Event as AkkoEvent } from "white-web-sdk";
 import {IframeBridge} from "@netless/iframe-bridge";
@@ -20,10 +20,12 @@ function urlContentToDataUri(url) {
     );
 }
 
+const mainNamespace = "displayer";
+const asyncNamespace = "displayerAsync";
+
 export function registerDisplayer(displayer: Displayer, logger: (funName: string, ...param: any[]) => void) {
 
     const setCameraBound = (nativeBound: NativeCameraBound) => {
-        logger("setCameraBound nativeBound", nativeBound);
         const bound = convertBound(nativeBound);
         logger("setCameraBound bound", bound);
         displayer.setCameraBound(bound!);
@@ -71,14 +73,13 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
         });
     }
 
-    dsBridge.register("displayer", {
+    dsBridge.register(mainNamespace, {
         // 尝试让 native 端直接传入 json 格式
         postMessage: (payload: any) => {
             const message = {name: "parentWindow", payload: payload};
             const iframes = document.getElementsByTagName("iframe");
             if (iframes.length > 0 && iframes[0].contentWindow) {
                 const iframe = iframes[0];
-                logger("postmessage", message);
                 iframe.contentWindow!.postMessage(message, "*");
             } else if (iframes.length == 0) {
                 logger("postmessage", "no frames exist");
@@ -171,10 +172,11 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
             displayer.removeMagixEventListener(eventName);
         },
     });
-    dsBridge.registerAsyn("displayerAsync", {
+    dsBridge.registerAsyn(asyncNamespace, {
         scenePreview: pagePreview,
         sceneSnapshot: pageCover,
     });
     window.html2canvas = html2canvas;
     (window as any).pagePreview = pagePreview;
+    registerBridge([mainNamespace, asyncNamespace], logger);
 }
