@@ -170,14 +170,26 @@ export default function App() {
             report("videoJsPlugin", message, ...optionalParams);
         }
 
+        const windowPlugins: {[key in string]: any} = [];
+        for (const value of window.pluginParams || []) {
+            const p = {
+                [value.name]: (window as any)[value.variable]
+            };
+            windowPlugins.push(p);
+        }
+
         const plugins = createPlugins({
             "video": videoPlugin,
             "audio": audioPlugin,
             "video2": videoPlugin2,
             "audio2": audioPlugin2,
             "video.js": videoJsPlugin({ log: videoJsLogger }),
+            ...windowPlugins,
         });
         plugins.setPluginContext("video.js", {enable: false, verbose: true});
+        for (const v of window.pluginContext || []) {
+            plugins.setPluginContext(v.name, v.params);
+        }
         window.plugins = plugins;
 
         const slideKind = "Slide";
@@ -191,6 +203,13 @@ export default function App() {
                 return SlideApp;
             },
         });
+        for (const v of window.AppRegisterParams || []) {
+            WindowManager.register({
+                kind: v.kind,
+                appOptions: v.appOptions,
+                src: window[v.src],
+            });
+        }
 
         const invisiblePlugins = [
             ...enableIFramePlugin ? [IframeBridge as any] : [],

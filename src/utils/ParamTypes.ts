@@ -21,9 +21,41 @@ declare global {
       html2canvas: any;
       setBackgroundColor: (r: number, g: number, b: number, a?: number | undefined) => void;
       plugins: any;
+      pluginParams: PluginParams[];
+      pluginContext: PluginContext[];
+      AppRegisterParams: AppRegisterParams[];
       nativeWebSocket?: boolean;
     }
 }
+
+// 插件注册信息
+export type PluginParams = {
+    // 注册的插件名称。
+    name: string;
+    // 注册插件，在 window 的变量名。
+    variable: string;
+    // 插件的配置参数。
+    params: {[key: string]: any};
+}
+
+// 插件上下文配置，对应插件会在本地获取到这部分 context（非全局，常常用来配置权限，以及 log）
+export type PluginContext = {
+    // 需要注册上下文配置信息的插件名称
+    name: string;
+    params: {[key: string]: any};
+}
+
+// window manager 中 RegisterParams 的子集
+export type AppRegisterParams = {
+    // 注册的 app 名称
+    kind: string;
+    // 在 window 上的变量名。
+    src: string;
+    // 初始化 app 实例时，会被传入的参数。这段配置不会被同步其他端，属于本地设置。常常用来设置 debug 的开关。
+    appOptions?: {
+        [key: string]: any;
+    };
+};
 
 export type NativeSDKConfig = {
     /** enableImgErrorCallback */
