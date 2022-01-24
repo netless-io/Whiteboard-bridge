@@ -45,13 +45,6 @@ export type NativeSDKConfig = {
     __platform: "ios" | "android";
     /** 多窗口在初始化的时候，需要配置 useMobxState 为 true，所以在初始化 sdk 的时候，就需要知道参数 */
     useMultiViews?: boolean;
-    /** window manager 注册参数，会透传给注册的组件 */
-    appOptions?: {
-        // 每个 app 单独的 window manager 注册参数 slide
-        [key: string]: {
-            [key: string]: any;
-        };
-    };
 } & WhiteWebSdkConfiguration;
 
 // Android 使用 enum 名称，请勿随意改动

@@ -138,7 +138,7 @@ export default function App() {
             return url;
         } : undefined;
 
-        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, appOptions, ...restConfig } = config;
+        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         showLog = !!log;
         nativeConfig = config;
@@ -181,12 +181,10 @@ export default function App() {
         window.plugins = plugins;
 
         const slideKind = "Slide";
-        const slideAppOptions = appOptions && appOptions[slideKind] || {};
         WindowManager.register({
             kind: slideKind,
             appOptions: {
                 debug: false,
-                ...slideAppOptions,
             },
             addHooks: addHooksSlide,
             src: async () => {
