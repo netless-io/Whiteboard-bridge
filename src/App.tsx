@@ -57,7 +57,9 @@ window.setBackgroundColor = setBackgroundColor;
 function report(funName: string, ...params: any[]) {
     console.log(funName, ...params);
     let message;
-    if (params.length === 1) {
+    if (params.length === 0) {
+        message = undefined;
+    } else if (params.length === 1) {
         // array element
         message = params[0];
     } else if (params.every(v => typeof v === "string" || typeof v === "number"|| typeof v === "boolean")) {
