@@ -56,6 +56,10 @@ window.setBackgroundColor = setBackgroundColor;
 
 function report(funName: string, ...params: any[]) {
     console.log(funName, ...params);
+
+    if (window.room) {
+        (window.room as any).logger.info(funName, ...params);
+    }
     let message;
     if (params.length === 0) {
         message = undefined;
