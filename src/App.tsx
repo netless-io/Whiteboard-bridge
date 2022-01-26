@@ -265,6 +265,7 @@ export default function App() {
             invisiblePlugins: invisiblePlugins,
             cursorAdapter: useMultiViews ? undefined : cursorAdapter,
             cameraBound: convertBound(cameraBound),
+            disableMagixEventDispatchLimit: useMultiViews,
         }, {
             onPhaseChanged: (phase) => roomPhaseChange(phase, timeout),
             onRoomStateChanged,
