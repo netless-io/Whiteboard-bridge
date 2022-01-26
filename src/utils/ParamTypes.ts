@@ -16,6 +16,7 @@ declare global {
       bridge?: any;
       __nativeTags?: any;
       __platform?: any;
+      __netlessMobXUseProxies?: string;
       testRoom: () => void;
       testReplay: () => void;
       html2canvas: any;

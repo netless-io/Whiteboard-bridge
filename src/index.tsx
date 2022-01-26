@@ -1,3 +1,4 @@
+import "./bridge/Global";
 import "./bridge/WebSocket";
 import "core-js/stable";
 import "regenerator-runtime/runtime";
