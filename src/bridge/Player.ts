@@ -45,7 +45,9 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
     dsBridge.registerAsyn("player", {
         play: () => {
             logger("play");
-            if (combinePlayer) {
+            if (window.manager) {
+                // window.manager.play();
+            } else if (combinePlayer) {
                 combinePlayer.play();
             } else {
                 player.play();
@@ -53,7 +55,9 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
         },
         pause: () => {
             logger("pause");
-            if (combinePlayer) {
+            if (window.manager) {
+                // window.manager.pause();
+            } else if (combinePlayer) {
                 combinePlayer.pause();
             } else {
                 player.pause();
