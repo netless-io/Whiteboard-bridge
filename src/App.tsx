@@ -333,6 +333,7 @@ export default function App() {
         const {step = 500, cameraBound, mediaURL, ...replayParams} = nativeReplayParams;
         removeBind();
         logger("replayRoom", nativeReplayParams);
+        const {useMultiViews} = nativeConfig!;
 
         sdk!.replayRoom({
             ...replayParams,
@@ -349,9 +350,27 @@ export default function App() {
             onPPTLoadProgress,
             onPPTMediaPlay,
             onPPTMediaPause,
-        }).then(mPlayer => {
+        }).then(async mPlayer => {
             removeBind();
             player = mPlayer;
+            if (useMultiViews) {
+                try {
+                    const room: Room = player as any;
+                    const manager = await WindowManager.mount({
+                        room,
+                        container: divRef.current!!,
+                        // 高比宽
+                        containerSizeRatio: 9/16,
+                        chessboard: true,
+                        cursor: !!cursorAdapter,
+                        debug: true,
+
+                    });
+                    registerManager(manager, logger);          
+                } catch (error) {
+                    return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+                }
+            }
             if (mediaURL) {
                 // FIXME: 多次初始化，会造成一些问题
                 const videoDom = document.createElement("video");
