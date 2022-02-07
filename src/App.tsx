@@ -330,7 +330,7 @@ export default function App() {
             return;
         }
 
-        const {step = 500, cameraBound, mediaURL, ...replayParams} = nativeReplayParams;
+        const {step = 500, cameraBound, mediaURL, windowParams, ...replayParams} = nativeReplayParams;
         removeBind();
         logger("replayRoom", nativeReplayParams);
         const {useMultiViews} = nativeConfig!;

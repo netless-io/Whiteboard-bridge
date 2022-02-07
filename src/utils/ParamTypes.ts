@@ -119,4 +119,5 @@ export type NativeReplayParams = BaseTypeReplayParams & {
     cameraBound?: NativeCameraBound;
     step?: number;
     mediaURL?: string;
+    windowParams?: MountParams;
 };
