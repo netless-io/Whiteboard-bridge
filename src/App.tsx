@@ -11,7 +11,7 @@ import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
 import SlideApp, { addHooks as addHooksSlide } from "@netless/app-slide";
-import { WindowManager } from "@netless/window-manager";
+import { MountParams, WindowManager } from "@netless/window-manager";
 import "@netless/window-manager/dist/style.css";
 import { SyncedStore } from "@netless/synced-store";
 
@@ -285,18 +285,7 @@ export default function App() {
             /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
             if (useMultiViews) {
                 try {
-                    const manager = await WindowManager.mount({
-                        room,
-                        container: divRef.current!!,
-                        // 高比宽
-                        containerSizeRatio: 9/16,
-                        chessboard: true,
-                        cursor: !!cursorAdapter,
-                        debug: true,
-                        disableCameraTransform,
-                        ...windowParams,
-                    });
-                    registerManager(manager, logger);          
+                    const manager = await mountWindowManager(room, windowParams);       
                     roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState }
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
@@ -360,17 +349,7 @@ export default function App() {
                 const room: Room = player as any;
                 logger("start mount windowManager");
                 try {
-                    const manager = await WindowManager.mount({
-                        room,
-                        container: divRef.current!!,
-                        // 高比宽
-                        containerSizeRatio: 9/16,
-                        chessboard: true,
-                        cursor: !!cursorAdapter,
-                        debug: true,
-                        // todo: need windowParams from replay params
-                    });
-                    registerManager(manager, logger);
+                    await mountWindowManager(room, windowParams);
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
                 }
@@ -404,6 +383,20 @@ export default function App() {
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });
+    }
+
+    async function mountWindowManager(room: Room, windowParams?: MountParams) {
+        const manager = await WindowManager.mount({
+            // 高比宽
+            containerSizeRatio: 9/16,
+            chessboard: true,
+            cursor: !!cursorAdapter,
+            ...windowParams,
+            container: divRef.current!!,
+            room
+        });
+        registerManager(manager, logger);
+        return manager;
     }
 
     function isPlayable(nativeReplayParams: NativeReplayParams, responseCallback: any) {
