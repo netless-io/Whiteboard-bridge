@@ -93,13 +93,12 @@ export default function App() {
             window.manager.destroy()
             window.manager = undefined;
             room = undefined;
+            player = undefined;
         } else if (room) {
             room.bindHtmlElement(null);
             // FIXME:最好执行 disconnect，但是由于如果主动执行 disconnect，会触发状态变化回调，导致一定问题，所以此处不能主动执行。
             room = undefined;
-        }
-        
-        if (player) {
+        } else if (player) {
             player.bindHtmlElement(null);
             player = undefined;
         }
