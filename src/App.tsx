@@ -338,6 +338,8 @@ export default function App() {
             ...replayParams,
             cursorAdapter: cursorAdapter,
             cameraBound: convertBound(cameraBound),
+            invisiblePlugins: useMultiViews ? [WindowManager] : [],
+            useMultiViews
         }, {
             onPhaseChanged: onPlayerPhaseChanged(!!mediaURL),
             onLoadFirstFrame,
@@ -353,21 +355,26 @@ export default function App() {
             removeBind();
             player = mPlayer;
             if (useMultiViews) {
-                try {
-                    const room: Room = player as any;
-                    const manager = await WindowManager.mount({
-                        room,
-                        container: divRef.current!!,
-                        // 高比宽
-                        containerSizeRatio: 9/16,
-                        chessboard: true,
-                        cursor: !!cursorAdapter,
-                        debug: true,
-
-                    });
-                    registerManager(manager, logger);          
-                } catch (error) {
-                    return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+                const room: Room = player as any;
+                logger("start mount windowManager");
+                WindowManager.mount({
+                    room,
+                    container: divRef.current!!,
+                    // 高比宽
+                    containerSizeRatio: 9/16,
+                    chessboard: true,
+                    cursor: !!cursorAdapter,
+                    debug: true,
+                }).then(manager => {
+                    logger("end mount windowManager");
+                    registerManager(manager, logger);       
+                }).catch(error => {
+                    responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+                });
+            } else {
+                mPlayer.bindHtmlElement(divRef.current);
+                if (!!cursorAdapter) {
+                    cursorAdapter?.setPlayer(player);
                 }
             }
             if (mediaURL) {
@@ -388,10 +395,7 @@ export default function App() {
             } else {
                 registerPlayer(mPlayer, undefined, lastSchedule, logger);
             }
-            mPlayer.bindHtmlElement(divRef.current);
-            if (!!cursorAdapter) {
-                cursorAdapter?.setPlayer(player);
-            }
+       
             const {progressTime: scheduleTime, timeDuration, framesCount, beginTimestamp} = mPlayer;
             return responseCallback(JSON.stringify({timeInfo: {scheduleTime, timeDuration, framesCount, beginTimestamp}}));
         }).catch((e: Error) => {
