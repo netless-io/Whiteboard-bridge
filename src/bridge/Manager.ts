@@ -9,17 +9,29 @@ export function registerManager(manager: WindowManager, logger: (funName: string
     manager.mainView.callbacks.on("onCameraUpdated", (camera: Camera) => {
         const size = manager.mainView.size;
         const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
-        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+        if (window.room) {
+            dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+        } else if (window.player) {
+            dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
+        }
     });
     manager.mainView.callbacks.on("onSizeUpdated", (size: Size) => {
         const camera = manager.mainView.camera;
         const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
-        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+        if (window.room) {
+            dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+        } else if (window.player) {
+            dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
+        }
     });
 
     manager.emitter.on("boxStateChange", state => {
         const modifyState = { windowBoxState: state }
-        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+        if (window.room) {
+            dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
+        } else if (window.player) {
+            dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
+        }
     });
     window.manager = manager;
 }
