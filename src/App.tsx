@@ -30,6 +30,7 @@ const lastSchedule = {
     time: 0,
 };
 let nativeConfig: NativeSDKConfig | undefined = undefined;
+let nativeReplayParams: NativeReplayParams | undefined = undefined;
 let sdk: WhiteWebSdk | undefined = undefined;
 let cursorAdapter: CursorTool | undefined = undefined;
 
@@ -115,7 +116,7 @@ export default function App() {
 
     function testReplay() {
         showLog = true;
-        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier};
+        nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier, useMultiViews: true};
         newWhiteSdk(nativeConfig);
         replayRoom({room: testRoomUUID, roomToken: testRoomToken}, () => {});
     }
@@ -311,16 +312,16 @@ export default function App() {
         });
     }
 
-    function replayRoom(nativeReplayParams: NativeReplayParams, responseCallback: any) {
-
+    function replayRoom(nativeParams: NativeReplayParams, responseCallback: any) {
+        nativeReplayParams = nativeParams;
         if (!sdk) {
             responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
             return;
         }
 
-        const {step = 500, cameraBound, mediaURL, windowParams, ...replayParams} = nativeReplayParams;
+        const {step = 500, cameraBound, mediaURL, windowParams, ...replayParams} = nativeParams;
         removeBind();
-        logger("replayRoom", nativeReplayParams);
+        logger("replayRoom", nativeParams);
         const {useMultiViews} = nativeConfig!;
 
         sdk!.replayRoom({
@@ -343,16 +344,8 @@ export default function App() {
         }).then(async mPlayer => {
             removeBind();
             player = mPlayer;
-            if (useMultiViews) {
-                // fixme: WindowManager type error
-                const room: Room = player as any;
-                logger("start mount windowManager");
-                try {
-                    await mountWindowManager(room, windowParams);
-                } catch (error) {
-                    return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
-                }
-            } else {
+            // 多窗口需要调用 player 的 getInvisiblePlugin 方法，获取数据，而这些数据需要在 player 成功初始化，首次进入 play || pause 状态，才能获取到，所以回放时，多窗口需要异步
+            if (!useMultiViews) {
                 mPlayer.bindHtmlElement(divRef.current);
                 if (!!cursorAdapter) {
                     cursorAdapter?.setPlayer(player);
@@ -513,6 +506,16 @@ export default function App() {
     // PlayerCallbacks
     function onPlayerPhaseChanged(hasMediaURL: boolean): (phase: PlayerPhase) => void {
         return (phase: PlayerPhase): void => {
+            if ((phase === PlayerPhase.Pause || phase === PlayerPhase.Playing) && !!nativeConfig?.useMultiViews && player?.getInvisiblePlugin(WindowManager.kind) === null && !window.manager) {
+                const room: Room = player! as unknown as Room;
+                const {windowParams} = nativeReplayParams!;
+                // sdk 内部，先触发回调，才更新 invisiblePlugins，所以要带一个延迟，放到回调后执行
+                setTimeout(() => {
+                    mountWindowManager(room, windowParams).catch(e => {
+                        console.error("mount error", e);
+                    })
+                }, 0);
+            }
             const handle = (phase: PlayerPhase) => {
                 lastSchedule.time = 0;
                 logger("onPhaseChanged:", phase);
