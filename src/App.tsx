@@ -356,22 +356,24 @@ export default function App() {
             removeBind();
             player = mPlayer;
             if (useMultiViews) {
+                // fixme: WindowManager type error
                 const room: Room = player as any;
                 logger("start mount windowManager");
-                WindowManager.mount({
-                    room,
-                    container: divRef.current!!,
-                    // 高比宽
-                    containerSizeRatio: 9/16,
-                    chessboard: true,
-                    cursor: !!cursorAdapter,
-                    debug: true,
-                }).then(manager => {
-                    logger("end mount windowManager");
-                    registerManager(manager, logger);       
-                }).catch(error => {
-                    responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
-                });
+                try {
+                    const manager = await WindowManager.mount({
+                        room,
+                        container: divRef.current!!,
+                        // 高比宽
+                        containerSizeRatio: 9/16,
+                        chessboard: true,
+                        cursor: !!cursorAdapter,
+                        debug: true,
+                        // todo: need windowParams from replay params
+                    });
+                    registerManager(manager, logger);
+                } catch (error) {
+                    return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+                }
             } else {
                 mPlayer.bindHtmlElement(divRef.current);
                 if (!!cursorAdapter) {
