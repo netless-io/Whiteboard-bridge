@@ -1108,15 +1108,16 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.3.25":
-  version "0.3.25"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.3.25.tgz#f72f7a6ec2b47f72d144be807f7584ace378639b"
-  integrity sha512-wQDEMvyq9bilg0N8zn9DQv1VmKrrq0O1LrO8XHtbKlllDf1yaBm1njRxWoGDZ2RDGtXJEhEzP5snJqXfp3OeXg==
+"@netless/window-manager@0.4.0-canary.29":
+  version "0.4.0-canary.29"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.0-canary.29.tgz#f11b8a52ab613e1d61e6a6ea530c762a2f4db976"
+  integrity sha512-DctPM8nljslU9PkvesQXNqgcdALlEfD7vDQiXmy1QAbLiYWrX/eoAic6EI+BjDhyw9kGTsjUsA/PvahCebXrzw==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     emittery "^0.9.2"
     lodash "^4.17.21"
     p-retry "^4.6.1"
+    side-effect-manager "^0.1.5"
     uuid "^7.0.3"
     video.js ">=7"
 
@@ -4897,6 +4898,11 @@ side-channel@^1.0.2:
     es-abstract "^1.17.0-next.1"
     object-inspect "^1.7.0"
 
+side-effect-manager@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-0.1.5.tgz#d9b205e4317b60f90876f6ad498a1ac7e038c7d7"
+  integrity sha512-aAEXMS+9qW7rY2cwq4S6UjW3IBO/ZLWRI0sH1oGJ1eDE7YBFR1TW950qffnpx/0hByusAOVbu2zjThk9Vcjs+Q==
+
 signal-exit@^3.0.3:
   version "3.0.6"
   resolved "https://registry.yarnpkg.com/signal-exit/-/signal-exit-3.0.6.tgz#24e630c4b0f03fea446a2bd299e62b4a6ca8d0af"
@@ -5519,10 +5525,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.15.17:
-  version "2.15.17"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.15.17.tgz#1e5229da021a4bc7d66f2a2143f001011ce557a4"
-  integrity sha512-lyzMOrT0FOBlUKdaL1sSK1V2iJe4dBuV2nG2/ypT5vE7Z3l/0b2BuDfeo4rLiPrQ5SbjVETUjPnda4yRBoYnoQ==
+white-web-sdk@2.16.5:
+  version "2.16.5"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.5.tgz#5ad7b5d29b94a189d306fcf1c49aa07043adf055"
+  integrity sha512-rHhz833odANzqdQrLts0YguwfiYXksKdz738Fl4+3TiaI5oa2BtAU3pJHBU/0eq71mbA0Hc7tDbTVNAq4K9jug==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
