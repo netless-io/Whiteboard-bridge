@@ -278,6 +278,16 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         moveScene: (source: string, target: string) => {
             room.moveScene(source, target);
         },
+        /**
+         * 在指定位置插入文字
+         * @param x 第一个字的的左侧边中点，世界坐标系中的 x 坐标
+         * @param y 第一个字的的左侧边中点，世界坐标系中的 y 坐标
+         * @param textContent 初始化文字的内容，不传则为空
+         * @returns 该文字的标识符
+         */
+        insertText: (x: number, y: number, textContent?: string) => {
+            room.insertText(x, y, textContent);
+        },
         cleanScene: (retainPpt: boolean) => {
             let retain: boolean;
             if (retainPpt === undefined) {
