@@ -101,7 +101,11 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
             // 如果没有加载第一帧，会直接报错
             try {
                 logger("playerState", player.state);
-                return player.state;
+                let state = player.state;
+                if (window.manager) {
+                    state = {...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState};
+                }
+                return state;
             } catch (error) {
                 return {};
             }
