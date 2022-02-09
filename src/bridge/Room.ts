@@ -286,7 +286,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
          * @returns 该文字的标识符
          */
         insertText: (x: number, y: number, textContent?: string) => {
-            room.insertText(x, y, textContent);
+            if (window.manager) {
+                window.manager.mainView.insertText(x, y, textContent);
+            } else {
+                room.insertText(x, y, textContent);
+            }
         },
         cleanScene: (retainPpt: boolean) => {
             let retain: boolean;
