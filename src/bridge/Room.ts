@@ -282,14 +282,15 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
          * 在指定位置插入文字
          * @param x 第一个字的的左侧边中点，世界坐标系中的 x 坐标
          * @param y 第一个字的的左侧边中点，世界坐标系中的 y 坐标
-         * @param textContent 初始化文字的内容，不传则为空
+         * @param textContent 初始化文字的内容
+         * @param responseCallback 完成回调
          * @returns 该文字的标识符
          */
-        insertText: (x: number, y: number, textContent?: string) => {
+        insertText: (x: number, y: number, textContent: string, responseCallback: any) => {
             if (window.manager) {
-                window.manager.mainView.insertText(x, y, textContent);
+                responseCallback(window.manager.mainView.insertText(x, y, textContent));
             } else {
-                room.insertText(x, y, textContent);
+                responseCallback(room.insertText(x, y, textContent));
             }
         },
         cleanScene: (retainPpt: boolean) => {
