@@ -1108,10 +1108,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.4.0-canary.32":
-  version "0.4.0-canary.32"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.0-canary.32.tgz#a11e6c248aada4f3d287d47df3c31a85f73977c7"
-  integrity sha512-zRWRfErS4aH8pXTJzFI23js61kqNlxQ9cGxrsXFHZw+ac/A1AzynocS/GrCFScH4FTxtBCHBuQ4fk5p5ye5bJA==
+"@netless/window-manager@0.4.1":
+  version "0.4.1"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.1.tgz#bc0f66217c728906b32cd04f2605e7211a298bd3"
+  integrity sha512-WJMAb7ieOoZCmOQm2Jhx9CK7tmR5CFWMXr25BGqbtBMyJw8lw/8mJ8F98ZMeGr68X/mnMvrYEezX062FTTfGPA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     emittery "^0.9.2"
@@ -5525,10 +5525,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.5:
-  version "2.16.5"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.5.tgz#5ad7b5d29b94a189d306fcf1c49aa07043adf055"
-  integrity sha512-rHhz833odANzqdQrLts0YguwfiYXksKdz738Fl4+3TiaI5oa2BtAU3pJHBU/0eq71mbA0Hc7tDbTVNAq4K9jug==
+white-web-sdk@2.16.7:
+  version "2.16.7"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.7.tgz#6b3393885f6a10460a90a9d437981ec7904aedf2"
+  integrity sha512-KZJb8u+v335lkpvLPj2dEqTAOmUwJ6qdMnIvWBvfIHm8mqzyUwX9gqK67SUwmD4pie/s3bn1uajHXb0L0yXoGQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
