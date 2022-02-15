@@ -28,7 +28,7 @@
     "@netless/white-audio-plugin2": "^2.0.4",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
-    "@netless/window-manager": "0.4.1",
+    "@netless/window-manager": "0.4.3",
     "buffer": "^6.0.3",
     "core-js": "^3",
     "dsbridge": "^3.1.4",
@@ -37,7 +37,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.16.7"
+    "white-web-sdk": "2.16.9"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
