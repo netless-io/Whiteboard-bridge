@@ -115,6 +115,11 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         /** 客户端本地效果，会导致 web 2.9.2 和 native 2.9.3 以下出现问题。*/
         disableSerialization: (disable: boolean) => {
             room.disableSerialization = disable;
+            /** 单窗口且开启序列化主动触发一次redo,undo次数回调 */
+            if (!disable && window.manager == null) {
+                dsBridge.call("room.fireCanUndoStepsUpdate", room.canUndoSteps);
+                dsBridge.call("room.fireCanRedoStepsUpdate", room.canRedoSteps);
+            }
         },
         copy: () => {
             room.copy();
