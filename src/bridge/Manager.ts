@@ -33,5 +33,12 @@ export function registerManager(manager: WindowManager, logger: (funName: string
             dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
         }
     });
+    
+    manager.emitter.on("canRedoStepsChange",canRedoSteps => {
+        dsBridge.call("room.fireCanRedoStepsUpdate", canRedoSteps);
+    });
+    manager.emitter.on("canUndoStepsChange",canUndoSteps => {
+        dsBridge.call("room.fireCanUndoStepsUpdate", canUndoSteps);
+    });
     window.manager = manager;
 }
