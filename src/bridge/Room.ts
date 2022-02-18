@@ -144,10 +144,18 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             responseCallback(count);
         },
         canRedoSteps: (responseCallback: any) => {
-            responseCallback(room.canRedoSteps);
+            if (window.manager) {
+                responseCallback(window.manager.canRedoSteps);
+            } else {
+                responseCallback(room.canRedoSteps);
+            }
         },
         canUndoSteps: (responseCallback: any) => {
-            responseCallback(room.canUndoSteps);
+            if (window.manager) {
+                responseCallback(window.manager.canUndoSteps);
+            } else {
+                responseCallback(room.canUndoSteps);
+            }
         },
         /** set 系列API */
         setGlobalState: (modifyState: Partial<GlobalState>) => {
