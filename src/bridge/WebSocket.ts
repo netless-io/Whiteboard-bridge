@@ -95,7 +95,6 @@ export class WebSocketBridge implements FakeWebSocket {
     public send(data: string | ArrayBuffer): void {
         if (data instanceof ArrayBuffer) {
             const str = encodeArrayBufferAsBase64(data);
-            console.log("send data: ", data, " str: ", str);
             dsBridge.call("ws.send", {data: str, type: "arraybuffer", key: this.key});
         } else {
             dsBridge.call("ws.send", {data, type: "string", key: this.key});
@@ -171,7 +170,6 @@ export class WebSocketBridge implements FakeWebSocket {
         if (this.key !== message.key) {
             return;
         }
-        console.log("_onMessage: ", message);
         // 因为是伪造的 Event，所以缺少 Event 中的一系列属性，用 any 替换一下
         if (message.type === "arraybuffer") {
             this.dispatchEvent("message", {data: base64ToArrayBuffer(message.data), key: this.key} as any);
