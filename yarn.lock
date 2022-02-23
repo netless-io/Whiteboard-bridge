@@ -1083,10 +1083,10 @@
   dependencies:
     eventemitter3 "^4.0.7"
 
-"@netless/telebox-insider@0.2.23":
-  version "0.2.23"
-  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.2.23.tgz#b31d3ba8be86f218554c22e7cd35ead41fb22b3e"
-  integrity sha512-ynNC4TFEqa2Nrjyo3o6MPqHch3eJ8tAl8xHFq83JvN4Y8bRk+Ua8pyFftmg/5vcc3+1gjDR31PgkChJiU2s3QA==
+"@netless/telebox-insider@0.2.24":
+  version "0.2.24"
+  resolved "https://registry.npmmirror.com/@netless/telebox-insider/-/telebox-insider-0.2.24.tgz#dbe3f9266a0ae2e4909d6d59ce4d6249c46a008e"
+  integrity sha512-5MjRVIzJ4IriNg9ozZLnkk27RKXzj1K2Mh0M/p3ph3PktaT02Nr71ezC5bdYOvptIoZsOLT4NtCRqSIeFcnrTQ==
   dependencies:
     "@types/shallowequal" "^1.1.1"
     eventemitter3 "^4.0.7"
@@ -1120,13 +1120,13 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.4.5":
-  version "0.4.5"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.5.tgz#3f13e186ea20815ffe8b95e1731499927785eeef"
-  integrity sha512-SgxmWMfgXsCkC2RtAvcgkWthzluY4ubm/Zig4gTYmNY0SFyEtGQJWZ4Xje9xjlSp0mSwowat9DhqwGe5Rb4kyg==
+"@netless/window-manager@0.4.7":
+  version "0.4.7"
+  resolved "https://registry.npmmirror.com/@netless/window-manager/-/window-manager-0.4.7.tgz#03858433be047808d7adedca673b736eb30d30d7"
+  integrity sha512-/C5uWsVLH4IoYZIVabuy1u8hhfBhshOGrWN7ttl4ikSbIyn6AW8kAnd/fpRfr3t6LPypggPTFI6sHg18JhMGVA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
-    "@netless/telebox-insider" "0.2.23"
+    "@netless/telebox-insider" "0.2.24"
     emittery "^0.9.2"
     lodash "^4.17.21"
     p-retry "^4.6.1"

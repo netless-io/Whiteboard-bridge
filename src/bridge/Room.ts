@@ -1,7 +1,7 @@
 import dsBridge from "dsbridge";
 import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene } from "white-web-sdk";
 import { registerDisplayer } from "../bridge/Displayer";
-import { AddAppOptions, BuiltinApps } from "@netless/window-manager";
+import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
 import { Attributes as SlideAttributes } from "@netless/app-slide";
 import { registerBridge } from "../utils/Funs";
 
@@ -177,6 +177,50 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
                 responseCallback(JSON.stringify({}));
             } catch (e) {
                 return responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
+            }
+        },
+        addPage: (params: AddPageParams) => {
+            if (window.manager) {
+                window.manager.addPage(params)
+            } else {
+                const dir = room.state.sceneState.contextPath
+                const after = params.after
+                if (after) {
+                    const tIndex = room.state.sceneState.index + 1
+                    room.putScenes(dir,  [params.scene || {}], tIndex)
+                } else {
+                    room.putScenes(dir, [params.scene || {}]);
+                }
+            }
+        },
+        nextPage: (responseCallback: any) => {
+            if (window.manager) {
+                window.manager.nextPage().then((result)=> {
+                    responseCallback(result)
+                })
+            } else {
+                const nextIndex = room.state.sceneState.index + 1;
+                if (nextIndex < room.state.sceneState.scenes.length) {
+                    room.setSceneIndex(nextIndex)
+                    responseCallback(true)
+                } else {
+                    responseCallback(false)
+                }
+            }
+        },
+        prevPage: (responseCallback: any) => {
+            if (window.manager) {
+                window.manager.prevPage().then((result)=> {
+                    responseCallback(result)
+                })
+            } else {
+                const prevIndex = room.state.sceneState.index - 1;
+                if (prevIndex >= 0) {
+                    room.setSceneIndex(prevIndex)
+                    responseCallback(true)
+                } else {
+                    responseCallback(false)
+                }
             }
         },
         setMemberState: (memberState: Partial<MemberState>) => {
