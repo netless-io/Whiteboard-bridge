@@ -24,7 +24,7 @@ declare global {
       plugins: any;
       pluginParams: PluginParams[];
       pluginContext: PluginContext[];
-      AppRegisterParams: AppRegisterParams[];
+      appRegisterParams: AppRegisterParams[];
       nativeWebSocket?: boolean;
     }
 }

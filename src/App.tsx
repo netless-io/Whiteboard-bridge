@@ -209,7 +209,7 @@ export default function App() {
                 return SlideApp;
             },
         });
-        for (const v of window.AppRegisterParams || []) {
+        for (const v of window.appRegisterParams || []) {
             WindowManager.register({
                 kind: v.kind,
                 appOptions: v.appOptions,
