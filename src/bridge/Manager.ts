@@ -15,6 +15,7 @@ export function registerManager(manager: WindowManager, logger: (funName: string
             dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
         }
     });
+
     manager.mainView.callbacks.on("onSizeUpdated", (size: Size) => {
         const camera = manager.mainView.camera;
         const modifyState: Partial<RoomState> = {cameraState: {...size, ...camera}};
@@ -22,6 +23,14 @@ export function registerManager(manager: WindowManager, logger: (funName: string
             dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
         } else if (window.player) {
             dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
+        }
+    });
+
+    manager.emitter.on("sceneStateChange", sceneState => {
+        if (window.room) {
+            dsBridge.call("room.fireRoomStateChanged", JSON.stringify({sceneState}));
+        } else if (window.player) {
+            dsBridge.call("player.onPlayerStateChanged", JSON.stringify({sceneState}));
         }
     });
 

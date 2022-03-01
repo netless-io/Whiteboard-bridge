@@ -103,7 +103,7 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
                 logger("playerState", player.state);
                 let state = player.state;
                 if (window.manager) {
-                    state = {...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState};
+                    state = {...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState};
                 }
                 return state;
             } catch (error) {
