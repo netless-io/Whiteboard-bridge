@@ -9,6 +9,7 @@ const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+const { DefinePlugin } = require('webpack');
 
 config = {
   entry: './src/index',
@@ -106,5 +107,8 @@ module.exports = (env, argv) => {
     config.output.filename = '[name].[hash].js';
     config.module.rules[0].exclude = /node_modules/;
   }
+  config.plugins.push(new DefinePlugin({
+    'process.env.NODE_ENV': JSON.stringify(argv.mode)
+  }))
   return config;
 }
