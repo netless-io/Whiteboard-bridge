@@ -201,5 +201,14 @@ export class WebSocketBridge implements FakeWebSocket {
             onClose: this._onClose,
             onOpen: this._onOpen,    
         });
+
+        if (process.env.NODE_ENV === 'development') {
+            dsBridge.register("ws.readyState", () => {
+                return this._readyState;
+            });
+            dsBridge.register("ws.mockCloseFromJs", () => {
+                this.close(0, '');
+            });
+        }
     }
 }
