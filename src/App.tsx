@@ -220,7 +220,7 @@ export default function App() {
             WindowManager.register({
                 kind: v.kind,
                 appOptions: v.appOptions,
-                src: window[v.src],
+                src: v.variable ? window[v.variable] : v.url,
             });
         }
 
