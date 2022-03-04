@@ -38,4 +38,9 @@ export function registerManager(manager: WindowManager, logger: (funName: string
     manager.emitter.on("canUndoStepsChange",canUndoSteps => {
         dsBridge.call("room.fireCanUndoStepsUpdate", canUndoSteps);
     });
+
+    manager.emitter.on("loadApp", event => {
+        logger("loadApp", event);
+        // dsBridge.call("manager.onLoadApp", event);
+    });
 }
