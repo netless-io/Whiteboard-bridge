@@ -20,7 +20,7 @@ for (const v of window.appRegisterParams || []) {
         // 注册 app 时，传给所有 app 实例的参数
         appOptions: v.appOptions,
         // app 在 window 对象上挂载的名称，目前只支持挂载 window 对象的内容
-        src: window[v.src],
+        src: src: v.variable ? window[v.variable] : v.url,
     });
 }
 ```
@@ -31,7 +31,9 @@ for (const v of window.appRegisterParams || []) {
 
 > 如何开发 app 逻辑，需要查看 [@netless/windowManager](https://github.com/netless-io/window-manager) 文档。
 
-1. 注册自定义 app
+1. 自定义 app 代码
+
+通过 webview 注入 js 的方法，将这段代码注入到 bridge 的网页中。
 
 ```typescript
 const HelloWorldApp = async () => {
@@ -68,16 +70,45 @@ const HelloWorldApp = async () => {
         },
     };
 };
-// 以下代码内容，sdk 会自动从读取
-window.HelloWorldApp = HelloWorldApp;
-window.appRegisterParams = [{
-    kind: "HelloWorldApp",
-    appOptions: {},
-    src: "HelloWorldApp"
-}];
 ```
 
-2. 插入实例 app 进行展示
+2. 注册自定义 app
+
+
+a. 手动使用代码注册
+```typescript
+// bridge 注册了全局变量 windowManager
+windowManager.register({
+    // 注册 app 的名称
+    kind: "HelloWorldApp",
+    // 自己需要的参数，只对本地的 app 有效
+    appOptions: {},
+    // app 方法初始化的入口
+    src: HelloWorldApp,
+});
+```
+>使用该方法注册的 app，需要保证 webview 中的内容，已经完整加载完成。否则`windowManager`对象，还没有挂载到`window`上，无法手动注册。
+>同时需要在调用初始化 sdk 前，执行以上代码。
+
+b. 通过 window 中的`appRegisterParams`变量，存储 app 的注册信息。在初始化 sdk 时，bridge 会提取`appRegisterParams`中的内容，自动进行注册。
+
+```typescript
+// 在原来的 app 的代码里面，就应该注册上，不过如果是手动注册，不需要
+window.HelloWorldApp = HelloWorldApp;
+
+window.appRegisterParams = [] || window.appRegisterParams;
+// 这种方式，可以由 native 比较灵活的控制 appOption 等参数，但是只能传可以被 JSON 化的数据。
+window.appRegisterParams.push({
+    kind: "HelloWorldApp",
+    // 自己需要的参数，只对本地的 app 有效
+    appOptions: {},
+    // 需要把上面的 HelloWorldApp 方法挂载到 window 对象上，此处可以直接取
+    variable: "HelloWorldApp"
+});
+```
+
+
+3. 插入实例 app 进行展示
 
 > 在 webview，或者启动 bridge 加入房间后，调用一下代码以下代码，插入一个 app 实例。
 

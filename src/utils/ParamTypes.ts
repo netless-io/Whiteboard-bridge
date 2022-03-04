@@ -50,8 +50,10 @@ export type PluginContext = {
 export type AppRegisterParams = {
     // 注册的 app 名称
     kind: string;
-    // 在 window 上的变量名。
-    src: string;
+    // 挂载在 window 上的变量名。
+    variable?: string;
+    // js 插件部署的网址
+    url?: string;
     // 初始化 app 实例时，会被传入的参数。这段配置不会被同步其他端，属于本地设置。常常用来设置 debug 的开关。
     appOptions?: {
         [key: string]: any;

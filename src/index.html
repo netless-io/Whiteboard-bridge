@@ -5,8 +5,53 @@
     <meta content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" name="viewport" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>white-sdk-bridge Application</title>
+    <script>
+        const HelloWorldApp = async () => {
+    console.log("start loading HelloWorld...");
+    // await new Promise(resolve => setTimeout(resolve, 2000))
+    console.log("HelloWorld Loaded");
+    return {
+        setup: (context) => {
+            // const state = context.createStorage<>("HelloWorldApp", { a: 1 });
+            context.storage.onStateChanged.addListener(diff => {
+                if (diff.a) {
+                    console.log("diff", diff.a.newValue, diff.a.oldValue);
+                }
+                console.log("diff all", diff);
+            });
+            const c = { c: 3 };
+            if (context.getIsWritable()) {
+                context.storage.setState({ a: 2, b: c });
+                context.storage.setState({ a: 2, b: c });
+            }
+
+            console.log("helloworld options", context.getAppOptions());
+
+            context.addMagixEventListener("event1", message => {
+                console.log("MagixEvent", message);
+            });
+            // context.dispatchMagixEvent("event1", { count: 1 });
+            context.mountView(context.getBox().$content);
+            context.emitter.on("destroy", () => console.log("[HelloWorld]: destroy"));
+            setTimeout(() => {
+                console.log(context.getAttributes());
+            }, 1000);
+            return "Hello World Result";
+        },
+    };
+};
+window.HelloWorldApp = HelloWorldApp
+    </script>
 </head>
 <body>
     <div id="root"></div>
+    <script>windowManager.register({
+        // 注册 app 的名称
+        kind: "HelloWorldApp",
+        // 自己需要的参数
+        appOptions: v.appOptions,
+        // app 方法初始化的入口
+        src: HelloWorldApp,
+    });</script>
 </body>
 </html>
