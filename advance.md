@@ -25,7 +25,7 @@ for (const v of window.appRegisterParams || []) {
 }
 ```
 
-### 实例
+### 示例
 
 之后在任意一段，使用 window-manger 的添加 app 接口，在多窗口插入该 App，可以在注册该 app（同名）的客户端上看到 app 成功展示。
 
@@ -77,18 +77,32 @@ const HelloWorldApp = async () => {
 
 a. 手动使用代码注册
 ```typescript
-// bridge 注册了全局变量 windowManager
-windowManager.register({
-    // 注册 app 的名称
-    kind: "HelloWorldApp",
-    // 自己需要的参数，只对本地的 app 有效
-    appOptions: {},
-    // app 方法初始化的入口
-    src: HelloWorldApp,
-});
+// bridge 将 windowManager 的 register 方法注入到了 window 中，方便直接使用。
+// 使用该方法注册 app，需要在 window load 事件触发后执行，否则`windowManager`对象，还没有挂载到`window`上，无法手动注册。
+// 同时要在调用初始化 sdk 前执行。
+if (window.registerApp) {
+    registerApp({
+        // 注册 app 的名称
+        kind: "HelloWorldApp",
+        // 自己需要的参数，只对本地的 app 有效
+        appOptions: {},
+        // app 方法初始化的入口
+        src: HelloWorldApp,
+    });
+} else {
+    window.addEventListener("load", e => {
+        registerApp({
+            // 注册 app 的名称
+            kind: "HelloWorldApp",
+            // 自己需要的参数，只对本地的 app 有效
+            appOptions: {},
+            // app 方法初始化的入口
+            src: HelloWorldApp,
+        });
+    });
+}
 ```
->使用该方法注册的 app，需要保证 webview 中的内容，已经完整加载完成。否则`windowManager`对象，还没有挂载到`window`上，无法手动注册。
->同时需要在调用初始化 sdk 前，执行以上代码。
+
 
 b. 通过 window 中的`appRegisterParams`变量，存储 app 的注册信息。在初始化 sdk 时，bridge 会提取`appRegisterParams`中的内容，自动进行注册。
 

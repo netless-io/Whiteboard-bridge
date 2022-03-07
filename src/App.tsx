@@ -53,6 +53,7 @@ function setBackgroundColor(r: number, g: number, b: number, a?: number) {
 }
 
 window.setBackgroundColor = setBackgroundColor;
+window.registerApp = WindowManager.register;
 
 function report(funName: string, ...params: any[]) {
     console.log(funName, ...params);

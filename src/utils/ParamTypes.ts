@@ -9,6 +9,8 @@ declare global {
     interface Window {
       room?: Room;
       manager?: WindowManager;
+      // 用来给外部 js 注册用的
+      registerApp?: typeof WindowManager.register;
       syncedStore?: SyncedStore;
       sdk?: WhiteWebSdk;
       player?: Player;
