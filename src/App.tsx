@@ -1,4 +1,3 @@
-import "@netless/canvas-polyfill";
 import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
