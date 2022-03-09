@@ -3,8 +3,10 @@ import "../utils/ParamTypes";
 import dsBridge from "dsbridge";
 import { DisplayerState } from "white-web-sdk";
 import { TeleBoxState } from "@netless/telebox-insider";
+import { PageState } from "@netless/window-manager/dist/PageState";
 
 type NativeDisplayerState = DisplayerState & {
+    pageState: PageState;
     windowBoxState: TeleBoxState;
 }
 
@@ -30,6 +32,10 @@ export function registerManager(manager: WindowManager, logger: (funName: string
 
     manager.emitter.on("boxStateChange", state => {
         fireDisplayerState({ windowBoxState: state });
+    });
+
+    manager.emitter.on("pageStateChange", pageState => {
+        fireDisplayerState({pageState});
     });
     
     manager.emitter.on("canRedoStepsChange",canRedoSteps => {
