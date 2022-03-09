@@ -1103,10 +1103,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.3.26":
-  version "0.3.26"
-  resolved "https://registry.npmmirror.com/@netless/window-manager/-/window-manager-0.3.26.tgz#4ebc9e6d94c2fb7c5554fc5095e8bcc00c9eb8e7"
-  integrity sha512-edtxBZFFrtluiFhZ/KGbG3DaLODvrl2z4yes5C6YUgleQnQWJp96oNgqKsla7Ti1RWwp6gdUOc3uTX5+iClyjQ==
+"@netless/window-manager@0.3.27":
+  version "0.3.27"
+  resolved "https://registry.npmmirror.com/@netless/window-manager/-/window-manager-0.3.27.tgz#e3028035d7abf47aece08423e0d8cc660a6b7007"
+  integrity sha512-nvbz0AgtjDXWKe+FOSYUBCJmI+4dorrq9Rt9zYXgG6OcdebwZAI/X0xsUvQ0AHJTchZmc3l83iW/E5u20qaEQA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     emittery "^0.9.2"
