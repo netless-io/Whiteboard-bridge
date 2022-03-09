@@ -15,7 +15,7 @@ import "@netless/window-manager/dist/style.css";
 import { SyncedStore } from "@netless/synced-store";
 
 import {convertBound} from "./utils/BoundConvert";
-import {globalErrorEvent, postCustomMessage, registerBridge} from "./utils/Funs";
+import {createPageState, globalErrorEvent, postCustomMessage, registerBridge} from "./utils/Funs";
 import {CursorTool} from "@netless/cursor-tool";
 import CombinePlayerFactory from "@netless/combine-player";
 import "./App.css";
@@ -318,14 +318,6 @@ export default function App() {
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });
-    }
-
-    function createPageState(sceneState: SceneState) {
-        if (sceneState) {
-            return { pageState: { index: sceneState.index, length: sceneState.scenes.length } };
-        } else {
-            return {};
-        }
     }
 
     function replayRoom(nativeParams: NativeReplayParams, responseCallback: any) {

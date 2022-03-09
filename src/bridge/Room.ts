@@ -3,7 +3,7 @@ import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalS
 import { registerDisplayer } from "../bridge/Displayer";
 import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
 import { Attributes as SlideAttributes } from "@netless/app-slide";
-import { registerBridge } from "../utils/Funs";
+import { createPageState, registerBridge } from "../utils/Funs";
 
 type VideoPluginInfo = {
     readonly props?: {
@@ -413,9 +413,10 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         getRoomState: () => {
             const state = room.state;
             if (window.manager) {
-                return { ...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState };
+                return { ...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState, ...{ pageState: window.manager.pageState } };
+            } else {
+                return { ...state, ...createPageState(state.sceneState) };
             }
-            return room.state;
         },
         getTimeDelay: () => {
             return room.timeDelay;

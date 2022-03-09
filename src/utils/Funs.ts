@@ -1,6 +1,6 @@
 import dsBridge from "dsbridge";
 import { useEffect, useRef } from 'react';
-import {Displayer, Room, Player} from "white-web-sdk";
+import {Displayer, Room, Player, SceneState} from "white-web-sdk";
 
 function throwMessage(message: any) {
     console.log(JSON.stringify(message));
@@ -55,6 +55,14 @@ export function isRoom(displayer: Displayer): displayer is Room {
 
 export function globalErrorEvent(e: ErrorEvent) {
     throwMessage({message: e.message, error: e.error});
+}
+
+export function createPageState(sceneState: SceneState) {
+    if (sceneState) {
+        return { pageState: { index: sceneState.index, length: sceneState.scenes.length } };
+    } else {
+        return {};
+    }
 }
 
 export function postCustomMessage(e: {data: any}) {
