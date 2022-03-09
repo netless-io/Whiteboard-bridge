@@ -1,7 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
-import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType, PlayerPhase, RoomState, PlayerState} from "white-web-sdk";
+import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType, PlayerPhase, RoomState, PlayerState, SceneState} from "white-web-sdk";
 import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils/ParamTypes";
 import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
@@ -293,7 +293,7 @@ export default function App() {
             if (useMultiViews) {
                 try {
                     const manager = await mountWindowManager(room, windowParams);       
-                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState };
+                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
                 }
@@ -302,6 +302,7 @@ export default function App() {
                 if (!!cursorAdapter) {
                     cursorAdapter.setRoom(room);
                 }
+                roomState = { ...roomState, ...createPageState(roomState.sceneState) };
             }
 
             if (nativeConfig?.enableSyncedStore) {
@@ -317,6 +318,14 @@ export default function App() {
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });
+    }
+
+    function createPageState(sceneState: SceneState) {
+        if (sceneState) {
+            return { pageState: { index: sceneState.index, length: sceneState.scenes.length } };
+        } else {
+            return {};
+        }
     }
 
     function replayRoom(nativeParams: NativeReplayParams, responseCallback: any) {
@@ -495,9 +504,13 @@ export default function App() {
     }
     
     function onRoomStateChanged(modifyState: Partial<RoomState>) {
-        if (window.manager && modifyState.sceneState) {
+        if (modifyState.sceneState && window.manager) {
             // 多窗口模式，sceneState 不仅仅是主窗口的内容变化有回调，不同子窗口激活状态也会有回调
             return;
+        }
+        // 单窗口模式下，手动生产 pageState
+        if (modifyState.sceneState) {
+            modifyState = {...modifyState, ...createPageState(modifyState.sceneState)}
         }
         dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
     }
