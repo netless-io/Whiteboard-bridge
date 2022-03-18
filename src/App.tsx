@@ -334,7 +334,7 @@ export default function App() {
 
         sdk!.replayRoom({
             ...replayParams,
-            cursorAdapter: cursorAdapter,
+            cursorAdapter: useMultiViews ? undefined : cursorAdapter,
             cameraBound: convertBound(cameraBound),
             invisiblePlugins: useMultiViews ? [WindowManager] : [],
             useMultiViews
