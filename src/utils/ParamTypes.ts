@@ -52,6 +52,8 @@ export type PluginContext = {
 export type AppRegisterParams = {
     // 注册的 app 名称
     kind: string;
+    // 直接提供js代码
+    javascriptString?: string;
     // 挂载在 window 上的变量名。
     variable?: string;
     // js 插件部署的网址
