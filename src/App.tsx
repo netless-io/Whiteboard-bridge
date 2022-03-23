@@ -2,7 +2,7 @@ import React, { useEffect, useRef } from 'react';
 import dsBridge from "dsbridge";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
 import {WhiteWebSdk, RoomPhase, Room, Player, createPlugins, setAsyncModuleLoadMode, AsyncModuleLoadMode, MediaType, PlayerPhase, RoomState, PlayerState, SceneState} from "white-web-sdk";
-import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams} from "./utils/ParamTypes";
+import {NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams} from "./utils/ParamTypes";
 import {registerPlayer, registerRoom, Rtc} from "./bridge";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
@@ -121,11 +121,21 @@ export default function App() {
         }}, () => {});
     }
 
-    function registerApp(para: any) {
-        let customAppJs = para['javascriptString'] as string;
-        let src = Function(`${customAppJs}\nreturn ${para['src']}`)();
-        console.log(src, para['kind'], para['appOptions']);
-        WindowManager.register({'kind': para['kind'], 'src': src, 'appOptions': para['appOptions']});
+    function registerApp(para: AppRegisterParams) {
+        if (para.javascriptString) {
+            let src = Function(`${para.javascriptString}\nreturn ${para.variable}`)();
+            WindowManager.register({
+                kind: para.kind,
+                src: src,
+                appOptions: para.appOptions
+            });
+        } else if (para.url) {
+            WindowManager.register({
+                kind: para.kind,
+                src: para.url,
+                appOptions: para.appOptions
+            });
+        }
     }
 
     function testReplay() {
