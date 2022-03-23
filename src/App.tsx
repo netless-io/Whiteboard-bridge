@@ -121,6 +121,13 @@ export default function App() {
         }}, () => {});
     }
 
+    function registerApp(para: any) {
+        let customAppJs = para['javascriptString'] as string;
+        let src = Function(`${customAppJs}\nreturn ${para['src']}`)();
+        console.log(src, para['kind'], para['appOptions']);
+        WindowManager.register({'kind': para['kind'], 'src': src, 'appOptions': para['appOptions']});
+    }
+
     function testReplay() {
         showLog = true;
         nativeConfig = {log: true, userCursor: true, __platform: "ios", appIdentifier, useMultiViews: true};
@@ -642,6 +649,7 @@ export default function App() {
         asyncInsertFontFaces,
         updateNativeFontFaceCSS,
         updateNativeTextareaFont,
+        registerApp
     });
 
     const divRef = useRef(null);
