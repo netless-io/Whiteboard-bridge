@@ -513,15 +513,21 @@ export default function App() {
     }
     
     function onRoomStateChanged(modifyState: Partial<RoomState>) {
-        if (modifyState.sceneState && window.manager) {
-            // 多窗口模式，sceneState 不仅仅是主窗口的内容变化有回调，不同子窗口激活状态也会有回调
-            return;
+
+        const {sceneState, ...resetState} = modifyState;
+
+        if (window.manager) {
+            // sceneState 由 windowManager 触发
+            if (Object.keys(resetState).length !== 0) {
+                dsBridge.call("room.fireRoomStateChanged", JSON.stringify(resetState));
+            }
+        } else {
+            // 单窗口模式下，如果有 sceneState，则手动生成一个 pageState
+            if (sceneState) {
+                modifyState = {...resetState, ...createPageState(sceneState)}
+            }
+            dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
         }
-        // 单窗口模式下，手动生产 pageState
-        if (modifyState.sceneState) {
-            modifyState = {...modifyState, ...createPageState(modifyState.sceneState)}
-        }
-        dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
     }
 
     function onDisconnectWithError(error) {
