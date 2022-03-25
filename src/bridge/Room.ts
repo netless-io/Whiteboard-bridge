@@ -394,6 +394,14 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
             }
         },
 
+        closeApp: (appId: string, responseCallback: any) => {
+            if (window.manager) {
+                window.manager.closeApp(appId).then( () => {
+                    return responseCallback(undefined);
+                });
+            }
+        },
+
         getSyncedState: (responseCallback: any) => {
             let result = window.syncedStore ? window.syncedStore!.attributes : {}
             responseCallback(JSON.stringify(result))
