@@ -121,20 +121,33 @@ export default function App() {
         }}, () => {});
     }
 
-    function registerApp(para: AppRegisterParams) {
+    function registerApp(para: AppRegisterParams, responseCallback: any) {
         if (para.javascriptString) {
-            let src = Function(`${para.javascriptString}\nreturn ${para.variable}`)();
-            WindowManager.register({
-                kind: para.kind,
-                src: src,
-                appOptions: para.appOptions
-            });
+            let variable = para.variable!;
+            let src = Function(`
+            ${para.javascriptString};
+            if (typeof ${variable} == "undefined") {
+                return undefined; 
+            } else {
+                return ${variable};
+            } 
+            `)();
+            if (!src) {
+                responseCallback(JSON.stringify({__error: {message: "variable does not exist"}}));
+                return;
+            } else {
+                WindowManager.register({
+                    kind: para.kind,
+                    src: src,
+                    appOptions: para.appOptions
+                }).then(() => responseCallback());
+            }
         } else if (para.url) {
             WindowManager.register({
                 kind: para.kind,
                 src: para.url,
                 appOptions: para.appOptions
-            });
+            }).then(() => responseCallback());
         }
     }
 
