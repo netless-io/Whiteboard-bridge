@@ -271,7 +271,7 @@ export default function App() {
                     dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
                 },
                 pptParams,
-                useMobXState: useMultiViews,
+                useMobXState: enableIFramePlugin || useMultiViews,
             });
             window.sdk = sdk;
         } catch (e) {
