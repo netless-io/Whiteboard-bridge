@@ -1068,12 +1068,13 @@
   resolved "https://registry.yarnpkg.com/@netless/cursor-tool/-/cursor-tool-0.1.0.tgz#6f837e7120f258b9b561041df8d6c16fb769b731"
   integrity sha512-XxWU/XbP7kNoC3jCBK6qkle9KnHO9+aVA2fSjwnGnoRG7HbACfBvUxG5+HocHUhnDb7Yc4c66FRv/ELIFq4JwA==
 
-"@netless/iframe-bridge@2.1.5":
-  version "2.1.5"
-  resolved "https://registry.yarnpkg.com/@netless/iframe-bridge/-/iframe-bridge-2.1.5.tgz#0a963e341458f4a158e732f731ded933bde97706"
-  integrity sha512-EUMod3hiRDgqhKpo/D+E2p+MzZH0WkIjThUxYEimPf4sqZzHoDuLSuDYZulonk1kgjOtfIzoxo64Fh+e7E3zjQ==
+"@netless/iframe-bridge@2.1.8":
+  version "2.1.8"
+  resolved "https://registry.yarnpkg.com/@netless/iframe-bridge/-/iframe-bridge-2.1.8.tgz#818c0efb2e04517f31ab1680a053fc416f64144e"
+  integrity sha512-KQbPOFvpnO4v0VlUdYEoWOhC7d6J1Sgzt9iCz8mSCa3L2qQkDKpxqt2e+dkZxEJjAfNud3KVhn4flT1CtNjv8w==
   dependencies:
     eventemitter2 "^6.4.3"
+    lodash.debounce "^4.0.8"
     react "^16.13.1"
 
 "@netless/synced-store@0.0.2":
@@ -3597,6 +3598,11 @@ locate-path@^5.0.0:
   integrity sha512-t7hw9pI+WvuwNJXwk5zVHpyhIqzg2qTlklJOf0mVxGSbe3Fp2VieZcduNYjaLDoy6p9uGpQEGWG87WpMKlNq8g==
   dependencies:
     p-locate "^4.1.0"
+
+lodash.debounce@^4.0.8:
+  version "4.0.8"
+  resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
+  integrity sha1-gteb/zCmfEAF/9XiUVMArZyk168=
 
 lodash.memoize@^4.1.2:
   version "4.1.2"
