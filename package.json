@@ -18,7 +18,7 @@
     "**/video.js": "7.10.0"
   },
   "dependencies": {
-    "@netless/app-slide": "0.1.0",
+    "@netless/app-slide": "0.1.1",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.0",
     "@netless/iframe-bridge": "2.1.8",
@@ -28,7 +28,7 @@
     "@netless/white-audio-plugin2": "^2.0.4",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
-    "@netless/window-manager": "0.4.18",
+    "@netless/window-manager": "0.4.20",
     "buffer": "^6.0.3",
     "core-js": "^3",
     "dsbridge": "^3.1.4",
