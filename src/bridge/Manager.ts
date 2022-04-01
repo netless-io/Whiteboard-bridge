@@ -3,7 +3,7 @@ import "../utils/ParamTypes";
 import dsBridge from "dsbridge";
 import { DisplayerState } from "white-web-sdk";
 import { TeleBoxState } from "@netless/telebox-insider";
-import { PageState } from "@netless/window-manager/dist/PageState";
+import { PageState } from "@netless/window-manager";
 
 type NativeDisplayerState = DisplayerState & {
     pageState: PageState;
