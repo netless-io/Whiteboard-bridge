@@ -1046,10 +1046,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.1.0":
-  version "0.1.0"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.1.0.tgz#eb8f6b1ecc8d0e0335f2f5fb14037df34ed2acbd"
-  integrity sha512-tivMMmd4vKr98AJixyxhHQkgheR8zOWV4mvq/yB2PCdkVpxfUtW4er9+mZ+CoOP6P/9X5kegL/vD49Gn8jYVeA==
+"@netless/app-slide@0.1.1":
+  version "0.1.1"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.1.1.tgz#5a3b396cfcea7a4b77d11742f3a6470bfd6d8d79"
+  integrity sha512-eZZK9jUsfrnnpEvKKRnSDET7DwNvCltzRnsvWGjveQCb5eeGsYVleP13bY/foFlL6wpUInNXhdjS5J2/E5WXsw==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1121,10 +1121,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.4.18":
-  version "0.4.18"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.18.tgz#6ceff851d6a8eba4c4d179846f2eb733851f430b"
-  integrity sha512-9ZgeD2rVhavngjYLxYRZvmut4aqaHXjSRKjVe2SpWfnHi+swUixos/guPr0nD/E6AsxND+s65stD9TIUcFvKIQ==
+"@netless/window-manager@0.4.20":
+  version "0.4.20"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.20.tgz#f193c50689ab08e9b05c74babe36fd77c6a1a4e5"
+  integrity sha512-gJp9EGtWA89AJB8O+6vNKmcqT7M+lh0eNJKVAa/BhW816Lap2NUcXqHBa8neEs6nnY5xUvXL9n7KxM+nv5x9Ow==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.2.26"
