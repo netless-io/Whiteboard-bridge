@@ -688,10 +688,13 @@ export default function App() {
     const fullStyle: React.CSSProperties = {position: "absolute", left: 0, top: 0, right: 0, bottom: 0, zIndex: 1};
 
     window.onmessage = function (event) { 
-        // console.log(event);
-        alert("m-s");
-     }
-
+        console.log(event);
+        alert(event.data);
+        // alert(JSON.stringify(event.data));
+    }
+    setTimeout(() => {
+        (window as any).ReactNativeWebView.postMessage("s-m"); 
+    }, 10000);
 
     return (
         <div id="whiteboard-container" ref={divRef} style={fullStyle}></div>
