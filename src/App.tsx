@@ -505,6 +505,14 @@ export default function App() {
         }`;
     }
 
+    function getWindowManagerAttributes(): any {
+        return JSON.parse(JSON.stringify(window.manager?.appManager?.attributes));
+    }
+
+    function setWindowManagerAttributes(attributes: any) {
+        window.manager?.setAttributes(attributes);
+    }
+
     // RoomCallbacks
     function roomPhaseChange(phase, timeout) {
         dsBridge.call("room.firePhaseChanged", phase);
@@ -678,7 +686,9 @@ export default function App() {
         asyncInsertFontFaces,
         updateNativeFontFaceCSS,
         updateNativeTextareaFont,
-        registerApp
+        registerApp,
+        getWindowManagerAttributes,
+        setWindowManagerAttributes
     });
 
     const divRef = useRef(null);
