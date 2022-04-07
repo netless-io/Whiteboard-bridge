@@ -957,6 +957,13 @@
     "@babel/helper-plugin-utils" "^7.8.3"
     "@babel/plugin-transform-typescript" "^7.9.0"
 
+"@babel/runtime@^7.17.8":
+  version "7.17.9"
+  resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.17.9.tgz#d19fbf802d01a8cb6cf053a64e472d42c434ba72"
+  integrity sha512-lSiBBvodq29uShpWGNbgFdKYNiFDo5/HIYsaCEY9ff4sb10x9jizo2+pRrSyF4jKZCXqgzuqBOQKbUm90gQwJg==
+  dependencies:
+    regenerator-runtime "^0.13.4"
+
 "@babel/runtime@^7.5.5", "@babel/runtime@^7.9.2":
   version "7.12.5"
   resolved "https://registry.yarnpkg.com/@babel/runtime/-/runtime-7.12.5.tgz#410e7e487441e1b360c29be715d870d9b985882e"
@@ -2104,10 +2111,10 @@ commondir@^1.0.1:
   resolved "https://registry.yarnpkg.com/commondir/-/commondir-1.0.1.tgz#ddd800da0c66127393cca5950ea968a3aaf1253b"
   integrity sha1-3dgA2gxmEnOTzKWVDqloo6rxJTs=
 
-complex.js@^2.0.11:
-  version "2.0.11"
-  resolved "https://registry.yarnpkg.com/complex.js/-/complex.js-2.0.11.tgz#09a873fbf15ffd8c18c9c2201ccef425c32b8bf1"
-  integrity sha512-6IArJLApNtdg1P1dFtn3dnyzoZBEF0MwMnrfF1exSBRpZYoy4yieMkpZhQDC0uwctw48vii0CFVyHfpgZ/DfGw==
+complex.js@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/complex.js/-/complex.js-2.1.0.tgz#211258e271345213c6f004c0ea90a34eb1e0c753"
+  integrity sha512-RdcrDz7YynXp/YXGwXIZ4MtmxXXniT5WmLFRX93cuXUX+0geWAqB8l1BoLXF+3BkzviVzHlpw27P9ow7MvlcmA==
 
 compressible@~2.0.16:
   version "2.0.18"
@@ -2351,10 +2358,10 @@ debug@^4.1.0:
   dependencies:
     ms "^2.1.1"
 
-decimal.js@^10.2.0:
-  version "10.2.0"
-  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.2.0.tgz#39466113a9e036111d02f82489b5fd6b0b5ed231"
-  integrity sha512-vDPw+rDgn3bZe1+F/pyEwb1oMG2XTlRVgAa6B4KccTEpYgF8w6eQllVbQcfIJnZyvzFtFpxnpGtx8dd7DJp/Rw==
+decimal.js@^10.3.1:
+  version "10.3.1"
+  resolved "https://registry.yarnpkg.com/decimal.js/-/decimal.js-10.3.1.tgz#d8c3a444a9c6774ba60ca6ad7261c3a94fd5e783"
+  integrity sha512-V0pfhfr8suzyPGOx3nmq4aHqabehUZn6Ch9kyFpV79TGDTWFmHqUqXdabR7QHqxzrYolF4+tVmJhUG4OURg5dQ==
 
 decode-uri-component@^0.2.0:
   version "0.2.0"
@@ -2898,10 +2905,10 @@ forwarded@~0.1.2:
   resolved "https://registry.yarnpkg.com/forwarded/-/forwarded-0.1.2.tgz#98c23dab1175657b8c0573e8ceccd91b0ff18c84"
   integrity sha1-mMI9qxF1ZXuMBXPozszZGw/xjIQ=
 
-fraction.js@^4.0.12:
-  version "4.0.12"
-  resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.0.12.tgz#0526d47c65a5fb4854df78bc77f7bec708d7b8c3"
-  integrity sha512-8Z1K0VTG4hzYY7kA/1sj4/r1/RWLBD3xwReT/RCrUCbzPszjNQCCsy3ktkU/eaEqX3MYa4pY37a52eiBlPMlhA==
+fraction.js@^4.2.0:
+  version "4.2.0"
+  resolved "https://registry.yarnpkg.com/fraction.js/-/fraction.js-4.2.0.tgz#448e5109a313a3527f5a3ab2119ec4cf0e0e2950"
+  integrity sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==
 
 framesync@^4.0.0, framesync@^4.0.1:
   version "4.1.0"
@@ -3655,19 +3662,20 @@ make-dir@^2.0.0:
     pify "^4.0.1"
     semver "^5.6.0"
 
-mathjs@6.6.5:
-  version "6.6.5"
-  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-6.6.5.tgz#6bbad1fa3ac09e8f7106ef64af8d3908f877b8e8"
-  integrity sha512-jvRqk7eoEHBcx/lskmy05m+8M7xDHAJcJzRJoqIsqExtlTHPDQO0Zv85g5F0rasDAXF+DLog/70hcqCJijSzPQ==
+mathjs@^10.1.1:
+  version "10.4.2"
+  resolved "https://registry.yarnpkg.com/mathjs/-/mathjs-10.4.2.tgz#bae041b99f7774f807a0b0f98b8fd3c06f493a5a"
+  integrity sha512-3yXxFBR0V2Ij+jk7LV5k15lb+yivRxYRzjmuDYB1+yUzM3x7/XXNjIUZlcyp6l96BUMsOWzgZfIeYxg/dzqxKw==
   dependencies:
-    complex.js "^2.0.11"
-    decimal.js "^10.2.0"
+    "@babel/runtime" "^7.17.8"
+    complex.js "^2.1.0"
+    decimal.js "^10.3.1"
     escape-latex "^1.2.0"
-    fraction.js "^4.0.12"
+    fraction.js "^4.2.0"
     javascript-natural-sort "^0.7.1"
-    seed-random "^2.2.0"
+    seedrandom "^3.0.5"
     tiny-emitter "^2.1.0"
-    typed-function "^1.1.1"
+    typed-function "^2.1.0"
 
 mdn-data@2.0.14:
   version "2.0.14"
@@ -4817,10 +4825,10 @@ schema-utils@^4.0.0:
     ajv-formats "^2.1.1"
     ajv-keywords "^5.0.0"
 
-seed-random@^2.2.0:
-  version "2.2.0"
-  resolved "https://registry.yarnpkg.com/seed-random/-/seed-random-2.2.0.tgz#2a9b19e250a817099231a5b99a4daf80b7fbed54"
-  integrity sha1-KpsZ4lCoFwmSMaW5mk2vgLf77VQ=
+seedrandom@^3.0.5:
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/seedrandom/-/seedrandom-3.0.5.tgz#54edc85c95222525b0c7a6f6b3543d8e0b3aa0a7"
+  integrity sha512-8OwmbklUNzwezjGInmZ+2clQmExQPvomqjL7LFqOYqtmuxRgQYqOD3mHaU+MvZn5FLUeVxVfQjwLZW/n/JFuqg==
 
 select-hose@^2.0.0:
   version "2.0.0"
@@ -5317,10 +5325,10 @@ type-is@~1.6.17, type-is@~1.6.18:
     media-typer "0.3.0"
     mime-types "~2.1.24"
 
-typed-function@^1.1.1:
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/typed-function/-/typed-function-1.1.1.tgz#a1316187ec3628c9e219b91ca96918660a10138e"
-  integrity sha512-RbN7MaTQBZLJYzDENHPA0nUmWT0Ex80KHItprrgbTPufYhIlTePvCXZxyQK7wgn19FW5bnuaBIKcBb5mRWjB1Q==
+typed-function@^2.1.0:
+  version "2.1.0"
+  resolved "https://registry.yarnpkg.com/typed-function/-/typed-function-2.1.0.tgz#ded6f8a442ba8749ff3fe75bc41419c8d46ccc3f"
+  integrity sha512-bctQIOqx2iVbWGDGPWwIm18QScpu2XRmkC19D8rQGFsjKSgteq/o1hTZvIG/wuDq8fanpBDrLkLq+aEN/6y5XQ==
 
 typescript@^4.5.4:
   version "4.5.4"
@@ -5598,10 +5606,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.10:
-  version "2.16.10"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.10.tgz#187c43c082ad00eb2d0ee97a2f91fa58c9f09cea"
-  integrity sha512-3AE2URg1Xt9vbOg52oM5JfeaTbAd96zJjrHi5UcYru3eLjYXSffzcsz1QyCoKi+31g2H+6C51N/WaYfjVuLRxA==
+white-web-sdk@2.16.15:
+  version "2.16.15"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.15.tgz#f363f3e80390e1861d0dc3ffa86db5c44eba91dc"
+  integrity sha512-pTyWJukPHSujZHK1objwA1tbwPOYmjD9laz9FMsNnsVi13x9Mv0nwHyj46lvvQFMtTsRdBDbSTYyBgJtrZbaww==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
@@ -5612,7 +5620,7 @@ white-web-sdk@2.16.10:
     core-js "^3.15.2"
     detect-it "^3.0.5"
     eventemitter3 "^4.0.7"
-    mathjs "6.6.5"
+    mathjs "^10.1.1"
     mobx "^6.3.2"
     mobx-react "^7.2.0"
     protobufjs "^6.11.2"
