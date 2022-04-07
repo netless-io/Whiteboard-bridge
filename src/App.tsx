@@ -686,7 +686,10 @@ export default function App() {
         asyncInsertFontFaces,
         updateNativeFontFaceCSS,
         updateNativeTextareaFont,
-        registerApp,
+        registerApp
+    });
+    
+    dsBridge.register("sdk", {
         getWindowManagerAttributes,
         setWindowManagerAttributes
     });
