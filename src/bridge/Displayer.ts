@@ -104,6 +104,9 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
         entireScenes: () => {
             return displayer.entireScenes();
         },
+        getScene: (scenePath: string) => {
+            return displayer.getScene(scenePath);
+        },
         moveCamera: (camera: Partial<Camera> & Readonly<{animationMode?: AnimationMode}>) => {
             logger("moveCamera: ", camera);
             displayer.moveCamera(camera);
