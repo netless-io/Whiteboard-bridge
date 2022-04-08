@@ -25,6 +25,10 @@ const asyncNamespace = "displayerAsync";
 
 export function registerDisplayer(displayer: Displayer, logger: (funName: string, ...param: any[]) => void) {
 
+    const getWindowManagerAttributes = (): any => {
+        return JSON.parse(JSON.stringify(window.manager?.appManager?.attributes));
+    }
+
     const setCameraBound = (nativeBound: NativeCameraBound) => {
         const bound = convertBound(nativeBound);
         logger("setCameraBound bound", bound);
@@ -98,6 +102,7 @@ export function registerDisplayer(displayer: Displayer, logger: (funName: string
         getMemberState: (memberId: number) => {
             return JSON.stringify(displayer.memberState(memberId));
         },
+        getWindowManagerAttributes,
         scenePathType: (path: string) => {
             return displayer.scenePathType(path);
         },
