@@ -511,6 +511,7 @@ export default function App() {
 
     function setWindowManagerAttributes(attributes: any) {
         window.manager?.setAttributes(attributes);
+        window.manager?.appManager?.refresh();
     }
 
     // RoomCallbacks
