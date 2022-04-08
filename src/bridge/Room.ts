@@ -83,6 +83,11 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
     }
 }
 
+function setWindowManagerAttributes(attributes: any) {
+    window.manager?.setAttributes(attributes);
+    window.manager?.appManager?.refresh();
+}
+
 const pptNamespace = "ppt";
 const roomSyncNamespace = "room.sync";
 const roomNamespace = "room";
@@ -99,6 +104,10 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
         // tslint:disable-next-line:no-unused-expression
         room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
     }
+
+    dsBridge.register(roomNamespace, {
+        setWindowManagerAttributes
+    });
 
     dsBridge.register(pptNamespace, {
         nextStep: () => {
