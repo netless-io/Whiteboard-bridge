@@ -505,15 +505,6 @@ export default function App() {
         }`;
     }
 
-    function getWindowManagerAttributes(): any {
-        return JSON.parse(JSON.stringify(window.manager?.appManager?.attributes));
-    }
-
-    function setWindowManagerAttributes(attributes: any) {
-        window.manager?.setAttributes(attributes);
-        window.manager?.appManager?.refresh();
-    }
-
     // RoomCallbacks
     function roomPhaseChange(phase, timeout) {
         dsBridge.call("room.firePhaseChanged", phase);
@@ -688,11 +679,6 @@ export default function App() {
         updateNativeFontFaceCSS,
         updateNativeTextareaFont,
         registerApp
-    });
-    
-    dsBridge.register("sdk", {
-        getWindowManagerAttributes,
-        setWindowManagerAttributes
     });
 
     const divRef = useRef(null);
