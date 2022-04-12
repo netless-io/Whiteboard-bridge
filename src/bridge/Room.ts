@@ -85,8 +85,7 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
 
 function setWindowManagerAttributes(attributes: any) {
     window.manager?.setAttributes(attributes);
-    window.manager?.appManager?.refresh();
-    window.manager?.appManager?.mainViewProxy.rebind();
+    window.manager?.refresh();
 }
 
 const pptNamespace = "ppt";
