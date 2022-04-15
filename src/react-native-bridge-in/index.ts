@@ -1,8 +1,9 @@
 class Bridge {
     methods: Map<string, any> = new Map()
     public call(method: string, args) {
+        const potocol = 'req|0|0|' + method + '|' + args;
         // call out
-        (window as any).ReactNativeWebView.postMessage("s-m"); 
+        (window as any).ReactNativeWebView.postMessage(potocol); 
     }
     public register(name: string, fun: any) {
         this.methods.set(name, fun);
@@ -18,7 +19,7 @@ class Bridge {
             let args = dser[4];
             if (this.methods.has(method)) {
                 let fun = this.methods.get(method);
-                fun.apply(args);
+                const ret = fun.apply(args);
             }
         }
     }

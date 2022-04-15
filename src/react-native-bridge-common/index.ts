@@ -12,4 +12,26 @@ class Potocol {
     public dser() {
         
     }
+
+    /**
+     * 
+     buildReq
+     */
+    public buildReq() {
+        
+    }
+
+    /**
+     * buildAck
+     */
+    public buildAck() {
+        
+    }
+
+    /**
+     * buildEvt
+     */
+    public buildEvt() {
+        
+    }
 }
