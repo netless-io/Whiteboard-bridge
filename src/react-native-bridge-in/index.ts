@@ -1,4 +1,4 @@
-export default class Bridge {
+class Bridge {
     methods: Map<string, any> = new Map()
     public call(method: string, args) {
         // call out
@@ -9,11 +9,19 @@ export default class Bridge {
     }
 
     public recv(potocol: string) {
-        let dser: string[] = potocol.split("|");
-        let method = dser[3];
-        let args = dser[4];
-
-        let fun = this.methods.get(method);
-        fun.apply(args);
+        if (typeof potocol == "string") {
+            let dser: string[] = potocol.split("|");
+            let type = dser[0];
+            let action = dser[1];
+            let object = dser[2];
+            let method = dser[3];
+            let args = dser[4];
+            if (this.methods.has(method)) {
+                let fun = this.methods.get(method);
+                fun.apply(args);
+            }
+        }
     }
 }
+const bridge = new Bridge();
+export default bridge;

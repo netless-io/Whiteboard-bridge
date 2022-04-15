@@ -23,6 +23,7 @@ import 'video.js/dist/video-js.css';
 import { hookCreateElement } from './utils/ImgError';
 import { postIframeMessage } from './utils/iFrame';
 import { registerManager } from "./bridge/Manager";
+import bridge from "./react-native-bridge-in";
 
 let showLog = false;
 const lastSchedule = {
@@ -686,16 +687,19 @@ export default function App() {
     registerBridge(["sdk"], logger);
 
     const fullStyle: React.CSSProperties = {position: "absolute", left: 0, top: 0, right: 0, bottom: 0, zIndex: 1};
-
+    
     window.onmessage = function (event) { 
-        console.log(event);
-        alert(event.data);
+        // console.log(event);
+        // alert(event.data);
         // alert(JSON.stringify(event.data));
+        bridge.recv(event.data);
     }
-    setTimeout(() => {
-        (window as any).ReactNativeWebView.postMessage("s-m"); 
-    }, 10000);
-
+    // setTimeout(() => {
+    //     (window as any).ReactNativeWebView.postMessage("s-m"); 
+    // }, 10000);
+    bridge.register("hello", () => {
+        alert("hi");
+    });
     return (
         <div id="whiteboard-container" ref={divRef} style={fullStyle}></div>
     )
