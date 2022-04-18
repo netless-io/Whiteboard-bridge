@@ -20,6 +20,10 @@ class Bridge {
             if (this.methods.has(method)) {
                 let fun = this.methods.get(method);
                 const ret = fun.apply(args);
+                // alert(ret);
+                const potocol = 'ack|0|1|' + ret;
+                // call out
+                (window as any).ReactNativeWebView.postMessage(potocol); 
             }
         }
     }

@@ -698,7 +698,8 @@ export default function App() {
     //     (window as any).ReactNativeWebView.postMessage("s-m"); 
     // }, 10000);
     bridge.register("hello", () => {
-        alert("hi");
+        // alert("hi");
+        return 3;
     });
     return (
         <div id="whiteboard-container" ref={divRef} style={fullStyle}></div>
