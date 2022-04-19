@@ -694,11 +694,10 @@ export default function App() {
         // alert(JSON.stringify(event.data));
         bridge.recv(event.data);
     }
-    // setTimeout(() => {
-    //     (window as any).ReactNativeWebView.postMessage("s-m"); 
-    // }, 10000);
+    setTimeout(async () => {
+        await bridge.call('hello_evt', '');
+    }, 10000);
     bridge.register("hello", () => {
-        // alert("hi");
         return 3;
     });
     return (
