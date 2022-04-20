@@ -1,4 +1,5 @@
-# white-sdk-bridge
+# white-sdk-bridge![build](https://github.com/netless-io/whiteboard-bridge/actions/workflows/tsc.yml/badge.svg)
+
 
 ## 介绍
 
