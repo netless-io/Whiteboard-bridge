@@ -18,6 +18,7 @@ declare global {
       bridge?: any;
       __nativeTags?: any;
       __platform?: any;
+      __netlessUA?: string;
       __netlessMobXUseProxies?: string;
       testRoom: () => void;
       testReplay: () => void;
@@ -82,6 +83,7 @@ export type NativeSDKConfig = {
     /** native 预热结果，web sdk 升级至 2.8.0 后，该功能不再需要主动测一遍。保留该字段，是为了兼容，以及抽离选项 */
     initializeOriginsStates?: any;
     __platform: "ios" | "android";
+    __netlessUA?: [string];
     /** 多窗口在初始化的时候，需要配置 useMobxState 为 true，所以在初始化 sdk 的时候，就需要知道参数 */
     useMultiViews?: boolean;
 } & WhiteWebSdkConfiguration;
