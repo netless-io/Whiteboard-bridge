@@ -5606,10 +5606,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.15:
-  version "2.16.15"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.15.tgz#f363f3e80390e1861d0dc3ffa86db5c44eba91dc"
-  integrity sha512-pTyWJukPHSujZHK1objwA1tbwPOYmjD9laz9FMsNnsVi13x9Mv0nwHyj46lvvQFMtTsRdBDbSTYyBgJtrZbaww==
+white-web-sdk@2.16.19:
+  version "2.16.19"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.19.tgz#d8d7fb8ba1932aff960212ac846219e06481fe04"
+  integrity sha512-PNGDeao5A2InPiCZlUOfAqWMt6w8akoeKH5B7MjKB8qMRVppvRI1r7DqAuiRRzccP9RDDAkhM+T+4z6iqH0Fsg==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
