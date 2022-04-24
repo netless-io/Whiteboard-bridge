@@ -181,7 +181,7 @@ export default function App() {
             return url;
         } : undefined;
 
-        const { log, __nativeTags, __platform, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
+        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         showLog = !!log;
         nativeConfig = config;
@@ -190,6 +190,10 @@ export default function App() {
 
         if (__platform) {
             window.__platform = __platform;
+        }
+
+        if (__netlessUA) {
+            window.__netlessUA = __netlessUA.join(' ');
         }
 
         if (enableImgErrorCallback) {
