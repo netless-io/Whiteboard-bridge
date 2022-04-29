@@ -1,0 +1,420 @@
+import {registerPlayer, registerRoom, Rtc} from "../bridge";
+import { hookCreateElement } from '../utils/ImgError';
+import {CursorTool} from "@netless/cursor-tool";
+import dsBridge from "dsbridge";
+import { NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams } from "../utils/ParamTypes";
+import {WhiteWebSdk, Room, Player, createPlugins, PlayerPhase} from "white-web-sdk";
+import {videoPlugin} from "@netless/white-video-plugin";
+import {audioPlugin} from "@netless/white-audio-plugin";
+import {videoPlugin2} from "@netless/white-video-plugin2";
+import {audioPlugin2} from "@netless/white-audio-plugin2";
+import {videoJsPlugin} from "@netless/video-js-plugin";
+import SlideApp, { addHooks as addHooksSlide } from "@netless/app-slide";
+import { MountParams, WindowManager } from "@netless/window-manager";
+import { SyncedStore } from "@netless/synced-store";
+import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
+import {logger, report, setShowLog} from "../utils/Logger";
+import {convertBound} from "../utils/BoundConvert";
+import { listenEmitterFromManager } from "../bridge/Manager";
+import { RoomCallbackHandler } from "./RoomCallbackHandler";
+import { createPageState } from "../utils/Funs";
+import { lastSchedule, ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
+import CombinePlayerFactory from "@netless/combine-player";
+import { updateGlobalRoom } from "./Room";
+import { updateGlobalPlayer } from "./Player";
+
+let sdk: WhiteWebSdk | undefined = undefined;
+let room: Room | undefined = undefined;
+let player: Player | undefined = undefined;
+let rtcClient = new Rtc();
+
+let nativeConfig: NativeSDKConfig | undefined = undefined;
+let cursorAdapter: CursorTool | undefined = undefined;
+
+let divRef: ()=>(HTMLElement | undefined);
+
+const textareaCSSId = "whiteboard-native-css"
+const nativeFontFaceCSS = "whiteboard-native-font-face";
+
+export function setWhiteboardDivGetter(aGetter: ()=>(HTMLElement)) {
+    divRef = aGetter;
+}
+
+function removeBind() {
+    if (window.manager) {
+        window.manager.destroy()
+        window.manager = undefined;
+        room = undefined;
+        player = undefined;
+    } else if (room) {
+        room.bindHtmlElement(null);
+        // FIXME:最好执行 disconnect，但是由于如果主动执行 disconnect，会触发状态变化回调，导致一定问题，所以此处不能主动执行。
+        room = undefined;
+    } else if (player) {
+        player.bindHtmlElement(null);
+        player = undefined;
+    }
+}
+
+async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: MountParams) {
+    const manager = await WindowManager.mount({
+        // 高比宽
+        containerSizeRatio: 9/16,
+        chessboard: true,
+        cursor: !!cursorAdapter,
+        ...windowParams,
+        container: divRef(),
+        room
+    });
+    listenEmitterFromManager(manager, logger, handler);
+    return manager;
+}
+
+export class SDK {
+    newWhiteSdk(config: NativeSDKConfig) {
+        const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
+            const modifyUrl: string = dsBridge.call("sdk.urlInterrupter", url);
+            if (modifyUrl.length > 0) {
+                return modifyUrl;
+            }
+            return url;
+        } : undefined;
+
+        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
+
+        setShowLog(!!log);
+        nativeConfig = config;
+        
+        logger("newWhiteSdk", config);
+
+        if (__platform) {
+            window.__platform = __platform;
+        }
+
+        if (__netlessUA) {
+            window.__netlessUA = __netlessUA.join(' ');
+        }
+
+        if (enableImgErrorCallback) {
+            hookCreateElement();
+        }
+        
+        cursorAdapter = !!userCursor ? new CursorTool() : undefined;
+
+        if (__nativeTags) {
+            window.__nativeTags = {...window.__nativeTags, ...__nativeTags};
+        }
+
+        const pptParams = restConfig.pptParams || {};
+        if (enableRtcIntercept) {
+            (pptParams as any).rtcClient = rtcClient;
+        }
+
+        const videoJsLogger = (message?: any, ...optionalParams: any[]) => {
+            // logger("videoJsPlugin", ...message, ...optionalParams);
+            // always report log
+            report("videoJsPlugin", message, ...optionalParams);
+        }
+
+        const windowPlugins: {[key in string]: any} = [];
+        for (const value of window.pluginParams || []) {
+            const p = {
+                [value.name]: (window as any)[value.variable]
+            };
+            windowPlugins.push(p);
+        }
+
+        const plugins = createPlugins({
+            "video": videoPlugin,
+            "audio": audioPlugin,
+            "video2": videoPlugin2,
+            "audio2": audioPlugin2,
+            "video.js": videoJsPlugin({ log: videoJsLogger }),
+            ...windowPlugins,
+        });
+        plugins.setPluginContext("video.js", {enable: false, verbose: true});
+        for (const v of window.pluginContext || []) {
+            plugins.setPluginContext(v.name, v.params);
+        }
+        window.plugins = plugins;
+
+        const slideKind = "Slide";
+        WindowManager.register({
+            kind: slideKind,
+            appOptions: {
+                debug: false,
+            },
+            addHooks: addHooksSlide,
+            src: async () => {
+                return SlideApp;
+            },
+        });
+        for (const v of window.appRegisterParams || []) {
+            WindowManager.register({
+                kind: v.kind,
+                appOptions: v.appOptions,
+                src: v.variable ? window[v.variable] : v.url,
+            });
+        }
+
+        const invisiblePlugins = [
+            ...enableIFramePlugin ? [IframeBridge as any] : [],
+            ...enableSyncedStore ? [SyncedStore as any] : [],
+        ]
+
+        try {
+            sdk = new WhiteWebSdk({
+                ...restConfig,
+                invisiblePlugins: invisiblePlugins,
+                wrappedComponents: enableIFramePlugin ? [IframeWrapper] : undefined,
+                plugins: plugins,
+                urlInterrupter: urlInterrupter,
+                onWhiteSetupFailed: e => {
+                    logger("onWhiteSetupFailed",  e);
+                    dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
+                },
+                pptParams,
+                useMobXState: enableIFramePlugin || useMultiViews,
+            });
+            window.sdk = sdk;
+        } catch (e) {
+            logger("onWhiteSetupFailed", e);
+            dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
+        }
+    }
+
+    joinRoom(nativeParams: NativeJoinRoomParams, responseCallback: any) {
+        if (!sdk) {
+            responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
+            return;
+        }
+        removeBind();
+        logger("joinRoom", nativeParams);
+        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, ...joinRoomParams} = nativeParams;
+        const {useMultiViews} = nativeConfig!;
+        const invisiblePlugins = [
+            ...useMultiViews ? [WindowManager as any] : [],
+        ]
+        
+        window.nativeWebSocket = nativeWebSocket;
+
+        const roomCallbackHandler = new RoomCallbackHandler();
+
+        sdk!.joinRoom({
+            useMultiViews,
+            disableCameraTransform,
+            ...joinRoomParams,
+            invisiblePlugins: invisiblePlugins,
+            cursorAdapter: useMultiViews ? undefined : cursorAdapter,
+            cameraBound: convertBound(cameraBound),
+            disableMagixEventDispatchLimit: useMultiViews,
+        }, roomCallbackHandler).then(async aRoom => {
+            removeBind();
+            room = aRoom;
+            let roomState = room.state;
+
+            /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
+            if (useMultiViews) {
+                try {
+                    const manager = await mountWindowManager(room, roomCallbackHandler, windowParams );       
+                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
+                } catch (error) {
+                    return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+                }
+            } else {
+                room.bindHtmlElement(divRef() as HTMLDivElement);
+                if (!!cursorAdapter) {
+                    cursorAdapter.setRoom(room);
+                }
+                roomState = { ...roomState, ...createPageState(roomState.sceneState) };
+            }
+
+            if (nativeConfig?.enableSyncedStore) {
+                window.syncedStore = await SyncedStore.create(room);
+                window.syncedStore.emitter.on("attributesUpdate", attributes => {
+                    logger("attributesUpdate", attributes);
+                    roomCallbackHandler.onAttributesUpdate(attributes);
+                });
+            }
+            updateGlobalRoom(room);
+            return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
+        }).catch((e: Error) => {
+            return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
+        });
+    }
+
+    replayRoom(nativeParams: NativeReplayParams, responseCallback: any) {
+        // nativeReplayParams = nativeParams;
+        if (!sdk) {
+            responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
+            return;
+        }
+
+        const {step = 500, cameraBound, mediaURL, windowParams, ...replayParams} = nativeParams;
+        removeBind();
+        logger("replayRoom", nativeParams);
+        const {useMultiViews} = nativeConfig!;
+
+        let replayCallbackHanlder: ReplayerCallbackHandler;
+
+        const phaseChangeHook = (player: Room, phase: PlayerPhase) => {
+            if ((phase === PlayerPhase.Pause || phase === PlayerPhase.Playing) && !!nativeConfig?.useMultiViews && player.getInvisiblePlugin(WindowManager.kind) === null && !window.manager) {
+                const room: Room = player! as unknown as Room;
+                const { windowParams } = nativeParams!;
+                // sdk 内部，先触发回调，才更新 invisiblePlugins，所以要带一个延迟，放到回调后执行
+                setTimeout(() => {
+                    mountWindowManager(room, replayCallbackHanlder, windowParams).catch(e => {
+                        console.error("mount error", e);
+                    })
+                }, 0);
+            }
+        }
+        replayCallbackHanlder = new ReplayerCallbackHandler(step, !!mediaURL, !!(nativeConfig?.enableIFramePlugin), phaseChangeHook);
+
+        sdk!.replayRoom({
+            ...replayParams,
+            cursorAdapter: useMultiViews ? undefined : cursorAdapter,
+            cameraBound: convertBound(cameraBound),
+            invisiblePlugins: useMultiViews ? [WindowManager] : [],
+            useMultiViews
+        }, replayCallbackHanlder).then(async mPlayer => {
+            removeBind();
+            player = mPlayer;
+            // 多窗口需要调用 player 的 getInvisiblePlugin 方法，获取数据，而这些数据需要在 player 成功初始化，首次进入 play || pause 状态，才能获取到，所以回放时，多窗口需要异步
+            if (!useMultiViews) {
+                mPlayer.bindHtmlElement(divRef() as HTMLDivElement);
+                if (!!cursorAdapter) {
+                    cursorAdapter?.setPlayer(player);
+                }
+            }
+            if (mediaURL) {
+                // FIXME: 多次初始化，会造成一些问题
+                const videoDom = document.createElement("video");
+                videoDom.setAttribute("x5-video-player-type", "h5-page");
+                videoDom.setAttribute("playsInline", "");
+                videoDom.setAttribute("style", "display:none;");
+                videoDom.setAttribute("class", "video-js");
+                document.body.appendChild(videoDom);
+
+                const combinePlayerFactory = new CombinePlayerFactory(player, {
+                    url: mediaURL,
+                    videoDOM: videoDom,
+                });
+                const combinePlayer = combinePlayerFactory.create();
+                updateGlobalPlayer(mPlayer, combinePlayer, lastSchedule, replayCallbackHanlder);
+            } else {
+                updateGlobalPlayer(mPlayer, undefined, lastSchedule, replayCallbackHanlder);
+            }
+       
+            const {progressTime: scheduleTime, timeDuration, framesCount, beginTimestamp} = mPlayer;
+            return responseCallback(JSON.stringify({timeInfo: {scheduleTime, timeDuration, framesCount, beginTimestamp}}));
+        }).catch((e: Error) => {
+            return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
+        });
+    }
+
+    isPlayable(nativeReplayParams: NativeReplayParams, responseCallback: any) {
+        if (!sdk) {
+            responseCallback(false);
+            return;
+        }
+
+        const { step = 500, cameraBound, ...replayParams } = nativeReplayParams;
+        sdk!.isPlayable({
+            ...replayParams
+        }).then((isPlayable) => {
+            responseCallback(isPlayable);
+        })
+    }
+
+    asyncInsertFontFaces(fontFaces: any[], responseCallback: any) {
+        logger("asyncInsertFontFaces", fontFaces);
+        for (const f of fontFaces) {
+            const fontWeight = f["font-weight"];
+            const fontStyle = f["font-style"];
+            const unicodeRange = f["unicode-range"];
+            const description = JSON.parse(JSON.stringify({weight: fontWeight, style: fontStyle, unicodeRange}));
+            const font = new FontFace(f["font-family"], f.src, description);
+            // FIXME: responseCallback 只能调用一次，第二次再调用，就没有效果了
+            font.load().then(fontFaces => {
+                logger("asyncInsertFontFaces load font success", f);
+                document.fonts.add(font);
+                responseCallback({success: true, fontFace: f});
+            }).catch(e => {
+                logger("asyncInsertFontFaces load font failed", f);
+                responseCallback({success: false, fontFace: f, error: e});
+            })
+        }
+    }
+
+    updateNativeFontFaceCSS(fontFaces: any[]) {
+        logger("insertFontFaces", fontFaces);
+        let sheet = document.getElementById(nativeFontFaceCSS);
+        if (!sheet) {
+            sheet = document.createElement("style");
+            sheet.id = nativeFontFaceCSS;
+            document.body.appendChild(sheet);
+        }
+        const fontCss = fontFaces.map(v => {
+            const css = Object.keys(v).reduce((p, c) => {
+                const value: string = v[c];
+                // 部分字段有空格，需要使用""包裹，但有"会导致 src 字段等出现问题，不能无脑包裹
+                if (value.includes(" ")) {
+                    return `${p}\n${c}: "${v[c]}";`;
+                } else {
+                    return `${p}\n${c}: ${v[c]};`;
+                }
+            }, "");
+            return `@font-face {
+                ${css}
+            }`;
+        })
+        sheet.innerHTML = fontCss.join("\n");
+    }
+
+    updateNativeTextareaFont(fonts: string[]) {
+        logger("updateTextFont", fonts);
+        let sheet = document.getElementById(textareaCSSId);
+        if (!sheet) {
+            sheet = document.createElement("style");
+            sheet.id = textareaCSSId;
+            document.body.appendChild(sheet);
+        }
+        
+        let fontNames = fonts.map(f => `"${f}"`).join(",");
+
+        sheet!.innerHTML = `.netless-whiteboard textarea {
+            font-family: ${fontNames}; 
+        }`;
+    }
+
+    registerApp(para: AppRegisterParams, responseCallback: any) {
+        if (para.javascriptString) {
+            let variable = para.variable!;
+            let src = Function(`
+                    ${para.javascriptString};
+                    if (typeof ${variable} == "undefined") {
+                        return undefined; 
+                    } else {
+                        return ${variable};
+                    } 
+                    `)();
+            if (!src) {
+                responseCallback(JSON.stringify({ __error: { message: "variable does not exist" } }));
+                return;
+            } else {
+                WindowManager.register({
+                    kind: para.kind,
+                    src: src,
+                    appOptions: para.appOptions
+                }).then(() => responseCallback());
+            }
+        } else if (para.url) {
+            WindowManager.register({
+                kind: para.kind,
+                src: para.url,
+                appOptions: para.appOptions
+            }).then(() => responseCallback());
+        }
+    }
+}

@@ -1,38 +1,50 @@
 import dsBridge from "dsbridge";
-import { ObserverMode, Player, PlayerPhase } from "white-web-sdk";
-import { registerDisplayer } from "./Displayer";
+import { ObserverMode, Player, PlayerCallbacks, PlayerPhase } from "white-web-sdk";
+import { updateGlobalDisplayer } from "./Displayer";
 import { CombinePlayer, PublicCombinedStatus } from "@netless/combine-player";
+import { logger } from "../utils/Logger";
+import { ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
 
-export function registerPlayer(player: Player, combinePlayer: CombinePlayer | undefined, lastSchedule: { time: number }, logger: (funName: string, ...param: any[]) => void): void {
-    window.player = player;
-    window.combinePlayer = combinePlayer;
-    registerDisplayer(player, logger);
+let player: Player;
+let combinePlayer: CombinePlayer | undefined;
+
+export function updateGlobalPlayer(aPlayer: Player,
+    aCombinePlayer: CombinePlayer | undefined,
+    lastSchedule: { time: number }, 
+    callbackHandler: ReplayerCallbackHandler): void {
+
+    player = aPlayer;
+    combinePlayer = aCombinePlayer;
+    window.player = aPlayer;
+    window.combinePlayer = aCombinePlayer;
+    updateGlobalDisplayer(player);
+
     if (combinePlayer) {
         combinePlayer.setOnStatusChange((status, message) => {
             lastSchedule.time = 0;
 
             switch (status) {
                 case PublicCombinedStatus.Pause: {
-                    dsBridge.call("player.onPhaseChanged", PlayerPhase.Pause);
+                    callbackHandler.onPhaseChanged(PlayerPhase.Pause);
                     break;
                 }
                 case PublicCombinedStatus.PauseBuffering:
                 case PublicCombinedStatus.PauseSeeking:
                 case PublicCombinedStatus.PlayingBuffering:
                 case PublicCombinedStatus.PlayingSeeking: {
-                    dsBridge.call("player.onPhaseChanged", PlayerPhase.Buffering);
+                    callbackHandler.onPhaseChanged(PlayerPhase.Buffering);
                     break;
                 }
                 case PublicCombinedStatus.Ended: {
-                    dsBridge.call("player.onPhaseChanged", PlayerPhase.Ended);
+                    callbackHandler.onPhaseChanged(PlayerPhase.Ended);
                     break;
                 }
                 case PublicCombinedStatus.Playing: {
-                    dsBridge.call("player.onPhaseChanged", PlayerPhase.Playing);
+                    callbackHandler.onPhaseChanged(PlayerPhase.Playing);
                     break;
                 }
                 case PublicCombinedStatus.Disabled: {
-                    dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": message}));
+                    callbackHandler.onStoppedWithError(new Error(message));
                     break;
                 }
                 default: {
@@ -41,90 +53,100 @@ export function registerPlayer(player: Player, combinePlayer: CombinePlayer | un
             }
         });
     }
+}
 
-    dsBridge.registerAsyn("player", {
-        play: () => {
-            logger("play");
-            if (combinePlayer) {
-                combinePlayer.play();
-            } else {
-                player.play();
+export class PlayerState {
+    roomUUID() {
+        return player.roomUUID;
+    }
+
+    phase() {
+        logger("phase", player.phase);
+        return player.phase;
+    }
+
+    playerState() {
+        // 如果没有加载第一帧，会直接报错
+        try {
+            logger("playerState", player.state);
+            let state = player.state;
+            if (window.manager) {
+                state = {...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState};
             }
-        },
-        pause: () => {
-            logger("pause");
-            if (combinePlayer) {
-                combinePlayer.pause();
-            } else {
-                player.pause();
-            }
-        },
-        stop: () => {
-            try {
-                logger("stop");
-                player.stop();
-            } catch (error) {
-                console.log("stop:", error.message);
-            }
-        },
-        seekToScheduleTime: (beginTime: number) => {
-            logger("seekToScheduleTime", beginTime);
-            if (combinePlayer) {
-                combinePlayer.seek(beginTime);
-            } else {
-                player.seekToProgressTime(beginTime);
-            }
-        },
-        setObserverMode: (observerMode: string) => {
-            logger("setObserverMode", observerMode);
-            player.setObserverMode(observerMode as ObserverMode);
-        },
-        setPlaybackSpeed: (rate: number) => {
-            logger("playbackSpeed", rate);
-            if (combinePlayer) {
-                combinePlayer.playbackRate = rate;
-            } else {
-                player.playbackSpeed = rate;
-            }
+            return state;
+        } catch (error) {
+            return {};
         }
-    });
+    }
 
-    dsBridge.register("player.state", {
-        roomUUID: () => {
-            return player.roomUUID;
-        },
-        phase: () => {
-            logger("phase", player.phase);
-            return player.phase;
-        },
-        playerState: () => {
-            // 如果没有加载第一帧，会直接报错
-            try {
-                logger("playerState", player.state);
-                let state = player.state;
-                if (window.manager) {
-                    state = {...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState};
-                }
-                return state;
-            } catch (error) {
-                return {};
-            }
-        },
-        isPlayable: () => {
-            return player.isPlayable;
-        },
-        playbackSpeed: () => {
-            if (combinePlayer) {
-                return combinePlayer.playbackRate;
-            }
-            logger("playbackSpeed", player.playbackSpeed);
-            return player.playbackSpeed;
-        },
-        timeInfo: () => {
-            const {progressTime, timeDuration, framesCount, beginTimestamp} = player;
-            const info = {scheduleTime: progressTime, timeDuration, framesCount, beginTimestamp};
-            logger("timeInfo", info);
-            return info;
-        },
-    });
+    isPlayable() {
+        return player.isPlayable;
+    }
+
+    playbackSpeed() {
+        if (combinePlayer) {
+            return combinePlayer.playbackRate;
+        }
+        logger("playbackSpeed", player.playbackSpeed);
+        return player.playbackSpeed;
+    }
+
+    timeInfo() {
+        const {progressTime, timeDuration, framesCount, beginTimestamp} = player;
+        const info = {scheduleTime: progressTime, timeDuration, framesCount, beginTimestamp};
+        logger("timeInfo", info);
+        return info;
+    }
+}
+
+export class AsyncBridgePlayer {
+    play() {
+        logger("play");
+        if (combinePlayer) {
+            combinePlayer.play();
+        } else {
+            player.play();
+        }
+    }
+
+    pause() {
+        logger("pause");
+        if (combinePlayer) {
+            combinePlayer.pause();
+        } else {
+            player.pause();
+        }
+    }
+
+    stop() {
+        try {
+            logger("stop");
+            player.stop();
+        } catch (error) {
+            console.log("stop:", error.message);
+        }
+    }
+
+    seekToScheduleTime(beginTime: number) {
+        logger("seekToScheduleTime", beginTime);
+        if (combinePlayer) {
+            combinePlayer.seek(beginTime);
+        } else {
+            player.seekToProgressTime(beginTime);
+        }
+    }
+
+    setObserverMode(observerMode: string) {
+        logger("setObserverMode", observerMode);
+        player.setObserverMode(observerMode as ObserverMode);
+    }
+
+    setPlaybackSpeed(rate: number) {
+        logger("playbackSpeed", rate);
+        if (combinePlayer) {
+            combinePlayer.playbackRate = rate;
+        } else {
+            player.playbackSpeed = rate;
+        }
+    }
 }
