@@ -1,10 +1,9 @@
 import { WindowManager } from "@netless/window-manager";
 import "../utils/ParamTypes";
-import dsBridge from "dsbridge";
 import { RoomCallbackHandler } from "./RoomCallbackHandler";
 import { ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
 
-export function listenEmitterFromManager(manager: WindowManager, logger: (funName: string, ...param: any[]) => void, handler: RoomCallbackHandler | ReplayerCallbackHandler): void {
+export function addManagerListener(manager: WindowManager, logger: (funName: string, ...param: any[]) => void, handler: RoomCallbackHandler | ReplayerCallbackHandler): void {
     window.manager = manager;
 
     // 多窗口模式下，原有的 cameraState 意义丢失，通过这种方式，来替代显示 mainView 的 cameraState

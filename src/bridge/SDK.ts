@@ -15,7 +15,7 @@ import { SyncedStore } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
 import {logger, report, setShowLog} from "../utils/Logger";
 import {convertBound} from "../utils/BoundConvert";
-import { listenEmitterFromManager } from "../bridge/Manager";
+import { addManagerListener } from "../bridge/Manager";
 import { RoomCallbackHandler } from "./RoomCallbackHandler";
 import { createPageState } from "../utils/Funs";
 import { lastSchedule, ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
@@ -66,7 +66,7 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
         container: divRef(),
         room
     });
-    listenEmitterFromManager(manager, logger, handler);
+    addManagerListener(manager, logger, handler);
     return manager;
 }
 
