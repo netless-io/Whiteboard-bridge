@@ -1,5 +1,5 @@
 import dsBridge from "dsbridge";
-import {Displayer, Camera, AnimationMode, Rectangle, Player, Room} from "white-web-sdk";
+import {Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerState} from "white-web-sdk";
 import {convertBound} from "../utils/BoundConvert";
 import html2canvas from "html2canvas";
 import {isRoom, registerBridge} from "../utils/Funs";
@@ -7,7 +7,6 @@ import {NativeCameraBound} from "../utils/ParamTypes";
 import {Event as AkkoEvent } from "white-web-sdk";
 import {IframeBridge} from "@netless/iframe-bridge";
 import { logger } from "../utils/Logger";
-import { DisplayerState } from "white-web-sdk";
 import { TeleBoxState } from "@netless/telebox-insider";
 import { PageState } from "@netless/window-manager";
 import { whiteboardContainerId } from "./Register";
