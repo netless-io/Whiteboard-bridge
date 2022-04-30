@@ -2,7 +2,7 @@ import { WindowManager } from '@netless/window-manager';
 import dsbridge from 'dsbridge';
 import { registerBridge } from '../utils/Funs';
 import { logger } from '../utils/Logger';
-import { AsyncBridgeDisplayer, BridgeDisplayer } from './Displayer';
+import { AsyncDisplayerBridge, DisplayerBridge } from './DisplayerBridge';
 import { AsyncBridgePlayer, PlayerState } from './Player';
 import { AsyncRoom, BridgeRoom, PPTRoom, RoomState, SyncRoom } from './Room';
 import { SDK } from './SDK';
@@ -40,8 +40,8 @@ export function registerDsbridge() {
     dsbridge.registerAsyn(sdkNameSpace, new SDK());
 
     // displayer
-    dsbridge.register(displayerNameSpace, new BridgeDisplayer());
-    dsbridge.registerAsyn(asyncDisplayerNameSpace, new AsyncBridgeDisplayer());
+    dsbridge.register(displayerNameSpace, new DisplayerBridge());
+    dsbridge.registerAsyn(asyncDisplayerNameSpace, new AsyncDisplayerBridge());
 
     // room
     dsbridge.register(roomNamespace, new BridgeRoom());

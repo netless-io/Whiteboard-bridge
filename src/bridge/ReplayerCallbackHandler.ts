@@ -2,7 +2,7 @@ import { logger } from '../utils/Logger'
 import dsBridge from "dsbridge";
 import { PlayerPhase, Room, PlayerState, MediaType } from "white-web-sdk";
 import { postIframeMessage } from '../utils/iFrame';
-import { NativeDisplayerState } from './Displayer';
+import { NativeDisplayerState } from './DisplayerBridge';
 
 export const lastSchedule = {
     time: 0,

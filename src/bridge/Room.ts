@@ -1,6 +1,6 @@
 import dsBridge from "dsbridge";
 import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene } from "white-web-sdk";
-import { updateGlobalDisplayer } from "../bridge/Displayer";
+import { updateGlobalDisplayer } from "./DisplayerBridge";
 import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
 import { Attributes as SlideAttributes } from "@netless/app-slide";
 import { createPageState, registerBridge } from "../utils/Funs";

@@ -19,7 +19,7 @@ export type NativeDisplayerState = DisplayerState & {
 export function updateGlobalDisplayer(aDisplayer: Displayer) {
     displayer = aDisplayer;
     window.html2canvas = html2canvas;
-    (window as any).scenePreview = new AsyncBridgeDisplayer().scenePreview;
+    (window as any).scenePreview = new AsyncDisplayerBridge().scenePreview;
 }
 
 function urlContentToDataUri(url) {
@@ -62,7 +62,7 @@ function screenshot(scenePath: string, fn: (scenePath: string, div: HTMLElement,
 }
 
 let displayer: Displayer;
-export class AsyncBridgeDisplayer {
+export class AsyncDisplayerBridge {
     sceneSnapshot(scenePath: string, responseCallback: any) {
         screenshot(scenePath, displayer.fillSceneSnapshot.bind(displayer), responseCallback);
     }
@@ -72,7 +72,7 @@ export class AsyncBridgeDisplayer {
     }
 }
 
-export class BridgeDisplayer {
+export class DisplayerBridge {
     // 尝试让 native 端直接传入 json 格式
     postMessage(payload: any) {
         const message = { name: "parentWindow", payload: payload };
