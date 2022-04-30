@@ -18,8 +18,6 @@ export type NativeDisplayerState = DisplayerState & {
 
 export function updateGlobalDisplayer(aDisplayer: Displayer) {
     displayer = aDisplayer;
-    window.html2canvas = html2canvas;
-    (window as any).scenePreview = new AsyncDisplayerBridge().scenePreview;
 }
 
 function urlContentToDataUri(url) {

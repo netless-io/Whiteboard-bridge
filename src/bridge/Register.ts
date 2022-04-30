@@ -1,5 +1,6 @@
 import { WindowManager } from '@netless/window-manager';
 import dsbridge from 'dsbridge';
+import html2canvas from 'html2canvas';
 import { registerBridge } from '../utils/Funs';
 import { logger } from '../utils/Logger';
 import { AsyncDisplayerBridge, DisplayerBridge } from './DisplayerBridge';
@@ -35,6 +36,8 @@ const playerStateNameSpace = "player.state";
 export function registerDsbridge() {
     window.registerApp = WindowManager.register;
     window.setBackgroundColor = setBackgroundColor;
+    window.html2canvas = html2canvas;
+    (window as any).scenePreview = new AsyncDisplayerBridge().scenePreview;
 
     // sdk
     dsbridge.registerAsyn(sdkNameSpace, new SDK());
