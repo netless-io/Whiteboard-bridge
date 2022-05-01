@@ -1,4 +1,3 @@
-import {registerPlayer, registerRoom, Rtc} from ".";
 import { hookCreateElement } from '../utils/ImgError';
 import {CursorTool} from "@netless/cursor-tool";
 import dsBridge from "dsbridge";
@@ -22,6 +21,7 @@ import { lastSchedule, ReplayerCallbackHandler } from "./ReplayerCallbackHandler
 import CombinePlayerFactory from "@netless/combine-player";
 import { updateGlobalRoom } from "./RoomBridge";
 import { updateGlobalPlayer } from "./Player";
+import { Rtc } from './Rtc';
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
