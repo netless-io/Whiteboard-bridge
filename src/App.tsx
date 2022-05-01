@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
 import { AsyncModuleLoadMode, setAsyncModuleLoadMode } from "white-web-sdk";
-import { addExampleFunctions } from "./Example";
 import { globalErrorEvent, postCustomMessage } from "./utils/Funs";
 import { registerDsbridge, whiteboardContainerId } from "./bridge/Register";
 import { setWhiteboardDivGetter } from "./bridge/SDKBridge";
@@ -25,9 +24,6 @@ export default function App() {
 
     const getDiv = () => { return divRef.current as unknown as HTMLElement };
     setWhiteboardDivGetter(getDiv);
-
-    // Example functions
-    addExampleFunctions();
 
     // Register for iOS / andriod
     registerDsbridge();

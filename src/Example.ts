@@ -5,7 +5,7 @@ let appIdentifier = "";
 let testRoomUUID = "";
 let testRoomToken = "";
 
-export function addExampleFunctions() {
+export function addExamples() {
     function testRoom() {
         setShowLog(true);
         const sdk = new SDKBridge();
