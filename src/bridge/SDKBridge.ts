@@ -19,8 +19,8 @@ import { RoomCallbackHandler } from "./RoomCallbackHandler";
 import { createPageState } from "../utils/Funs";
 import { lastSchedule, ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
 import CombinePlayerFactory from "@netless/combine-player";
-import { updateGlobalRoom } from "./RoomBridge";
-import { updateGlobalPlayer } from "./PlayerBridge";
+import { registerBridgeRoom } from "./RoomBridge";
+import { registerPlayerBridge } from "./PlayerBridge";
 import { Rtc } from './Rtc';
 
 let sdk: WhiteWebSdk | undefined = undefined;
@@ -38,6 +38,12 @@ const nativeFontFaceCSS = "whiteboard-native-font-face";
 
 export function setWhiteboardDivGetter(aGetter: ()=>(HTMLElement)) {
     divRef = aGetter;
+}
+
+export const sdkNameSpace = "sdk";
+
+export function registerSDKBridge() {
+    dsBridge.registerAsyn(sdkNameSpace, new SDKBridge());
 }
 
 function removeBind() {
@@ -70,7 +76,7 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
     return manager;
 }
 
-export class SDKBridge {
+class SDKBridge {
     newWhiteSdk(config: NativeSDKConfig) {
         const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
             const modifyUrl: string = dsBridge.call("sdk.urlInterrupter", url);
@@ -236,7 +242,7 @@ export class SDKBridge {
                     roomCallbackHandler.onAttributesUpdate(attributes);
                 });
             }
-            updateGlobalRoom(room);
+            registerBridgeRoom(room);
             return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
@@ -301,9 +307,9 @@ export class SDKBridge {
                     videoDOM: videoDom,
                 });
                 const combinePlayer = combinePlayerFactory.create();
-                updateGlobalPlayer(mPlayer, combinePlayer, lastSchedule, replayCallbackHanlder);
+                registerPlayerBridge(mPlayer, combinePlayer, lastSchedule, replayCallbackHanlder);
             } else {
-                updateGlobalPlayer(mPlayer, undefined, lastSchedule, replayCallbackHanlder);
+                registerPlayerBridge(mPlayer, undefined, lastSchedule, replayCallbackHanlder);
             }
        
             const {progressTime: scheduleTime, timeDuration, framesCount, beginTimestamp} = mPlayer;

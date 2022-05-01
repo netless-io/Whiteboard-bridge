@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
 import { AsyncModuleLoadMode, setAsyncModuleLoadMode } from "white-web-sdk";
 import { globalErrorEvent, postCustomMessage } from "./utils/Funs";
-import { registerDsbridge, whiteboardContainerId } from "./bridge/Register";
 import { setWhiteboardDivGetter } from "./bridge/SDKBridge";
 import "@netless/window-manager/dist/style.css";
 import "./App.css";
 import 'video.js/dist/video-js.css';
+import { whiteboardContainerId } from ".";
 
 export default function App() {
     useEffect(()=> {
@@ -24,9 +24,6 @@ export default function App() {
 
     const getDiv = () => { return divRef.current as unknown as HTMLElement };
     setWhiteboardDivGetter(getDiv);
-
-    // Register for iOS / andriod
-    registerDsbridge();
 
     return (
         <div id={whiteboardContainerId} ref={divRef} style={fullStyle}></div>
