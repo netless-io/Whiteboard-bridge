@@ -4,7 +4,7 @@ import html2canvas from 'html2canvas';
 import { registerBridge } from '../utils/Funs';
 import { logger } from '../utils/Logger';
 import { AsyncDisplayerBridge, DisplayerBridge } from './DisplayerBridge';
-import { PlayerAsyncBridge, PlayerStateBridge } from './Player';
+import { PlayerAsyncBridge, PlayerStateBridge } from './PlayerBridge';
 import { RoomAsyncBridge, RoomBridge, RoomPPTBridge, RoomStateBridge, RoomSyncBridge } from './RoomBridge';
 import { SDKBridge } from './SDKBridge';
 

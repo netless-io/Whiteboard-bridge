@@ -20,7 +20,7 @@ import { createPageState } from "../utils/Funs";
 import { lastSchedule, ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
 import CombinePlayerFactory from "@netless/combine-player";
 import { updateGlobalRoom } from "./RoomBridge";
-import { updateGlobalPlayer } from "./Player";
+import { updateGlobalPlayer } from "./PlayerBridge";
 import { Rtc } from './Rtc';
 
 let sdk: WhiteWebSdk | undefined = undefined;
