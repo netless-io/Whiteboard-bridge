@@ -2,14 +2,14 @@ import dsBridge from "dsbridge";
 import { Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerState, ScenePathType, SceneMap, WhiteScene } from "white-web-sdk";
 import { convertBound } from "../utils/BoundConvert";
 import html2canvas from "html2canvas";
-import { isRoom, registerBridge } from "../utils/Funs";
+import { isRoom } from "../utils/Funs";
 import { NativeCameraBound } from "../utils/ParamTypes";
 import { Event as AkkoEvent } from "white-web-sdk";
 import { IframeBridge } from "@netless/iframe-bridge";
-import { logger } from "../utils/Logger";
 import { TeleBoxState } from "@netless/telebox-insider";
 import { PageState } from "@netless/window-manager";
 import { whiteboardContainerId } from "..";
+import { logger } from "../utils/Logger";
 
 export type NativeDisplayerState = DisplayerState & {
     pageState: PageState;
@@ -138,7 +138,6 @@ export class DisplayerBridge {
 
         this.setCameraBound = (nativeBound: NativeCameraBound) => {
             const bound = convertBound(nativeBound);
-            logger("setCameraBound bound", bound);
             aDisplayer.setCameraBound(bound!);
         }
 
@@ -163,29 +162,24 @@ export class DisplayerBridge {
         }
 
         this.moveCamera = (camera: Partial<Camera> & Readonly<{ animationMode?: AnimationMode }>) => {
-            logger("moveCamera: ", camera);
             aDisplayer.moveCamera(camera);
         }
 
         this.moveCameraToContain = (contain: Rectangle & Readonly<{
             animationMode?: AnimationMode;
         }>) => {
-            logger("moveCameraToContain: ", contain);
             aDisplayer.moveCameraToContain(contain);
         }
 
         this.refreshViewSize = () => {
-            logger("refreshViewSize");
             aDisplayer.refreshViewSize();
         }
 
         this.scalePptToFit = (mode: AnimationMode) => {
-            logger("scalePptToFit", mode);
             aDisplayer.scalePptToFit(mode);
         }
 
         this.convertToPointInWorld = (x: number, y: number) => {
-            logger("convertToPointInWorld", x, y);
             const point = aDisplayer.convertToPointInWorld({ x, y });
             return point;
         }
@@ -194,12 +188,10 @@ export class DisplayerBridge {
             const div = document.getElementById(whiteboardContainerId)!;
             logger("setBackgroundColor native", r, g, b, a);
             const color = (a === 1 || a === undefined) ? `rgb(${r}, ${g}, ${b})` : `rgb(${r}, ${g}, ${b})`;
-            logger("setBackgroundColor color", color);
             div.style.background = color;
         }
 
         this.addHighFrequencyEventListener = (eventName: string, interval: number) => {
-            logger("addHighFrequencyEventListener", eventName, interval);
             aDisplayer.addMagixEventListener(eventName, (evts: AkkoEvent[]) => {
                 const uuid = (aDisplayer as Room).uuid || (aDisplayer as Player).roomUUID;
                 const nativeEvts = evts.map(evt => {
@@ -214,9 +206,7 @@ export class DisplayerBridge {
         }
 
         this.addMagixEventListener = (eventName: string) => {
-            logger("addMagixEventListener", eventName);
             aDisplayer.addMagixEventListener(eventName, (evt: AkkoEvent) => {
-                logger("fireMagixEvent", evt);
                 const uuid = (aDisplayer as Room).uuid || (aDisplayer as Player).roomUUID;
                 const nativeEvt = {
                     uuid: uuid,
@@ -234,7 +224,6 @@ export class DisplayerBridge {
         }
 
         this.removeMagixEventListener = (eventName: string) => {
-            logger("removeMagixEventListener", eventName);
             aDisplayer.removeMagixEventListener(eventName);
         }
     }

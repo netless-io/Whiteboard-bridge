@@ -2,7 +2,6 @@ import dsBridge from "dsbridge";
 import { ObserverMode, Player, PlayerCallbacks, PlayerPhase, PlayerState, Room } from "white-web-sdk";
 import { registerDisplayerBridge } from "./DisplayerBridge";
 import { CombinePlayer, PublicCombinedStatus } from "@netless/combine-player";
-import { logger } from "../utils/Logger";
 import { ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
 
 export const playerNameSpace = "player";
@@ -70,14 +69,12 @@ export class PlayerStateBridge {
         }
 
         this.phase = () => {
-            logger("phase", player.phase);
             return player.phase;
         }
 
         this.playerState = () => {
             // 如果没有加载第一帧，会直接报错
             try {
-                logger("playerState", player.state);
                 let state = player.state;
                 if (window.manager) {
                     state = { ...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState };
@@ -96,14 +93,12 @@ export class PlayerStateBridge {
             if (combinePlayer) {
                 return combinePlayer.playbackRate;
             }
-            logger("playbackSpeed", player.playbackSpeed);
             return player.playbackSpeed;
         }
 
         this.timeInfo = () => {
             const { progressTime, timeDuration, framesCount, beginTimestamp } = player;
             const info = { scheduleTime: progressTime, timeDuration, framesCount, beginTimestamp };
-            logger("timeInfo", info);
             return info;
         }
     }
@@ -119,7 +114,6 @@ export class PlayerAsyncBridge {
 
     constructor(player: Player, combinePlayer: CombinePlayer | undefined) {
         this.play = () => {
-            logger("play");
             if (combinePlayer) {
                 combinePlayer.play();
             } else {
@@ -128,7 +122,6 @@ export class PlayerAsyncBridge {
         }
 
         this.pause = () => {
-            logger("pause");
             if (combinePlayer) {
                 combinePlayer.pause();
             } else {
@@ -138,7 +131,6 @@ export class PlayerAsyncBridge {
 
         this.stop = () => {
             try {
-                logger("stop");
                 player.stop();
             } catch (error) {
                 console.log("stop:", error.message);
@@ -146,7 +138,6 @@ export class PlayerAsyncBridge {
         }
 
         this.seekToScheduleTime = (beginTime: number) => {
-            logger("seekToScheduleTime", beginTime);
             if (combinePlayer) {
                 combinePlayer.seek(beginTime);
             } else {
@@ -155,12 +146,10 @@ export class PlayerAsyncBridge {
         }
 
         this.setObserverMode = (observerMode: string) => {
-            logger("setObserverMode", observerMode);
             player.setObserverMode(observerMode as ObserverMode);
         }
 
         this.setPlaybackSpeed = (rate: number) => {
-            logger("playbackSpeed", rate);
             if (combinePlayer) {
                 combinePlayer.playbackRate = rate;
             } else {

@@ -176,7 +176,6 @@ class SDKBridge {
                 plugins: plugins,
                 urlInterrupter: urlInterrupter,
                 onWhiteSetupFailed: e => {
-                    logger("onWhiteSetupFailed",  e);
                     dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
                 },
                 pptParams,
@@ -184,7 +183,6 @@ class SDKBridge {
             });
             window.sdk = sdk;
         } catch (e) {
-            logger("onWhiteSetupFailed", e);
             dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
         }
     }

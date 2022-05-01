@@ -1,7 +1,7 @@
-import { logger } from '../utils/Logger'
 import dsBridge from "dsbridge";
 import { PlayerPhase, Room, PlayerState, MediaType } from "white-web-sdk";
 import { postIframeMessage } from '../utils/iFrame';
+import { logger } from "../utils/Logger";
 import { NativeDisplayerState } from './DisplayerBridge';
 
 export const lastSchedule = {
@@ -41,7 +41,6 @@ export class ReplayerCallbackHandler {
 
             const handle = (phase: PlayerPhase) => {
                 lastSchedule.time = 0;
-                logger("onPhaseChanged:", phase);
                 dsBridge.call("player.onPhaseChanged", phase);
                 if (enableIFramePlugin) {
                     postIframeMessage({ eventName: "onPhaseChanged", params: [phase] }, logger);
@@ -62,7 +61,6 @@ export class ReplayerCallbackHandler {
     onPhaseChanged = (phase: PlayerPhase) => { }
 
     onLoadFirstFrame = () =>  {
-        logger("onLoadFirstFrame");
         // playerState 在此时才可读。这个时候需要把完整的 playerState 传递给 native，保证：
         // 1. native 端同步 API 状态的完整性
         // 2. Android 目前 playState diff 的正确性。
@@ -100,7 +98,6 @@ export class ReplayerCallbackHandler {
 
     // DisplayerCallbacks
     onCatchErrorWhenAppendFrame = (userId: number, error: Error) => {
-        logger("onCatchErrorWhenAppendFrame", [userId, error.message]);
         // dsBridge.call("player.fireCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
     }
 
