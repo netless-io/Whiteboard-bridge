@@ -4,9 +4,9 @@ import html2canvas from 'html2canvas';
 import { registerBridge } from '../utils/Funs';
 import { logger } from '../utils/Logger';
 import { AsyncDisplayerBridge, DisplayerBridge } from './DisplayerBridge';
-import { AsyncBridgePlayer, PlayerState } from './Player';
-import { AsyncRoom, BridgeRoom, PPTRoom, RoomState, SyncRoom } from './Room';
-import { SDK } from './SDK';
+import { PlayerAsyncBridge, PlayerStateBridge } from './Player';
+import { RoomAsyncBridge, RoomBridge, RoomPPTBridge, RoomStateBridge, RoomSyncBridge } from './RoomBridge';
+import { SDKBridge } from './SDKBridge';
 
 export const whiteboardContainerId = "whiteboard-container";
 
@@ -40,24 +40,24 @@ export function registerDsbridge() {
     (window as any).scenePreview = new AsyncDisplayerBridge().scenePreview;
 
     // sdk
-    dsbridge.registerAsyn(sdkNameSpace, new SDK());
+    dsbridge.registerAsyn(sdkNameSpace, new SDKBridge());
 
     // displayer
     dsbridge.register(displayerNameSpace, new DisplayerBridge());
     dsbridge.registerAsyn(asyncDisplayerNameSpace, new AsyncDisplayerBridge());
 
     // room
-    dsbridge.register(roomNamespace, new BridgeRoom());
-    dsbridge.registerAsyn(roomNamespace, new AsyncRoom());
-    dsbridge.register(pptNamespace, new PPTRoom());
-    dsbridge.register(roomSyncNamespace, new SyncRoom());
+    dsbridge.register(roomNamespace, new RoomBridge());
+    dsbridge.registerAsyn(roomNamespace, new RoomAsyncBridge());
+    dsbridge.register(pptNamespace, new RoomPPTBridge());
+    dsbridge.register(roomSyncNamespace, new RoomSyncBridge());
     // FIXME:同步方法尽量还是放在同步方法里。
     // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
-    dsbridge.register(roomStateNamespace, new RoomState());
+    dsbridge.register(roomStateNamespace, new RoomStateBridge());
 
     // player
-    dsbridge.registerAsyn(playerNameSpace, new AsyncBridgePlayer());
-    dsbridge.register(playerStateNameSpace, new PlayerState());
+    dsbridge.registerAsyn(playerNameSpace, new PlayerAsyncBridge());
+    dsbridge.register(playerStateNameSpace, new PlayerStateBridge());
 
     registerBridge([
         sdkNameSpace,

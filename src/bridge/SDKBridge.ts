@@ -1,4 +1,4 @@
-import {registerPlayer, registerRoom, Rtc} from "../bridge";
+import {registerPlayer, registerRoom, Rtc} from ".";
 import { hookCreateElement } from '../utils/ImgError';
 import {CursorTool} from "@netless/cursor-tool";
 import dsBridge from "dsbridge";
@@ -15,12 +15,12 @@ import { SyncedStore } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
 import {logger, report, setShowLog} from "../utils/Logger";
 import {convertBound} from "../utils/BoundConvert";
-import { addManagerListener } from "../bridge/Manager";
+import { addManagerListener } from "./Manager";
 import { RoomCallbackHandler } from "./RoomCallbackHandler";
 import { createPageState } from "../utils/Funs";
 import { lastSchedule, ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
 import CombinePlayerFactory from "@netless/combine-player";
-import { updateGlobalRoom } from "./Room";
+import { updateGlobalRoom } from "./RoomBridge";
 import { updateGlobalPlayer } from "./Player";
 
 let sdk: WhiteWebSdk | undefined = undefined;
@@ -70,7 +70,7 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
     return manager;
 }
 
-export class SDK {
+export class SDKBridge {
     newWhiteSdk(config: NativeSDKConfig) {
         const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
             const modifyUrl: string = dsBridge.call("sdk.urlInterrupter", url);

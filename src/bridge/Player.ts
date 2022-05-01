@@ -55,7 +55,7 @@ export function updateGlobalPlayer(aPlayer: Player,
     }
 }
 
-export class PlayerState {
+export class PlayerStateBridge {
     roomUUID() {
         return player.roomUUID;
     }
@@ -99,7 +99,7 @@ export class PlayerState {
     }
 }
 
-export class AsyncBridgePlayer {
+export class PlayerAsyncBridge {
     play() {
         logger("play");
         if (combinePlayer) {

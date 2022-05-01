@@ -98,14 +98,14 @@ function updateIframePluginState() {
     room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
 }
 
-export class BridgeRoom {
+export class RoomBridge {
     setWindowManagerAttributes(attributes: any) {
         window.manager?.setAttributes(attributes);
         window.manager?.refresh();
     }
 }
 
-export class PPTRoom {
+export class RoomPPTBridge {
     nextStep() {
         room.pptNextStep();
     }
@@ -115,7 +115,7 @@ export class PPTRoom {
     }
 }
 
-export class SyncRoom {
+export class RoomSyncBridge {
     syncBlockTimestamp(timestamp: number) {
         room.syncBlockTimestamp(timestamp);
     }
@@ -151,7 +151,7 @@ export class SyncRoom {
     }
 }
 
-export class AsyncRoom {
+export class RoomAsyncBridge {
     redo(responseCallback: any) {
         const count = room.redo();
         responseCallback(count);
@@ -468,7 +468,7 @@ export class AsyncRoom {
     }
 }
 
-export class RoomState {
+export class RoomStateBridge {
     getRoomState() {
         const state = room.state;
         if (window.manager) {

@@ -3,7 +3,7 @@ import { AsyncModuleLoadMode, setAsyncModuleLoadMode } from "white-web-sdk";
 import { addExampleFunctions } from "./Example";
 import { globalErrorEvent, postCustomMessage } from "./utils/Funs";
 import { registerDsbridge, whiteboardContainerId } from "./bridge/Register";
-import { setWhiteboardDivGetter } from "./bridge/SDK";
+import { setWhiteboardDivGetter } from "./bridge/SDKBridge";
 import "@netless/window-manager/dist/style.css";
 import "./App.css";
 import 'video.js/dist/video-js.css';
