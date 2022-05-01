@@ -1,6 +1,4 @@
 import { setShowLog } from "./utils/Logger";
-import dsBridge from "dsbridge";
-import { sdkNameSpace } from "./bridge/SDKBridge";
 
 let appIdentifier = "";
 let testRoomUUID = "";
@@ -9,24 +7,20 @@ let testRoomToken = "";
 export function addExamples() {
     function testRoom() {
         setShowLog(true);
-        dsBridge.call(`${sdkNameSpace}.newWhiteSdk`, {
-            log: true, userCursor: true, __platform: "bridge", appIdentifier, useMultiViews: true
-        }, () => {
-            dsBridge.call(`${sdkNameSpace}.joinRoom`, {
-                uuid: testRoomUUID, uid: "0", roomToken: testRoomToken, userPayload: {
-                    avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg"
-                }
-            }, () => { });
-        });
+        const sdkParams = {log: true, userCursor: true, __platform: "bridge", appIdentifier, useMultiViews: true};
+        (window as any)._dsaf._obs.sdk.newWhiteSdk(sdkParams, () => {});
+        const roomParams = {uuid: testRoomUUID, uid: "0", roomToken: testRoomToken, userPayload: {
+            avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg"
+        }};
+        (window as any)._dsaf._obs.sdk.joinRoom(roomParams, ()=>{});
     }
 
     function testReplay() {
         setShowLog(true);
-        dsBridge.call(`${sdkNameSpace}.newWhiteSdk`, {
-            log: true, userCursor: true, __platform: "bridge", appIdentifier, useMultiViews: true
-        }, () => {
-            dsBridge.call(`${sdkNameSpace}.replayRoom`, { room: testRoomUUID, roomToken: testRoomToken }, () => { });
-        });
+        const sdkParams = {log: true, userCursor: true, __platform: "bridge", appIdentifier, useMultiViews: true};
+        (window as any)._dsaf._obs.sdk.newWhiteSdk(sdkParams, () => {});
+        const replayParams = { room: testRoomUUID, roomToken: testRoomToken };
+        (window as any)._dsaf._obs.sdk.replayRoom(replayParams, ()=>{});
     }
 
     window.testRoom = testRoom;
