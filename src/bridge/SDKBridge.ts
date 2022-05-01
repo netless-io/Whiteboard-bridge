@@ -22,6 +22,7 @@ import CombinePlayerFactory from "@netless/combine-player";
 import { registerBridgeRoom } from "./RoomBridge";
 import { registerPlayerBridge } from "./PlayerBridge";
 import { Rtc } from './Rtc';
+import { SDKCallbackHandler } from './SDKCallbackHandler';
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
@@ -30,6 +31,8 @@ let rtcClient = new Rtc();
 
 let nativeConfig: NativeSDKConfig | undefined = undefined;
 let cursorAdapter: CursorTool | undefined = undefined;
+
+export const sdkCallbackHandler = new SDKCallbackHandler();
 
 let divRef: ()=>(HTMLElement | undefined);
 
@@ -79,7 +82,7 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
 class SDKBridge {
     newWhiteSdk(config: NativeSDKConfig) {
         const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
-            const modifyUrl: string = dsBridge.call("sdk.urlInterrupter", url);
+            const modifyUrl: string = sdkCallbackHandler.onUrlInterrupter(url);
             if (modifyUrl.length > 0) {
                 return modifyUrl;
             }
@@ -176,14 +179,14 @@ class SDKBridge {
                 plugins: plugins,
                 urlInterrupter: urlInterrupter,
                 onWhiteSetupFailed: e => {
-                    dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
+                    sdkCallbackHandler.onSetupFail(e);
                 },
                 pptParams,
                 useMobXState: enableIFramePlugin || useMultiViews,
             });
             window.sdk = sdk;
         } catch (e) {
-            dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
+            sdkCallbackHandler.onSetupFail(e);
         }
     }
 
@@ -212,7 +215,7 @@ class SDKBridge {
             cursorAdapter: useMultiViews ? undefined : cursorAdapter,
             cameraBound: convertBound(cameraBound),
             disableMagixEventDispatchLimit: useMultiViews,
-        }, roomCallbackHandler).then(async aRoom => {
+        }, {...roomCallbackHandler, ...sdkCallbackHandler}).then(async aRoom => {
             removeBind();
             room = aRoom;
             let roomState = room.state;
@@ -281,7 +284,7 @@ class SDKBridge {
             cameraBound: convertBound(cameraBound),
             invisiblePlugins: useMultiViews ? [WindowManager] : [],
             useMultiViews
-        }, replayCallbackHanlder).then(async mPlayer => {
+        }, {...replayCallbackHanlder, ...sdkCallbackHandler}).then(async mPlayer => {
             removeBind();
             player = mPlayer;
             // 多窗口需要调用 player 的 getInvisiblePlugin 方法，获取数据，而这些数据需要在 player 成功初始化，首次进入 play || pause 状态，才能获取到，所以回放时，多窗口需要异步

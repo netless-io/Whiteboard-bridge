@@ -104,18 +104,4 @@ export class ReplayerCallbackHandler {
     onCatchErrorWhenRender = (err: Error) => {
         dsBridge.call("player.onCatchErrorWhenRender", {error: err.message});
     }
-
-    onPPTLoadProgress = (uuid: string, progress: number) => {
-        // 不推荐用户使用这种预加载，native 端使用 zip 包的形式
-    }
-
-    onPPTMediaPlay = (shapeId: string, type: MediaType) => {
-        logger("onPPTMediaPlay", shapeId, type);
-        dsBridge.call("sdk.onPPTMediaPlay", {shapeId, type});
-    }
-    
-    onPPTMediaPause = (shapeId: string, type: MediaType) => {
-        logger("onPPTMediaPause", shapeId, type);
-        dsBridge.call("sdk.onPPTMediaPause", {shapeId, type});
-    }
 }

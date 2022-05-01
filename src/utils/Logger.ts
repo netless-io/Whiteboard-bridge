@@ -1,4 +1,5 @@
 import dsBridge from 'dsbridge';
+import { sdkCallbackHandler } from '../bridge/SDKBridge';
 
 let showLog: boolean = false;
 
@@ -36,5 +37,6 @@ export function report(funName: string, ...params: any[]) {
         // array
         message = params;
     }
-    dsBridge.call("sdk.logger", { funName, params: message });
+
+    sdkCallbackHandler.onLogger({ funName, params: message });
 }
