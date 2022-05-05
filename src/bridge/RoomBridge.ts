@@ -117,106 +117,283 @@ export class RoomBridge {
 }
 
 export class RoomPPTBridge {
-    nextStep: () => void;
-    previousStep: () => void;
+    constructor(readonly room: Room) { }
+    nextStep = () => {
+        this.room.pptNextStep();
+    }
 
-    constructor(room: Room) {
-        this.nextStep = () => {
-            room.pptNextStep();
-        }
-
-        this.previousStep = () => {
-            room.pptPreviousStep();
-        }
+    previousStep = () => {
+        this.room.pptPreviousStep();
     }
 }
 
 export class RoomSyncBridge {
-    syncBlockTimestamp: (timestamp: number) => void;
+    constructor(readonly room: Room) { }
+    syncBlockTimestamp = (timestamp: number) => {
+        this.room.syncBlockTimestamp(timestamp);
+    }
+
     /** 客户端本地效果，会导致 web 2.9.2 和 native 2.9.3 以下出现问题。*/
-    disableSerialization: (disable: boolean) => void;
-    copy: () => void;
-    paste: () => void;
-    duplicate: () => void;
-    delete: () => void;
-    disableEraseImage: (disable: boolean) => void;
-
-    constructor(room: Room) {
-        this.syncBlockTimestamp = (timestamp: number) => {
-            room.syncBlockTimestamp(timestamp);
+    disableSerialization = (disable: boolean) => {
+        this.room.disableSerialization = disable;
+        /** 单窗口且开启序列化主动触发一次redo,undo次数回调 */
+        if (!disable && window.manager == null) {
+            dsBridge.call("room.fireCanUndoStepsUpdate", this.room.canUndoSteps);
+            dsBridge.call("room.fireCanRedoStepsUpdate", this.room.canRedoSteps);
         }
+    }
 
-        /** 客户端本地效果，会导致 web 2.9.2 和 native 2.9.3 以下出现问题。*/
-        this.disableSerialization = (disable: boolean) => {
-            room.disableSerialization = disable;
-            /** 单窗口且开启序列化主动触发一次redo,undo次数回调 */
-            if (!disable && window.manager == null) {
-                dsBridge.call("room.fireCanUndoStepsUpdate", room.canUndoSteps);
-                dsBridge.call("room.fireCanRedoStepsUpdate", room.canRedoSteps);
-            }
-        }
+    copy = () => {
+        this.room.copy();
+    }
 
-        this.copy = () => {
-            room.copy();
-        }
+    paste = () => {
+        this.room.paste();
+    }
 
-        this.paste = () => {
-            room.paste();
-        }
+    duplicate = () => {
+        this.room.duplicate();
+    }
 
-        this.duplicate = () => {
-            room.duplicate();
-        }
+    delete = () => {
+        this.room.delete();
+    }
 
-        this.delete = () => {
-            room.delete();
-        }
-
-        this.disableEraseImage = (disable) => {
-            room.disableEraseImage = disable;
-        }
+    disableEraseImage = (disable) => {
+        this.room.disableEraseImage = disable;
     }
 }
 
 export class RoomAsyncBridge {
-    redo: (responseCallback: any) => void;
+    constructor(readonly room: Room) { }
+    redo = (responseCallback: any) => {
+        const count = this.room.redo();
+        responseCallback(count);
+    }
+
     /** 撤回 */
-    undo: (responseCallback: any) => void;
+    undo = (responseCallback: any) => {
+        const count = this.room.undo();
+        responseCallback(count);
+    }
+
     /** 取消撤回 */
-    canRedoSteps: (responseCallback: any) => void;
-    canUndoSteps: (responseCallback: any) => void;
+    canRedoSteps = (responseCallback: any) => {
+        if (window.manager) {
+            responseCallback(window.manager.canRedoSteps);
+        } else {
+            responseCallback(this.room.canRedoSteps);
+        }
+    }
+
+    canUndoSteps = (responseCallback: any) => {
+        if (window.manager) {
+            responseCallback(window.manager.canUndoSteps);
+        } else {
+            responseCallback(this.room.canUndoSteps);
+        }
+    }
+
     /** set 系列API */
-    setGlobalState: (modifyState: Partial<GlobalState>) => void;
+    setGlobalState = (modifyState: Partial<GlobalState>) => {
+        this.room.setGlobalState(modifyState);
+    }
+
     /** 替代切换页面，设置当前场景。path 为想要设置场景的 path */
-    setScenePath: (scenePath: string, responseCallback: any) => void;
-    addPage: (params: AddPageParams) => void;
-    nextPage: (responseCallback: any) => void;
-    prevPage: (responseCallback: any) => void;
-    setMemberState: (memberState: Partial<MemberState>) => void;
-    setViewMode: (viewMode: string) => void;
-    setWritable: (writable: boolean, responseCallback: any) => void;
+    setScenePath = (scenePath: string, responseCallback: any) => {
+        try {
+            if (window.manager) {
+                window.manager.setMainViewScenePath(scenePath);
+            } else {
+                this.room.setScenePath(scenePath);
+            }
+            responseCallback(JSON.stringify({}));
+        } catch (e) {
+            return responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
+        }
+    }
+
+    addPage = (params: AddPageParams) => {
+        if (window.manager) {
+            window.manager.addPage(params)
+        } else {
+            const dir = this.room.state.sceneState.contextPath
+            const after = params.after
+            if (after) {
+                const tIndex = this.room.state.sceneState.index + 1
+                this.room.putScenes(dir, [params.scene || {}], tIndex)
+            } else {
+                this.room.putScenes(dir, [params.scene || {}]);
+            }
+        }
+    }
+
+    nextPage = (responseCallback: any) => {
+        if (window.manager) {
+            window.manager.nextPage().then((result) => {
+                responseCallback(result)
+            })
+        } else {
+            const nextIndex = this.room.state.sceneState.index + 1;
+            if (nextIndex < this.room.state.sceneState.scenes.length) {
+                this.room.setSceneIndex(nextIndex)
+                responseCallback(true)
+            } else {
+                responseCallback(false)
+            }
+        }
+    }
+
+    prevPage = (responseCallback: any) => {
+        if (window.manager) {
+            window.manager.prevPage().then((result) => {
+                responseCallback(result)
+            })
+        } else {
+            const prevIndex = this.room.state.sceneState.index - 1;
+            if (prevIndex >= 0) {
+                this.room.setSceneIndex(prevIndex)
+                responseCallback(true)
+            } else {
+                responseCallback(false)
+            }
+        }
+    }
+
+    setMemberState = (memberState: Partial<MemberState>) => {
+        this.room.setMemberState(memberState);
+    }
+
+    setViewMode = (viewMode: string) => {
+        let mode = ViewMode[viewMode] as any;
+        if (mode === undefined) {
+            mode = ViewMode.Freedom;
+        }
+        if (window.manager) {
+            window.manager.setViewMode(mode);
+        } else {
+            this.room.setViewMode(mode);
+        }
+    }
+
+    setWritable = (writable: boolean, responseCallback: any) => {
+        this.room.setWritable(writable).then(() => {
+            responseCallback(JSON.stringify({ isWritable: this.room.isWritable, observerId: this.room.observerId }));
+        }).catch(error => {
+            responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } }));
+        });
+    }
+
     /** get 系列 API */
-    getMemberState: (responseCallback: any) => void;
-    getGlobalState: (responseCallback: any) => void;
-    getSceneState: (responseCallback: any) => void;
-    getRoomMembers: (responseCallback: any) => void;
+    getMemberState = (responseCallback: any) => {
+        return responseCallback(JSON.stringify(this.room.state.memberState));
+    }
+
+    getGlobalState = (responseCallback: any) => {
+        return responseCallback(JSON.stringify(this.room.state.globalState));
+    }
+
+    getSceneState = (responseCallback: any) => {
+        return responseCallback(JSON.stringify(this.room.state.sceneState));
+    }
+
+    getRoomMembers = (responseCallback: any) => {
+        return responseCallback(JSON.stringify(this.room.state.roomMembers));
+    }
+
     /** @deprecated 使用 scenes 代替，ppt 将作为 scene 的成员变量 */
-    getPptImages: (responseCallback: any) => void;
-    setSceneIndex: (index: number, responseCallback: any) => void;
-    getScenes: (responseCallback: any) => void;
-    getZoomScale: (responseCallback: any) => void;
-    getBroadcastState: (responseCallback: any) => void;
-    getRoomPhase: (responseCallback: any) => void;
-    disconnect: (responseCallback: any) => void;
-    zoomChange: (scale: number) => void;
-    disableCameraTransform: (disableCamera: boolean) => void;
-    disableDeviceInputs: (disable: boolean) => void;
-    disableOperations: (disableOperations: boolean) => void;
-    disableWindowOperation: (disable: boolean) => void;
-    putScenes: (dir: string, scenes: SceneDefinition[], index: number, responseCallback: any) => void;
-    removeScenes: (dirOrPath: string) => void;
+    getPptImages = (responseCallback: any) => {
+        const ppts = this.room.state.sceneState.scenes.map(s => {
+            if (s.ppt) {
+                return s.ppt.src;
+            } else {
+                return "";
+            }
+        });
+        return responseCallback(JSON.stringify(ppts));
+    }
+
+    setSceneIndex = (index: number, responseCallback: any) => {
+        try {
+            if (window.manager) {
+                window.manager.setMainViewSceneIndex(index);
+            } else {
+                this.room.setSceneIndex(index);
+            }
+            responseCallback(JSON.stringify({}));
+        } catch (error) {
+            responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } }));
+        }
+    }
+
+    getScenes = (responseCallback: any) => {
+        return responseCallback(JSON.stringify(this.room.state.sceneState.scenes));
+    }
+
+    getZoomScale = (responseCallback: any) => {
+        let scale = 1;
+        if (window.manager) {
+            scale = window.manager.mainView.camera.scale;
+        } else {
+            scale = this.room.state.cameraState.scale;
+        }
+        return responseCallback(JSON.stringify(scale));
+    }
+
+    getBroadcastState = (responseCallback: any) => {
+        return responseCallback(JSON.stringify(this.room.state.broadcastState));
+    }
+
+    getRoomPhase = (responseCallback: any) => {
+        return responseCallback(this.room.phase);
+    }
+
+    disconnect = (responseCallback: any) => {
+        this.room.disconnect().then(() => {
+            responseCallback();
+        });
+    }
+
+    zoomChange = (scale: number) => {
+        this.room.moveCamera({ scale });
+    }
+
+    disableCameraTransform = (disableCamera: boolean) => {
+        this.room.disableCameraTransform = disableCamera;
+    }
+
+    disableDeviceInputs = (disable: boolean) => {
+        if (window.manager) {
+            window.manager.setReadonly(disable);
+        }
+        this.room.disableDeviceInputs = disable;
+        updateIframePluginState(this.room);
+    }
+
+    disableOperations = (disableOperations: boolean) => {
+        this.room.disableCameraTransform = disableOperations;
+        this.room.disableDeviceInputs = disableOperations;
+        updateIframePluginState(this.room);
+    }
+
+    disableWindowOperation = (disable: boolean) => {
+        window.manager?.setReadonly(disable);
+    }
+
+    putScenes = (dir: string, scenes: SceneDefinition[], index: number, responseCallback: any) => {
+        this.room.putScenes(dir, scenes, index);
+        responseCallback(JSON.stringify(this.room.state.sceneState));
+    }
+
+    removeScenes = (dirOrPath: string) => {
+        this.room.removeScenes(dirOrPath);
+    }
+
     /* 移动，重命名当前scene，参考 mv 命令 */
-    moveScene: (source: string, target: string) => void;
+    moveScene = (source: string, target: string) => {
+        this.room.moveScene(source, target);
+    }
+
     /**
      * 在指定位置插入文字
      * @param x 第一个字的的左侧边中点，世界坐标系中的 x 坐标
@@ -225,374 +402,116 @@ export class RoomAsyncBridge {
      * @param responseCallback 完成回调
      * @returns 该文字的标识符
      */
-    insertText: (x: number, y: number, textContent: string, responseCallback: any) => void;
-    cleanScene: (retainPpt: boolean) => void;
-    insertImage: (imageInfo: ImageInformation) => void;
-    insertVideo: (videoInfo: VideoPluginInfo) => void;
-    completeImageUpload: (uuid: string, url: string) => void;
-    dispatchMagixEvent: (event: EventEntry) => void;
-    setTimeDelay: (delay: number) => void;
-    addApp: (kind: string, options: any, attributes: any, responseCallback: any) => void;
-    closeApp: (appId: string, responseCallback: any) => void;
-    getSyncedState: (responseCallback: any) => void;
-    safeSetAttributes: (attributes: any) => void;
-    safeUpdateAttributes: (keys: string[], attributes: any) => void;
-
-    constructor(room: Room) {
-        this.redo = (responseCallback: any) => {
-            const count = room.redo();
-            responseCallback(count);
+    insertText = (x: number, y: number, textContent: string, responseCallback: any) => {
+        if (window.manager) {
+            responseCallback(window.manager.mainView.insertText(x, y, textContent));
+        } else {
+            responseCallback(this.room.insertText(x, y, textContent));
         }
+    }
 
-        /** 撤回 */
-        this.undo = (responseCallback: any) => {
-            const count = room.undo();
-            responseCallback(count);
+    cleanScene = (retainPpt: boolean) => {
+        let retain: boolean;
+        if (retainPpt === undefined) {
+            retain = false;
+        } else {
+            retain = !!retainPpt;
         }
+        this.room.cleanCurrentScene(retainPpt);
+    }
 
-        /** 取消撤回 */
-        this.canRedoSteps = (responseCallback: any) => {
-            if (window.manager) {
-                responseCallback(window.manager.canRedoSteps);
-            } else {
-                responseCallback(room.canRedoSteps);
-            }
-        }
+    insertImage = (imageInfo: ImageInformation) => {
+        this.room.insertImage(imageInfo);
+    }
 
-        this.canUndoSteps = (responseCallback: any) => {
-            if (window.manager) {
-                responseCallback(window.manager.canUndoSteps);
-            } else {
-                responseCallback(room.canUndoSteps);
-            }
-        }
+    insertVideo = (videoInfo: VideoPluginInfo) => {
+        // TODO: ???
+    }
 
-        /** set 系列API */
-        this.setGlobalState = (modifyState: Partial<GlobalState>) => {
-            room.setGlobalState(modifyState);
-        }
+    completeImageUpload = (uuid: string, url: string) => {
+        this.room.completeImageUpload(uuid, url);
+    }
 
-        /** 替代切换页面，设置当前场景。path 为想要设置场景的 path */
-        this.setScenePath = (scenePath: string, responseCallback: any) => {
-            try {
-                if (window.manager) {
-                    window.manager.setMainViewScenePath(scenePath);
-                } else {
-                    room.setScenePath(scenePath);
-                }
-                responseCallback(JSON.stringify({}));
-            } catch (e) {
-                return responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
-            }
-        }
+    dispatchMagixEvent = (event: EventEntry) => {
+        this.room.dispatchMagixEvent(event.eventName, event.payload);
+    }
 
-        this.addPage = (params: AddPageParams) => {
-            if (window.manager) {
-                window.manager.addPage(params)
-            } else {
-                const dir = room.state.sceneState.contextPath
-                const after = params.after
-                if (after) {
-                    const tIndex = room.state.sceneState.index + 1
-                    room.putScenes(dir, [params.scene || {}], tIndex)
-                } else {
-                    room.putScenes(dir, [params.scene || {}]);
-                }
-            }
-        }
+    setTimeDelay = (delay: number) => {
+        this.room.timeDelay = delay;
+    }
 
-        this.nextPage = (responseCallback: any) => {
-            if (window.manager) {
-                window.manager.nextPage().then((result) => {
-                    responseCallback(result)
-                })
-            } else {
-                const nextIndex = room.state.sceneState.index + 1;
-                if (nextIndex < room.state.sceneState.scenes.length) {
-                    room.setSceneIndex(nextIndex)
-                    responseCallback(true)
-                } else {
-                    responseCallback(false)
-                }
-            }
-        }
-
-        this.prevPage = (responseCallback: any) => {
-            if (window.manager) {
-                window.manager.prevPage().then((result) => {
-                    responseCallback(result)
-                })
-            } else {
-                const prevIndex = room.state.sceneState.index - 1;
-                if (prevIndex >= 0) {
-                    room.setSceneIndex(prevIndex)
-                    responseCallback(true)
-                } else {
-                    responseCallback(false)
-                }
-            }
-        }
-
-        this.setMemberState = (memberState: Partial<MemberState>) => {
-            room.setMemberState(memberState);
-        }
-
-        this.setViewMode = (viewMode: string) => {
-            let mode = ViewMode[viewMode] as any;
-            if (mode === undefined) {
-                mode = ViewMode.Freedom;
-            }
-            if (window.manager) {
-                window.manager.setViewMode(mode);
-            } else {
-                room.setViewMode(mode);
-            }
-        }
-
-        this.setWritable = (writable: boolean, responseCallback: any) => {
-            room.setWritable(writable).then(() => {
-                responseCallback(JSON.stringify({ isWritable: room.isWritable, observerId: room.observerId }));
-            }).catch(error => {
-                responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } }));
-            });
-        }
-
-        /** get 系列 API */
-        this.getMemberState = (responseCallback: any) => {
-            return responseCallback(JSON.stringify(room.state.memberState));
-        }
-
-        this.getGlobalState = (responseCallback: any) => {
-            return responseCallback(JSON.stringify(room.state.globalState));
-        }
-
-        this.getSceneState = (responseCallback: any) => {
-            return responseCallback(JSON.stringify(room.state.sceneState));
-        }
-
-        this.getRoomMembers = (responseCallback: any) => {
-            return responseCallback(JSON.stringify(room.state.roomMembers));
-        }
-
-        /** @deprecated 使用 scenes 代替，ppt 将作为 scene 的成员变量 */
-        this.getPptImages = (responseCallback: any) => {
-            const ppts = room.state.sceneState.scenes.map(s => {
-                if (s.ppt) {
-                    return s.ppt.src;
-                } else {
-                    return "";
-                }
-            });
-            return responseCallback(JSON.stringify(ppts));
-        }
-
-        this.setSceneIndex = (index: number, responseCallback: any) => {
-            try {
-                if (window.manager) {
-                    window.manager.setMainViewSceneIndex(index);
-                } else {
-                    room.setSceneIndex(index);
-                }
-                responseCallback(JSON.stringify({}));
-            } catch (error) {
-                responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } }));
-            }
-        }
-
-        this.getScenes = (responseCallback: any) => {
-            return responseCallback(JSON.stringify(room.state.sceneState.scenes));
-        }
-
-        this.getZoomScale = (responseCallback: any) => {
-            let scale = 1;
-            if (window.manager) {
-                scale = window.manager.mainView.camera.scale;
-            } else {
-                scale = room.state.cameraState.scale;
-            }
-            return responseCallback(JSON.stringify(scale));
-        }
-
-        this.getBroadcastState = (responseCallback: any) => {
-            return responseCallback(JSON.stringify(room.state.broadcastState));
-        }
-
-        this.getRoomPhase = (responseCallback: any) => {
-            return responseCallback(room.phase);
-        }
-
-        this.disconnect = (responseCallback: any) => {
-            room.disconnect().then(() => {
-                responseCallback();
-            });
-        }
-
-        this.zoomChange = (scale: number) => {
-            room.moveCamera({ scale });
-        }
-
-        this.disableCameraTransform = (disableCamera: boolean) => {
-            room.disableCameraTransform = disableCamera;
-        }
-
-        this.disableDeviceInputs = (disable: boolean) => {
-            if (window.manager) {
-                window.manager.setReadonly(disable);
-            }
-            room.disableDeviceInputs = disable;
-            updateIframePluginState(room);
-        }
-
-        this.disableOperations = (disableOperations: boolean) => {
-            room.disableCameraTransform = disableOperations;
-            room.disableDeviceInputs = disableOperations;
-            updateIframePluginState(room);
-        }
-
-        this.disableWindowOperation = (disable: boolean) => {
-            window.manager?.setReadonly(disable);
-        }
-
-        this.putScenes = (dir: string, scenes: SceneDefinition[], index: number, responseCallback: any) => {
-            room.putScenes(dir, scenes, index);
-            responseCallback(JSON.stringify(room.state.sceneState));
-        }
-
-        this.removeScenes = (dirOrPath: string) => {
-            room.removeScenes(dirOrPath);
-        }
-
-        /* 移动，重命名当前scene，参考 mv 命令 */
-        this.moveScene = (source: string, target: string) => {
-            room.moveScene(source, target);
-        }
-
-        /**
-         * 在指定位置插入文字
-         * @param x 第一个字的的左侧边中点，世界坐标系中的 x 坐标
-         * @param y 第一个字的的左侧边中点，世界坐标系中的 y 坐标
-         * @param textContent 初始化文字的内容
-         * @param responseCallback 完成回调
-         * @returns 该文字的标识符
-         */
-        this.insertText = (x: number, y: number, textContent: string, responseCallback: any) => {
-            if (window.manager) {
-                responseCallback(window.manager.mainView.insertText(x, y, textContent));
-            } else {
-                responseCallback(room.insertText(x, y, textContent));
-            }
-        }
-
-        this.cleanScene = (retainPpt: boolean) => {
-            let retain: boolean;
-            if (retainPpt === undefined) {
-                retain = false;
-            } else {
-                retain = !!retainPpt;
-            }
-            room.cleanCurrentScene(retainPpt);
-        }
-
-        this.insertImage = (imageInfo: ImageInformation) => {
-            room.insertImage(imageInfo);
-        }
-
-        this.insertVideo = (videoInfo: VideoPluginInfo) => {
-            // TODO: ???
-        }
-
-        this.completeImageUpload = (uuid: string, url: string) => {
-            room.completeImageUpload(uuid, url);
-        }
-
-        this.dispatchMagixEvent = (event: EventEntry) => {
-            room.dispatchMagixEvent(event.eventName, event.payload);
-        }
-
-        this.setTimeDelay = (delay: number) => {
-            room.timeDelay = delay;
-        }
-
-        this.addApp = (kind: string, options: any, attributes: any, responseCallback: any) => {
-            if (window.manager) {
-                if (kind === "Slide") {
-                    const opts = options as AddAppOptions
-                    addSlideApp(opts.scenePath!, opts.title!, opts.scenes!)
-                        .then(appId => {
-                            responseCallback(appId)
-                        })
-                } else {
-                    window.manager.addApp({
-                        kind: kind,
-                        options: options,
-                        attributes: attributes
-                    }).then(appId => {
+    addApp = (kind: string, options: any, attributes: any, responseCallback: any) => {
+        if (window.manager) {
+            if (kind === "Slide") {
+                const opts = options as AddAppOptions
+                addSlideApp(opts.scenePath!, opts.title!, opts.scenes!)
+                    .then(appId => {
                         responseCallback(appId)
-                    });
-                }
-            }
-        }
-
-        this.closeApp = (appId: string, responseCallback: any) => {
-            if (window.manager) {
-                window.manager.closeApp(appId).then(() => {
-                    return responseCallback(undefined);
+                    })
+            } else {
+                window.manager.addApp({
+                    kind: kind,
+                    options: options,
+                    attributes: attributes
+                }).then(appId => {
+                    responseCallback(appId)
                 });
             }
         }
+    }
 
-        this.getSyncedState = (responseCallback: any) => {
-            let result = window.syncedStore ? window.syncedStore!.attributes : {}
-            responseCallback(JSON.stringify(result))
+    closeApp = (appId: string, responseCallback: any) => {
+        if (window.manager) {
+            window.manager.closeApp(appId).then(() => {
+                return responseCallback(undefined);
+            });
         }
+    }
 
-        this.safeSetAttributes = (attributes: any) => {
-            window.syncedStore?.safeSetAttributes(attributes)
-        }
+    getSyncedState = (responseCallback: any) => {
+        let result = window.syncedStore ? window.syncedStore!.attributes : {}
+        responseCallback(JSON.stringify(result))
+    }
 
-        this.safeUpdateAttributes = (keys: string[], attributes: any) => {
-            window.syncedStore?.safeUpdateAttributes(keys, attributes)
-        }
+    safeSetAttributes = (attributes: any) => {
+        window.syncedStore?.safeSetAttributes(attributes)
+    }
+
+    safeUpdateAttributes = (keys: string[], attributes: any) => {
+        window.syncedStore?.safeUpdateAttributes(keys, attributes)
     }
 }
 
 export class RoomStateBridge {
-    getRoomState: () => any;
-    getTimeDelay: () => number;
-    getPhase: () => RoomPhase;
-    isWritable: () => boolean;
-    debugInfo: () => any;
-
-    constructor(room: Room) {
-        this.getRoomState = () => {
-            const state = room.state;
-            if (window.manager) {
-                return { ...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState, ...{ pageState: window.manager.pageState } };
-            } else {
-                return { ...state, ...createPageState(state.sceneState) };
-            }
+    constructor(readonly room: Room) { }
+    getRoomState = () => {
+        const state = this.room.state;
+        if (window.manager) {
+            return { ...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState, ...{ pageState: window.manager.pageState } };
+        } else {
+            return { ...state, ...createPageState(state.sceneState) };
         }
+    }
 
-        this.getTimeDelay = () => {
-            return room.timeDelay;
-        }
+    getTimeDelay = () => {
+        return this.room.timeDelay;
+    }
 
-        this.getPhase = () => {
-            return room.phase;
-        }
+    getPhase = () => {
+        return this.room.phase;
+    }
 
-        this.isWritable = () => {
-            return room.isWritable;
-        }
+    isWritable = () => {
+        return this.room.isWritable;
+    }
 
-        this.debugInfo = () => {
-            try {
-                const screen = (room as any).screen;
-                const { camera, visionRectangle, adaptedRectangle, divElement } = screen;
-                return { camera, visionRectangle, adaptedRectangle, divWidth: divElement.clientWidth, divHeight: divElement.clientHeight };
-            } catch (error) {
-                return { error: error.message };
-            }
+    debugInfo = () => {
+        try {
+            const screen = (this.room as any).screen;
+            const { camera, visionRectangle, adaptedRectangle, divElement } = screen;
+            return { camera, visionRectangle, adaptedRectangle, divWidth: divElement.clientWidth, divHeight: divElement.clientHeight };
+        } catch (error) {
+            return { error: error.message };
         }
     }
 }

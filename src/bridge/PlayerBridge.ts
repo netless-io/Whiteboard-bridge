@@ -56,105 +56,89 @@ export function registerPlayerBridge(aPlayer: Player,
 }
 
 export class PlayerStateBridge {
-    roomUUID: () => string;
-    phase: () => PlayerPhase;
-    playerState: () => any;
-    isPlayable: () => boolean;
-    playbackSpeed: () => number;
-    timeInfo: () => { scheduleTime: number, timeDuration: number, framesCount: number, beginTimestamp: number };
+    constructor(readonly player: Player, readonly combinePlayer: CombinePlayer | undefined) { }
+    roomUUID = () => {
+        return this.player.roomUUID;
+    }
 
-    constructor(player: Player, combinePlayer: CombinePlayer | undefined) {
-        this.roomUUID = () => {
-            return player.roomUUID;
-        }
+    phase = () => {
+        return this.player.phase;
+    }
 
-        this.phase = () => {
-            return player.phase;
-        }
-
-        this.playerState = () => {
-            // 如果没有加载第一帧，会直接报错
-            try {
-                let state = player.state;
-                if (window.manager) {
-                    state = { ...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState };
-                }
-                return state;
-            } catch (error) {
-                return {};
+    playerState = () => {
+        // 如果没有加载第一帧，会直接报错
+        try {
+            let state = this.player.state;
+            if (window.manager) {
+                state = { ...state, ...{ windowBoxState: window.manager.boxState }, cameraState: window.manager.cameraState, sceneState: window.manager.sceneState };
             }
+            return state;
+        } catch (error) {
+            return {};
         }
+    }
 
-        this.isPlayable = () => {
-            return player.isPlayable;
-        }
+    isPlayable = () => {
+        return this.player.isPlayable;
+    }
 
-        this.playbackSpeed = () => {
-            if (combinePlayer) {
-                return combinePlayer.playbackRate;
-            }
-            return player.playbackSpeed;
+    playbackSpeed = () => {
+        if (this.combinePlayer) {
+            return this.combinePlayer.playbackRate;
         }
+        return this.player.playbackSpeed;
+    }
 
-        this.timeInfo = () => {
-            const { progressTime, timeDuration, framesCount, beginTimestamp } = player;
-            const info = { scheduleTime: progressTime, timeDuration, framesCount, beginTimestamp };
-            return info;
-        }
+    timeInfo = () => {
+        const { progressTime, timeDuration, framesCount, beginTimestamp } = this.player;
+        const info = { scheduleTime: progressTime, timeDuration, framesCount, beginTimestamp };
+        return info;
     }
 }
 
 export class PlayerAsyncBridge {
-    play: () => void;
-    pause: () => void;
-    stop: () => void;
-    seekToScheduleTime: (beginTime: number) => void;
-    setObserverMode: (observerMode: string) => void;
-    setPlaybackSpeed: (rate: number) => void;
-
-    constructor(player: Player, combinePlayer: CombinePlayer | undefined) {
-        this.play = () => {
-            if (combinePlayer) {
-                combinePlayer.play();
-            } else {
-                player.play();
-            }
+    constructor(readonly player: Player, readonly combinePlayer: CombinePlayer | undefined) { }
+    play = () => {
+        if (this.combinePlayer) {
+            this.combinePlayer.play();
+        } else {
+            this.player.play();
         }
+    }
 
-        this.pause = () => {
-            if (combinePlayer) {
-                combinePlayer.pause();
-            } else {
-                player.pause();
-            }
+    pause = () => {
+        if (this.combinePlayer) {
+            this.combinePlayer.pause();
+        } else {
+            this.player.pause();
         }
+    }
 
-        this.stop = () => {
-            try {
-                player.stop();
-            } catch (error) {
-                console.log("stop:", error.message);
-            }
+    stop = () => {
+        try {
+            this.player.stop();
+        } catch (error) {
+            console.log("stop:", error.message);
         }
+    }
 
-        this.seekToScheduleTime = (beginTime: number) => {
-            if (combinePlayer) {
-                combinePlayer.seek(beginTime);
-            } else {
-                player.seekToProgressTime(beginTime);
-            }
+    seekToScheduleTime = (beginTime: number) => {
+        if (this.combinePlayer) {
+            this.combinePlayer.seek(beginTime);
+        } else {
+            this.player.seekToProgressTime(beginTime);
         }
+    }
 
-        this.setObserverMode = (observerMode: string) => {
-            player.setObserverMode(observerMode as ObserverMode);
-        }
+    setObserverMode = (observerMode: string) => {
+        this.player.setObserverMode(observerMode as ObserverMode);
+    }
 
-        this.setPlaybackSpeed = (rate: number) => {
-            if (combinePlayer) {
-                combinePlayer.playbackRate = rate;
-            } else {
-                player.playbackSpeed = rate;
-            }
+    setPlaybackSpeed = (rate: number) => {
+        if (this.combinePlayer) {
+            this.combinePlayer.playbackRate = rate;
+        } else {
+            this.player.playbackSpeed = rate;
         }
     }
 }
