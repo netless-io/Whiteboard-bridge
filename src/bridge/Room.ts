@@ -1,9 +1,10 @@
 import dsBridge from "dsbridge";
 import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene } from "white-web-sdk";
 import { registerDisplayer } from "../bridge/Displayer";
-import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
+import { AddAppOptions, AddPageParams, BuiltinApps, WindowManager } from "@netless/window-manager";
 import { Attributes as SlideAttributes } from "@netless/app-slide";
 import { createPageState, registerBridge } from "../utils/Funs";
+import { TeleBoxColorScheme } from "@netless/telebox-insider";
 
 type VideoPluginInfo = {
     readonly props?: {
@@ -106,7 +107,13 @@ export function registerRoom(room: Room, logger: (funName: string, ...param: any
     }
 
     dsBridge.register(roomNamespace, {
-        setWindowManagerAttributes
+        setWindowManagerAttributes,
+        setContainerSizeRatio: (ratio) => {
+            window.manager?.setContainerSizeRatio(ratio);
+        },
+        setPrefersColorScheme: (scheme: TeleBoxColorScheme) => {
+            window.manager?.setPrefersColorScheme(scheme);
+        },
     });
 
     dsBridge.register(pptNamespace, {
