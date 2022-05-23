@@ -12,7 +12,7 @@
     "start": "webpack-dev-server --mode development --host local-ip --hot --open",
     "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
-    "check": "tsc"
+    "check0": "tsc"
   },
   "resolutions": {
     "**/video.js": "7.10.0"
