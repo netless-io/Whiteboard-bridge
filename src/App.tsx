@@ -6,6 +6,7 @@ import "@netless/window-manager/dist/style.css";
 import "./App.css";
 import 'video.js/dist/video-js.css';
 import { whiteboardContainerId } from ".";
+import bridge from "./react-native-bridge-in";
 
 export default function App() {
     useEffect(()=> {
