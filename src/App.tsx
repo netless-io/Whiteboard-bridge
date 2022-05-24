@@ -26,6 +26,13 @@ export default function App() {
     const getDiv = () => { return divRef.current as unknown as HTMLElement };
     setWhiteboardDivGetter(getDiv);
 
+    window.onmessage = function (event) {
+        // console.log(event);
+        // alert(event.data);
+        // alert(JSON.stringify(event.data));
+        bridge.recv(event.data);
+    }
+
     return (
         <div id={whiteboardContainerId} ref={divRef} style={fullStyle}></div>
     )
