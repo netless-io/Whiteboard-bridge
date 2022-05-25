@@ -1,7 +1,7 @@
 {
 	"compilerOptions": {
 		"declaration": true,
-		"emitDeclarationOnly": true,
+		// "emitDeclarationOnly": true,
 		// Target latest version of ECMAScript.
 		"target": "esnext",
 		// path to output directory

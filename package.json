@@ -7,12 +7,14 @@
     "Android 4.4",
     "iOS 9"
   ],
+  "type": "module",
   "scripts": {
     "bundle": "webpack",
     "start": "webpack-dev-server --mode development --host local-ip --hot --open",
     "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
-    "check0": "tsc"
+    "check0": "tsc",
+    "genRpc": "tsc && node ./dist/gen/index.js"
   },
   "resolutions": {
     "**/video.js": "7.10.0"
