@@ -23,6 +23,8 @@ import { registerBridgeRoom } from "./RoomBridge";
 import { registerPlayerBridge } from "./PlayerBridge";
 import { Rtc } from './Rtc';
 import { SDKCallbackHandler } from './SDKCallbackHandler';
+import 'reflect-metadata';
+
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
@@ -79,7 +81,7 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
     return manager;
 }
 
-class SDKBridge {
+export class SDKBridge {
     newWhiteSdk(config: NativeSDKConfig) {
         const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
             const modifyUrl: string = sdkCallbackHandler.onUrlInterrupter(url);

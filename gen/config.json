@@ -1,0 +1,8 @@
+{
+    "rpc": {
+        "SDKBridge": {
+            "SDKBridge": ["newWhiteSdk"]
+        }
+    },
+    "event": {}
+}
