@@ -541,7 +541,7 @@ export default function App() {
         } else {
             // 单窗口模式下，如果有 sceneState，则手动生成一个 pageState
             if (sceneState) {
-                modifyState = {...resetState, ...createPageState(sceneState)}
+                modifyState = {...modifyState, ...createPageState(sceneState)}
             }
             dsBridge.call("room.fireRoomStateChanged", JSON.stringify(modifyState));
         }
