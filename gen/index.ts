@@ -4,7 +4,7 @@ import ts from "typescript";
 let config = {
     "rpc": {
         "SDKBridge": {
-            "SDKBridge": ["newWhiteSdk"]
+            "SDKBridge": ["newWhiteSdk"] // todo: support * ["*"] all method
         }
     },
     "event": {}
