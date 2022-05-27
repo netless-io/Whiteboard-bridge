@@ -14,7 +14,7 @@
     "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "check0": "tsc",
-    "genRpc": "tsc && node ./dist/gen/index.js"
+    "genRpc": "tsc && NODE_OPTIONS='--experimental-specifier-resolution=node' node ./dist/gen/index.js"
   },
   "resolutions": {
     "**/video.js": "7.10.0"

@@ -1,3 +1,0 @@
-function gen_ir() {
-
-}

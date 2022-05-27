@@ -1,10 +1,12 @@
 import fs from 'fs';
 import path from "path";
 import ts from "typescript";
+
+import {gen_ir} from "./ir_gen";
 let config = {
     "rpc": {
         "SDKBridge": {
-            "SDKBridge": ["newWhiteSdk"] // todo: support * ["*"] all method
+            "SDKBridge": ["newWhiteSdk", "joinRoom"] // todo: support * ["*"] all method
         }
     },
     "event": {}
@@ -21,11 +23,12 @@ function enter() {
             dTsFile,                        
             ts.ScriptTarget.Latest          
         )
-        console.log("read ts file " + JSON.stringify(sourceFile));
+        // console.log("read ts file " + JSON.stringify(sourceFile));
         let clazz = config.rpc[rpc_file]; // like "SDKBridge": ["newWhiteSdk"]
         for (let clazzName in clazz) {
             let methods = clazz[clazzName];
             console.log("parse " + clazzName);
+            gen_ir(methods, sourceFile);
         }
     }
     // gen ir
