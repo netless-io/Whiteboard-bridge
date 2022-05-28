@@ -10,7 +10,7 @@ export function gen_ir(clazzName: string, methods: string[], sourceFile: string)
     //     ts.forEachChild(n, each);
     // }
 
-    generateDocumentation(clazzName, methods, [sourceFile], {
+    generateIR(clazzName, methods, [sourceFile], {
         target: ts.ScriptTarget.ES5,
         module: ts.ModuleKind.CommonJS
     });
@@ -31,7 +31,7 @@ interface DocEntry {
 }
 
 /** Generate documentation for all classes in a set of .ts files */
-function generateDocumentation(
+function generateIR(
     clazzName: string, methods: string[],
     fileNames: string[],
     options: ts.CompilerOptions
@@ -41,7 +41,7 @@ function generateDocumentation(
 
     // Get the checker, we will use it to find more about classes
     let checker = program.getTypeChecker();
-    let output: DocEntry[] = [];
+    // let output: DocEntry[] = [];
 
     // Visit every sourceFile in the program
     for (const sourceFile of program.getSourceFiles()) {
@@ -65,10 +65,10 @@ function generateDocumentation(
 
         if (ts.isClassDeclaration(node) && node.name && node.name?.escapedText == clazzName) {
             // This is a top level class, get its symbol
-            // let symbol = checker.getSymbolAtLocation(node.name);
-            // if (symbol) {
-            //     output.push(serializeClass(symbol));
-            // }
+            let symbol = checker.getSymbolAtLocation(node.name);
+            if (symbol) {
+                serializeClass(symbol);
+            }
             console.log("- " + node.name.getText());
 
             ts.forEachChild(node, visit);
@@ -79,9 +79,34 @@ function generateDocumentation(
             ts.forEachChild(node, visit);
         } else if(ts.isMethodDeclaration(node)){
             console.log("   - " + node.name.getText());
+            let symbol = checker.getSymbolAtLocation(node.name);
+            if (symbol) {
+                serializeFunction(symbol);
+            }
         }
     }
 
+    function serializeFunction(symbol: ts.Symbol) {
+        let details = serializeSymbolForFn(symbol);
+        // details.parameters
+    }
+    /** Serialize a symbol into a json object */
+    function serializeSymbolForFn(symbol: ts.Symbol): Func {
+        let funcType = checker.getTypeOfSymbolAtLocation(
+            symbol,
+            symbol.valueDeclaration!
+        );
+        let t = funcType.getCallSignatures().map(serializeSignature);
+        console.log(JSON.stringify(t));
+        return {
+            name: symbol.getName(),
+            args: [],
+            ret: {
+                name: "",
+                type: "",
+            }
+        };
+    }
     /** Serialize a symbol into a json object */
     function serializeSymbol(symbol: ts.Symbol): DocEntry {
         return {
@@ -118,25 +143,33 @@ function generateDocumentation(
     }
 
     /** True if this is visible outside this file, false otherwise */
-    function isNodeExported(node: ts.Node): boolean {
-        return (
-            (ts.getCombinedModifierFlags(node as ts.Declaration) & ts.ModifierFlags.Export) !== 0 ||
-            (!!node.parent && node.parent.kind === ts.SyntaxKind.SourceFile)
-        );
-    }
+    // function isNodeExported(node: ts.Node): boolean {
+    //     return (
+    //         (ts.getCombinedModifierFlags(node as ts.Declaration) & ts.ModifierFlags.Export) !== 0 ||
+    //         (!!node.parent && node.parent.kind === ts.SyntaxKind.SourceFile)
+    //     );
+    // }
 }
 
 
 
 // let indent = 0;
-function print(node: ts.Node) {
-    // console.log(new Array(indent + 1).join(" ") + ts.SyntaxKind[node.kind]);
-    // indent++;
-    // ts.forEachChild(node, print);
-    // indent--;
+// function print(node: ts.Node) {
+//     // console.log(new Array(indent + 1).join(" ") + ts.SyntaxKind[node.kind]);
+//     // indent++;
+//     // ts.forEachChild(node, print);
+//     // indent--;
+// }
+interface Obj {
+    name: string;
+    type: string;
 }
-
-export class IR {
-    funcName: string | undefined;
-    args: any[] | undefined;
+interface Func {
+    name: string;
+    args: Obj[];
+    ret: Obj;
+}
+export interface IR {
+    name: string;
+    funcs: Func[];
 }
