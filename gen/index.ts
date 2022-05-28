@@ -10,6 +10,7 @@ let config = {
         },
         "RoomBridge": {
             "RoomSyncBridge": [],
+            "RoomAsyncBridge": [],
         },
         "WebSocket": {
             "WebSocketBridge": [],

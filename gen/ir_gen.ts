@@ -53,6 +53,7 @@ function generateIR(
                 ir = {
                     name: clazz.name,
                     funcs: [],
+                    proFuncs: [],
                 }
             }
             // console.log("- " + node.name.getText());
@@ -70,16 +71,36 @@ function generateIR(
                 // console.log("   - " + JSON.stringify(func));
                 ir!.funcs.push(func);
             }
+        } else if (ts.isPropertyDeclaration(node)) {
+            let symbol = checker.getSymbolAtLocation(node.name);
+            if (symbol) {
+                let func = serializePropertyFunction(symbol);
+                // console.log("   - " + JSON.stringify(func));
+                ir!.proFuncs.push(func);
+            }
         }
     }
 
-    function serializeFunction(symbol: ts.Symbol): Func {
+    function serializePropertyFunction(symbol: ts.Symbol): Func {
         let details = serializeSymbol(symbol);
         let funcType = checker.getTypeOfSymbolAtLocation(
             symbol,
             symbol.valueDeclaration!
         );
         let funcSignature = funcType.getCallSignatures().map(serializeSignature);
+        return {
+            name: details.name,
+            sign: funcSignature[0],
+        }
+    }
+
+    function serializeFunction(symbol: ts.Symbol): Func {
+        let details = serializeSymbol(symbol);
+        let proFuncType = checker.getTypeOfSymbolAtLocation(
+            symbol,
+            symbol.valueDeclaration!
+        );
+        let funcSignature = proFuncType.getCallSignatures().map(serializeSignature);
         return {
             name: details.name,
             sign: funcSignature[0],
@@ -137,4 +158,5 @@ interface Func {
 export interface IR {
     name: string;
     funcs: Func[];
+    proFuncs: Func[];
 }
