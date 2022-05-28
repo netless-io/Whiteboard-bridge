@@ -29,7 +29,7 @@ function enter() {
             let methods = clazz[clazzName];
             console.log("parse " + clazzName);
             let ir = gen_ir(clazzName, methods, filePath);
-            console.log(JSON.stringify(ir));
+            console.log(JSON.stringify(ir, null, 2));
         }
     }
     // gen ir

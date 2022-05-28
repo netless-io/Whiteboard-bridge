@@ -76,22 +76,30 @@ function generateIR(
             if (symbol) {
                 let func = serializePropertyFunction(symbol);
                 // console.log("   - " + JSON.stringify(func));
-                ir!.proFuncs.push(func);
+                if(func) {
+                    ir!.proFuncs.push(func);
+                }
             }
         }
     }
 
-    function serializePropertyFunction(symbol: ts.Symbol): Func {
+    function serializePropertyFunction(symbol: ts.Symbol): Func | undefined{
         let details = serializeSymbol(symbol);
         let funcType = checker.getTypeOfSymbolAtLocation(
             symbol,
             symbol.valueDeclaration!
         );
+        
         let funcSignature = funcType.getCallSignatures().map(serializeSignature);
-        return {
-            name: details.name,
-            sign: funcSignature[0],
+        if (funcSignature.length > 0){
+            return {
+                name: details.name,
+                sign: funcSignature[0],
+            }
+        } else {
+            return undefined;
         }
+       
     }
 
     function serializeFunction(symbol: ts.Symbol): Func {
