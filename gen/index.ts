@@ -7,6 +7,12 @@ let config = {
     "rpc": {
         "SDKBridge": {
             "SDKBridge": ["newWhiteSdk", "joinRoom"] // todo: support * ["*"] all method
+        },
+        "RoomBridge": {
+            "RoomSyncBridge": [],
+        },
+        "WebSocket": {
+            "WebSocketBridge": [],
         }
     },
     "event": {}
