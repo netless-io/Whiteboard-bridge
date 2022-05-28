@@ -1,15 +1,12 @@
 import ts from "typescript";
 // import fs from "fs";
 
-export function gen_ir(clazzName: string, methods: string[], sourceFile: string) :IR[] {
+export function gen_ir(clazzName: string, methods: string[], sourceFile: string) :IR {
 
-    generateIR(clazzName, methods, [sourceFile], {
+    return generateIR(clazzName, methods, [sourceFile], {
         target: ts.ScriptTarget.ES5,
         module: ts.ModuleKind.CommonJS
     });
-
-
-    return [];
 }
 
 
@@ -19,7 +16,8 @@ function generateIR(
     clazzName: string, methods: string[],
     fileNames: string[],
     options: ts.CompilerOptions
-): void {
+): IR {
+    let ir: IR|undefined = undefined;
     // Build a program using the set of root file names in fileNames
     let program = ts.createProgram(fileNames, options);
 
@@ -38,8 +36,8 @@ function generateIR(
     // print out the doc
     // fs.writeFileSync("classes.json", JSON.stringify(output, undefined, 4));
 
-    return;
-
+    return ir!;
+    
     /** visit nodes finding exported classes */
     function visit(node: ts.Node) {
         // Only consider exported nodes
@@ -51,9 +49,13 @@ function generateIR(
             // This is a top level class, get its symbol
             let symbol = checker.getSymbolAtLocation(node.name);
             if (symbol) {
-                serializeClass(symbol);
+                let clazz = serializeClass(symbol);
+                ir = {
+                    name: clazz.name,
+                    funcs: [],
+                }
             }
-            console.log("- " + node.name.getText());
+            // console.log("- " + node.name.getText());
 
             ts.forEachChild(node, visit);
             // No need to walk any further, class expressions/inner declarations
@@ -65,7 +67,8 @@ function generateIR(
             let symbol = checker.getSymbolAtLocation(node.name);
             if (symbol) {
                 let func = serializeFunction(symbol);
-                console.log("   - " + JSON.stringify(func));
+                // console.log("   - " + JSON.stringify(func));
+                ir!.funcs.push(func);
             }
         }
     }

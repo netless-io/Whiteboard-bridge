@@ -29,7 +29,8 @@ function enter() {
         for (let clazzName in clazz) {
             let methods = clazz[clazzName];
             console.log("parse " + clazzName);
-            gen_ir(clazzName, methods, filePath);
+            let ir = gen_ir(clazzName, methods, filePath);
+            console.log(JSON.stringify(ir));
         }
     }
     // gen ir
