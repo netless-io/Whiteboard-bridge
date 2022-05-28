@@ -1,14 +1,7 @@
 import ts from "typescript";
 // import fs from "fs";
 
-export function gen_ir(clazzName: string, methods: string[], sourceFile: string) :IR[]{
-    // console.log("gen ir for " + JSON.stringify(sourceFile));
-    // print(sourceFile);
-    // each(sourceFile);
-    // function each(n: ts.Node) {
-    //     console.log(ts.SyntaxKind[n.kind]);    
-    //     ts.forEachChild(n, each);
-    // }
+export function gen_ir(clazzName: string, methods: string[], sourceFile: string) :IR[] {
 
     generateIR(clazzName, methods, [sourceFile], {
         target: ts.ScriptTarget.ES5,
@@ -20,15 +13,6 @@ export function gen_ir(clazzName: string, methods: string[], sourceFile: string)
 }
 
 
-interface DocEntry {
-    name?: string;
-    fileName?: string;
-    documentation?: string;
-    type?: string;
-    constructors?: DocEntry[];
-    parameters?: DocEntry[];
-    returnType?: string;
-}
 
 /** Generate documentation for all classes in a set of .ts files */
 function generateIR(
@@ -78,40 +62,31 @@ function generateIR(
             // This is a namespace, visit its children
             ts.forEachChild(node, visit);
         } else if(ts.isMethodDeclaration(node)){
-            console.log("   - " + node.name.getText());
             let symbol = checker.getSymbolAtLocation(node.name);
             if (symbol) {
-                serializeFunction(symbol);
+                let func = serializeFunction(symbol);
+                console.log("   - " + JSON.stringify(func));
             }
         }
     }
 
-    function serializeFunction(symbol: ts.Symbol) {
-        let details = serializeSymbolForFn(symbol);
-        // details.parameters
-    }
-    /** Serialize a symbol into a json object */
-    function serializeSymbolForFn(symbol: ts.Symbol): Func {
+    function serializeFunction(symbol: ts.Symbol): Func {
+        let details = serializeSymbol(symbol);
         let funcType = checker.getTypeOfSymbolAtLocation(
             symbol,
             symbol.valueDeclaration!
         );
-        let t = funcType.getCallSignatures().map(serializeSignature);
-        console.log(JSON.stringify(t));
+        let funcSignature = funcType.getCallSignatures().map(serializeSignature);
         return {
-            name: symbol.getName(),
-            args: [],
-            ret: {
-                name: "",
-                type: "",
-            }
-        };
+            name: details.name,
+            sign: funcSignature[0],
+        }
     }
     /** Serialize a symbol into a json object */
-    function serializeSymbol(symbol: ts.Symbol): DocEntry {
+    function serializeSymbol(symbol: ts.Symbol): Symbol {
         return {
             name: symbol.getName(),
-            documentation: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
+            // documentation: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
             type: checker.typeToString(
                 checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration!)
             )
@@ -121,24 +96,15 @@ function generateIR(
     /** Serialize a class symbol information */
     function serializeClass(symbol: ts.Symbol) {
         let details = serializeSymbol(symbol);
-
-        // Get the construct signatures
-        let constructorType = checker.getTypeOfSymbolAtLocation(
-            symbol,
-            symbol.valueDeclaration!
-        );
-        details.constructors = constructorType
-            .getConstructSignatures()
-            .map(serializeSignature);
         return details;
     }
 
     /** Serialize a signature (call or construct) */
-    function serializeSignature(signature: ts.Signature) {
+    function serializeSignature(signature: ts.Signature): FuncSign {
         return {
-            parameters: signature.parameters.map(serializeSymbol),
-            returnType: checker.typeToString(signature.getReturnType()),
-            documentation: ts.displayPartsToString(signature.getDocumentationComment(checker))
+            args: signature.parameters.map(serializeSymbol),
+            ret: checker.typeToString(signature.getReturnType()),
+            // documentation: ts.displayPartsToString(signature.getDocumentationComment(checker))
         };
     }
 
@@ -151,23 +117,19 @@ function generateIR(
     // }
 }
 
-
-
-// let indent = 0;
-// function print(node: ts.Node) {
-//     // console.log(new Array(indent + 1).join(" ") + ts.SyntaxKind[node.kind]);
-//     // indent++;
-//     // ts.forEachChild(node, print);
-//     // indent--;
-// }
-interface Obj {
+interface Symbol {
     name: string;
     type: string;
 }
+
+interface FuncSign {
+    args: Symbol[];
+    ret: string;
+    // ret: Symbol;
+}
 interface Func {
     name: string;
-    args: Obj[];
-    ret: Obj;
+    sign: FuncSign;
 }
 export interface IR {
     name: string;
