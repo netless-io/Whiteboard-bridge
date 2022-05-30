@@ -119,9 +119,12 @@ function generateIR(
         return {
             name: symbol.getName(),
             // documentation: ts.displayPartsToString(symbol.getDocumentationComment(checker)),
-            type: checker.typeToString(
-                checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration!)
-            )
+            type: {
+                name: checker.typeToString(
+                        checker.getTypeOfSymbolAtLocation(symbol, symbol.valueDeclaration!)
+                    ),
+                file: "",
+            }
         };
     }
 
@@ -135,7 +138,10 @@ function generateIR(
     function serializeSignature(signature: ts.Signature): FuncSign {
         return {
             args: signature.parameters.map(serializeSymbol),
-            ret: checker.typeToString(signature.getReturnType()),
+            ret: {
+                name: checker.typeToString(signature.getReturnType()),
+                file: "",
+            }
             // documentation: ts.displayPartsToString(signature.getDocumentationComment(checker))
         };
     }
@@ -148,15 +154,18 @@ function generateIR(
     //     );
     // }
 }
-
+interface Type {
+    name: string;
+    file: string;
+}
 interface Symbol {
     name: string;
-    type: string;
+    type: Type;
 }
 
 interface FuncSign {
     args: Symbol[];
-    ret: string;
+    ret: Type;
     // ret: Symbol;
 }
 interface Func {
