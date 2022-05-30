@@ -32,7 +32,6 @@ export default function App() {
         // alert(JSON.stringify(event.data));
         bridge.recv(event.data);
     }
-
     return (
         <div id={whiteboardContainerId} ref={divRef} style={fullStyle}></div>
     )
