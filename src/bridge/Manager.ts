@@ -2,6 +2,7 @@ import { WindowManager } from "@netless/window-manager";
 import "../utils/ParamTypes";
 import { RoomCallbackHandler } from "./RoomCallbackHandler";
 import { ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
+import dsBridge from "dsbridge";
 
 export function addManagerListener(manager: WindowManager, logger: (funName: string, ...param: any[]) => void, handler: RoomCallbackHandler | ReplayerCallbackHandler): void {
     window.manager = manager;
@@ -20,7 +21,7 @@ function addRoomListener(manager: WindowManager, logger: (funName: string, ...pa
     });
 
     manager.emitter.on("sceneStateChange", sceneState => {
-        handler.onRoomStateChanged({sceneState});
+        dsBridge.call("room.fireRoomStateChanged", JSON.stringify({sceneState}));
     });
 
     manager.emitter.on("boxStateChange", state => {
@@ -51,7 +52,7 @@ function addReplayListener(manager: WindowManager, logger: (funName: string, ...
     });
 
     manager.emitter.on("sceneStateChange", sceneState => {
-        handler.onPlayerStateChanged({sceneState});
+        dsBridge.call("player.onPlayerStateChanged", JSON.stringify({sceneState}));
     });
 
     manager.emitter.on("boxStateChange", state => {
