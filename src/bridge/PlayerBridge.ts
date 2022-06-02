@@ -1,5 +1,5 @@
 import dsBridge from "dsbridge";
-import { ObserverMode, Player, PlayerCallbacks, PlayerPhase, PlayerState, Room } from "white-web-sdk";
+import { ObserverMode, Player, PlayerCallbacks, PlayerPhase, PlayerSeekingResult, PlayerState, Room } from "white-web-sdk";
 import { registerDisplayerBridge } from "./DisplayerBridge";
 import { CombinePlayer, PublicCombinedStatus } from "@netless/combine-player";
 import { ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
@@ -122,11 +122,20 @@ export class PlayerAsyncBridge {
         }
     }
 
-    seekToScheduleTime = (beginTime: number) => {
+    seekToScheduleTime = (beginTime: number, responseCallback?: any) => {
         if (this.combinePlayer) {
             this.combinePlayer.seek(beginTime);
+            if (responseCallback) {
+                setTimeout(() => {
+                    responseCallback(PlayerSeekingResult.Success);
+                }, 0);
+            }
         } else {
-            this.player.seekToProgressTime(beginTime);
+            this.player.seekToProgressTime(beginTime).then(result=> {
+                if (responseCallback) {
+                    responseCallback(result);
+                }
+            });
         }
     }
 
