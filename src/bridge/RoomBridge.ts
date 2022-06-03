@@ -1,10 +1,11 @@
 import dsBridge from "dsbridge";
-import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState, WhiteScene, RoomPhase } from "white-web-sdk";
+import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState } from "white-web-sdk";
 import { registerDisplayerBridge } from "./DisplayerBridge";
 import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
 import { Attributes as SlideAttributes } from "@netless/app-slide";
 import { createPageState } from "../utils/Funs";
 import { TeleBoxColorScheme } from '@netless/telebox-insider';
+import { logger } from "../utils/Logger";
 
 export const pptNamespace = "ppt";
 export const roomSyncNamespace = "room.sync";
@@ -15,12 +16,13 @@ export function registerBridgeRoom(aRoom: Room) {
     window.room = aRoom;
     registerDisplayerBridge(aRoom);
 
-    dsBridge.register(roomNamespace, new RoomBridge());
-    dsBridge.registerAsyn(roomNamespace, new RoomAsyncBridge(aRoom));
-    dsBridge.register(pptNamespace, new RoomPPTBridge(aRoom));
-    dsBridge.register(roomSyncNamespace, new RoomSyncBridge(aRoom));
     // FIXME:同步方法尽量还是放在同步方法里。
     // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
+    dsBridge.register(roomNamespace, new RoomBridge());
+    dsBridge.registerAsyn(roomNamespace, new RoomAsyncBridge(aRoom));
+
+    dsBridge.register(pptNamespace, new RoomPPTBridge(aRoom));
+    dsBridge.register(roomSyncNamespace, new RoomSyncBridge(aRoom));
     dsBridge.register(roomStateNamespace, new RoomStateBridge(aRoom));
 }
 
@@ -73,6 +75,7 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
     try {
         if (taskId && url) {
             return window.manager!.addApp({
+                // TODO: extract to a constant
                 kind: "Slide",
                 options: {
                     scenePath,
@@ -95,7 +98,7 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
             });
         }
     } catch (err) {
-        console.log(err);
+        logger("addSlideApp error", err);
         return Promise.reject()
     }
 }
@@ -140,7 +143,7 @@ export class RoomSyncBridge {
         this.room.syncBlockTimestamp(timestamp);
     }
 
-    /** 客户端本地效果，会导致 web 2.9.2 和 native 2.9.3 以下出现问题。*/
+    /** 默认为 true，房间内，任一用户设置为 false，会使 web 2.9.2 和 native 2.9.3 出现报错而不能正常使用。*/
     disableSerialization = (disable: boolean) => {
         this.room.disableSerialization = disable;
         /** 单窗口且开启序列化主动触发一次redo,undo次数回调 */
