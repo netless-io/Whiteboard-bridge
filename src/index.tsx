@@ -6,7 +6,7 @@ import "./bridge/WebSocket";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
-import { addExamples } from "./Example";
+import { addDebugFunctions } from "./Debug";
 import { WindowManager } from '@netless/window-manager';
 import html2canvas from 'html2canvas';
 import { registerSDKBridge } from "./bridge/SDKBridge";
@@ -34,5 +34,5 @@ window.registerApp = WindowManager.register;
 window.setBackgroundColor = setBackgroundColor;
 window.html2canvas = html2canvas;
 
-// Example functions
-addExamples();
+// Debug functions
+addDebugFunctions();

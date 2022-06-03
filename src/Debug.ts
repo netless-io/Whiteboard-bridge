@@ -4,7 +4,7 @@ let appIdentifier = "";
 let testRoomUUID = "";
 let testRoomToken = "";
 
-export function addExamples() {
+export function addDebugFunctions() {
     function testRoom() {
         enableReport(true);
         const sdkParams = {log: true, userCursor: true, __platform: "bridge", appIdentifier, useMultiViews: true};
