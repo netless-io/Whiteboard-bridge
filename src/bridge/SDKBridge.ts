@@ -12,7 +12,7 @@ import SlideApp, { addHooks as addHooksSlide } from "@netless/app-slide";
 import { MountParams, WindowManager } from "@netless/window-manager";
 import { SyncedStore } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
-import {logger, report, setShowLog} from "../utils/Logger";
+import {logger, enableReport} from "../utils/Logger";
 import {convertBound} from "../utils/BoundConvert";
 import { addManagerListener } from "./Manager";
 import { RoomCallbackHandler } from "./RoomCallbackHandler";
@@ -91,7 +91,7 @@ class SDKBridge {
 
         const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
-        setShowLog(!!log);
+        enableReport(!!log);
         nativeConfig = config;
         
         logger("newWhiteSdk", config);
@@ -120,9 +120,7 @@ class SDKBridge {
         }
 
         const videoJsLogger = (message?: any, ...optionalParams: any[]) => {
-            // logger("videoJsPlugin", ...message, ...optionalParams);
-            // always report log
-            report("videoJsPlugin", message, ...optionalParams);
+            logger("videoJsPlugin", message, ...optionalParams);
         }
 
         const windowPlugins: {[key in string]: any} = [];
