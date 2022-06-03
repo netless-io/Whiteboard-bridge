@@ -1,12 +1,11 @@
-import dsBridge from "dsbridge";
 import { useEffect, useRef } from 'react';
 import {Displayer, Room, Player, SceneState} from "white-web-sdk";
 import { sdkCallbackHandler } from "../bridge/SDKBridge";
 
 export function registerBridge(names: string[], logger: (funName: string, ...params: any[]) => void) {
 
-    const async = (window as any)._dsaf;
-    // async 异步方法，dsbridge 会在尾部加一个 function
+    const async = window._dsaf;
+    
     for (const value of Object.getOwnPropertyNames(async)) {
         if (value === "_obs") {
             const _obj = async[value];
@@ -25,7 +24,7 @@ export function registerBridge(names: string[], logger: (funName: string, ...par
         }
     }
 
-    const syn = (window as any)._dsf;
+    const syn = window._dsf;
     for (const value of Object.getOwnPropertyNames(syn)) {
         if (value === "_obs") {
             const _obj = syn[value];
