@@ -1,7 +1,7 @@
 import "core-js/stable";
 import "regenerator-runtime/runtime";
 import "./Polyfill";
-import "./bridge/Global";
+import "./Global";
 import "./bridge/WebSocket";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
