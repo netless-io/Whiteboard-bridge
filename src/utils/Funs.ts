@@ -6,39 +6,40 @@ export function addBridgeLogHook(names: string[], logger: (funName: string, ...p
 
     const async = window._dsaf;
     
-    for (const value of Object.getOwnPropertyNames(async)) {
-        if (value === "_obs") {
-            const _obj = async[value];
-            for (const name of Object.getOwnPropertyNames(_obj)) {
-                if (names.includes(name)) {
-                    const namespace = _obj[name];
-                    for (const funName of Object.getOwnPropertyNames(namespace)) {
-                        const fun = namespace[funName];
-                        namespace[funName] = (...args: any[]) => {
-                            logger(funName, ...args.slice(0, -1));
-                            return fun(...args);
-                        };
-                    }
+    const async_obj = async["_obs"] || {};
+    for (const name of Object.getOwnPropertyNames(async_obj)) {
+        if (names.includes(name)) {
+            const namespace = async_obj[name];
+            for (const funName of Object.getOwnPropertyNames(namespace)) {
+                const fun = namespace[funName];
+                // 只 hook 函数
+                if (typeof fun !== "function") {
+                    continue;
                 }
+                namespace[funName] = (...args: any[]) => {
+                    // async 下， dsbridge 在调用时，会添加一个回调 function
+                    logger(funName, ...args.slice(0, -1));
+                    return fun(...args);
+                };
             }
         }
     }
 
     const syn = window._dsf;
-    for (const value of Object.getOwnPropertyNames(syn)) {
-        if (value === "_obs") {
-            const _obj = syn[value];
-            for (const name of Object.getOwnPropertyNames(_obj)) {
-                if (names.includes(name)) {
-                    const namespace = _obj[name];
-                    for (const funName of Object.getOwnPropertyNames(namespace)) {
-                        const fun = namespace[funName];
-                        namespace[funName] = (...args: any[]) => {
-                            logger(funName, ...args);
-                            return fun(...args);
-                        };
-                    }
+    const syn_obj = syn["_obs"] || {};
+    for (const name of Object.getOwnPropertyNames(syn_obj)) {
+        if (names.includes(name)) {
+            const namespace = syn_obj[name];
+            for (const funName of Object.getOwnPropertyNames(namespace)) {
+                const fun = namespace[funName];
+                // 只 hook 函数
+                if (typeof fun !== "function") {
+                    continue;
                 }
+                namespace[funName] = (...args: any[]) => {
+                    logger(funName, ...args);
+                    return fun(...args);
+                };
             }
         }
     }
