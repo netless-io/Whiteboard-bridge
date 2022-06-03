@@ -3,14 +3,14 @@ import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalS
 import { registerDisplayerBridge } from "./DisplayerBridge";
 import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
 import { Attributes as SlideAttributes } from "@netless/app-slide";
-import { createPageState } from "../utils/Funs";
+import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { TeleBoxColorScheme } from '@netless/telebox-insider';
 import { logger } from "../utils/Logger";
 
-export const pptNamespace = "ppt";
-export const roomSyncNamespace = "room.sync";
-export const roomNamespace = "room";
-export const roomStateNamespace = "room.state";
+const pptNamespace = "ppt";
+const roomSyncNamespace = "room.sync";
+const roomNamespace = "room";
+const roomStateNamespace = "room.state";
 
 export function registerBridgeRoom(aRoom: Room) {
     window.room = aRoom;
@@ -24,6 +24,8 @@ export function registerBridgeRoom(aRoom: Room) {
     dsBridge.register(pptNamespace, new RoomPPTBridge(aRoom));
     dsBridge.register(roomSyncNamespace, new RoomSyncBridge(aRoom));
     dsBridge.register(roomStateNamespace, new RoomStateBridge(aRoom));
+
+    addBridgeLogHook([roomNamespace, pptNamespace, roomSyncNamespace, roomStateNamespace], logger);
 }
 
 type VideoPluginInfo = {

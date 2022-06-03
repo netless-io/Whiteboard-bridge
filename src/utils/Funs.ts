@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react';
 import {Displayer, Room, Player, SceneState} from "white-web-sdk";
 import { sdkCallbackHandler } from "../bridge/SDKBridge";
 
-export function registerBridge(names: string[], logger: (funName: string, ...params: any[]) => void) {
+export function addBridgeLogHook(names: string[], logger: (funName: string, ...params: any[]) => void) {
 
     const async = window._dsaf;
     

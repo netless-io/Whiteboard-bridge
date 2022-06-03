@@ -9,12 +9,7 @@ import App from "./App";
 import { addExamples } from "./Example";
 import { WindowManager } from '@netless/window-manager';
 import html2canvas from 'html2canvas';
-import { asyncDisplayerNameSpace, displayerNameSpace } from "./bridge/DisplayerBridge";
-import { registerSDKBridge, sdkNameSpace } from "./bridge/SDKBridge";
-import { registerBridge } from "./utils/Funs";
-import { logger } from "./utils/Logger";
-import { playerNameSpace, playerStateNameSpace } from "./bridge/PlayerBridge";
-import { roomNamespace, pptNamespace, roomSyncNamespace, roomStateNamespace } from "./bridge/RoomBridge";
+import { registerSDKBridge } from "./bridge/SDKBridge";
 
 ReactDOM.render(
   <App />,
@@ -34,12 +29,6 @@ function setBackgroundColor(r: number, g: number, b: number, a?: number) {
 }
 
 registerSDKBridge();
-registerBridge([
-  sdkNameSpace,
-  displayerNameSpace, asyncDisplayerNameSpace,
-  roomNamespace, pptNamespace, roomSyncNamespace, roomStateNamespace,
-  playerNameSpace, playerStateNameSpace
-], logger);
 
 window.registerApp = WindowManager.register;
 window.setBackgroundColor = setBackgroundColor;

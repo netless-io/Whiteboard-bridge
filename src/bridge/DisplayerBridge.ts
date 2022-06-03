@@ -2,7 +2,7 @@ import dsBridge from "dsbridge";
 import { Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerState, ScenePathType, SceneMap, WhiteScene } from "white-web-sdk";
 import { convertBound } from "../utils/BoundConvert";
 import html2canvas from "html2canvas";
-import { isRoom } from "../utils/Funs";
+import { addBridgeLogHook, isRoom } from "../utils/Funs";
 import { NativeCameraBound } from "../utils/ParamTypes";
 import { Event as AkkoEvent } from "white-web-sdk";
 import { IframeBridge } from "@netless/iframe-bridge";
@@ -16,12 +16,13 @@ export type NativeDisplayerState = DisplayerState & {
     windowBoxState: TeleBoxState;
 }
 
-export const displayerNameSpace = "displayer";
-export const asyncDisplayerNameSpace = "displayerAsync";
+const displayerNameSpace = "displayer";
+const asyncDisplayerNameSpace = "displayerAsync";
 
 export function registerDisplayerBridge(aDisplayer: Displayer) {
     dsBridge.register(displayerNameSpace, new DisplayerBridge(aDisplayer));
     dsBridge.registerAsyn(asyncDisplayerNameSpace, new AsyncDisplayerBridge(aDisplayer));
+    addBridgeLogHook([displayerNameSpace, asyncDisplayerNameSpace], logger);
 }
 
 function urlContentToDataUri(url) {

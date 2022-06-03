@@ -16,7 +16,7 @@ import {logger, enableReport} from "../utils/Logger";
 import {convertBound} from "../utils/BoundConvert";
 import { addManagerListener } from "./Manager";
 import { RoomCallbackHandler } from "./RoomCallbackHandler";
-import { createPageState } from "../utils/Funs";
+import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { lastSchedule, ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
 import CombinePlayerFactory from "@netless/combine-player";
 import { registerBridgeRoom } from "./RoomBridge";
@@ -43,10 +43,11 @@ export function setWhiteboardDivGetter(aGetter: ()=>(HTMLElement)) {
     divRef = aGetter;
 }
 
-export const sdkNameSpace = "sdk";
+const sdkNameSpace = "sdk";
 
 export function registerSDKBridge() {
     dsBridge.registerAsyn(sdkNameSpace, new SDKBridge());
+    addBridgeLogHook([sdkNameSpace], logger);
 }
 
 function removeBind() {

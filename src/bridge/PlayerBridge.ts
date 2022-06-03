@@ -3,9 +3,11 @@ import { ObserverMode, Player, PlayerCallbacks, PlayerPhase, PlayerSeekingResult
 import { registerDisplayerBridge } from "./DisplayerBridge";
 import { CombinePlayer, PublicCombinedStatus } from "@netless/combine-player";
 import { ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
+import { addBridgeLogHook } from "../utils/Funs";
+import { logger } from "../utils/Logger";
 
-export const playerNameSpace = "player";
-export const playerStateNameSpace = "player.state";
+const playerNameSpace = "player";
+const playerStateNameSpace = "player.state";
 
 export function registerPlayerBridge(aPlayer: Player,
     aCombinePlayer: CombinePlayer | undefined,
@@ -18,6 +20,7 @@ export function registerPlayerBridge(aPlayer: Player,
 
     dsBridge.registerAsyn(playerNameSpace, new PlayerAsyncBridge(aPlayer, aCombinePlayer));
     dsBridge.register(playerStateNameSpace, new PlayerStateBridge(aPlayer, aCombinePlayer));
+    addBridgeLogHook([playerNameSpace, playerStateNameSpace], logger);
 
     if (aCombinePlayer) {
         aCombinePlayer.setOnStatusChange((status, message) => {
