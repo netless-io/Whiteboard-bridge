@@ -44,16 +44,14 @@ function makeSlideParams(scenes: SceneDefinition[]): {
     taskId: string;
     url: string;
 } {
-    const scenesWithoutPPT: SceneDefinition[] = [];
+    const scenesWithoutPPT: SceneDefinition[] = scenes.map(v => { return {name: v.name}});
     let taskId = "";
     let url = "";
 
-    // e.g. "ppt(x)://cdn/prefix/dynamicConvert/{taskId}/1.slide"
+    // e.g. "ppt(x)://prefix/dynamicConvert/{taskId}/1.slide"
     const pptSrcRE = /^pptx?(?<prefix>:\/\/\S+?dynamicConvert)\/(?<taskId>\w+)\//;
 
-    for (const { name, ppt } of scenes) {
-        // make sure scenesWithoutPPT.length === scenes.length
-        scenesWithoutPPT.push({ name });
+    for (const { ppt } of scenes) {
 
         if (!ppt || !ppt.src.startsWith("ppt")) {
             continue;
