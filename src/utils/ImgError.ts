@@ -10,8 +10,11 @@ export function hookCreateElement() {
     document.createElement = function(tagName: string, options?: ElementCreationOptions): HTMLElement {
         const element = f.call(this, tagName, options); 
         if (element.nodeName === "IMG") {
-            // TODO: 在适当的时机，移除监听事件
             element.addEventListener("error", imageError, {once: true});
+            element.addEventListener("unload", () => {
+                // TODO: test me
+                element.removeEventListener("error", imageError);
+            });
         }
         return element;
     }
