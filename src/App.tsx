@@ -1,11 +1,11 @@
 import React, { useEffect, useRef } from "react";
-import { AsyncModuleLoadMode, setAsyncModuleLoadMode } from "white-web-sdk";
 import { globalErrorEvent, postCustomMessage } from "./utils/Funs";
 import { setWhiteboardDivGetter } from "./bridge/SDKBridge";
 import "@netless/window-manager/dist/style.css";
 import "./App.css";
 import 'video.js/dist/video-js.css';
-import { whiteboardContainerId } from ".";
+
+export const whiteboardContainerId = "whiteboard-container";
 
 export default function App() {
     useEffect(()=> {
@@ -15,7 +15,6 @@ export default function App() {
         }
     }, []);
 
-    setAsyncModuleLoadMode(AsyncModuleLoadMode.StoreAsBase64);
     window.addEventListener("error", globalErrorEvent);
     window.addEventListener("message", postCustomMessage);
 

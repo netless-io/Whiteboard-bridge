@@ -8,7 +8,7 @@ import { Event as AkkoEvent } from "white-web-sdk";
 import { IframeBridge } from "@netless/iframe-bridge";
 import { TeleBoxState } from "@netless/telebox-insider";
 import { PageState } from "@netless/window-manager";
-import { whiteboardContainerId } from "..";
+import { whiteboardContainerId } from "../App";
 import { logger } from "../utils/Logger";
 
 export type NativeDisplayerState = DisplayerState & {
@@ -37,6 +37,17 @@ function urlContentToDataUri(url) {
         })
         );
 }
+
+function setBackgroundColor(r: number, g: number, b: number, a?: number) {
+    const div = document.getElementById(whiteboardContainerId);
+    if (div) {
+        const color = (a === 1 || a === undefined) ? `rgb(${r}, ${g}, ${b})` : `rgb(${r}, ${g}, ${b})`;
+        div.style.background = color;
+    } else {
+        console.log(whiteboardContainerId, "not exist");
+    }
+}
+window.setBackgroundColor = setBackgroundColor;
 
 function screenshot(scenePath: string, fn: (scenePath: string, div: HTMLElement, width: number, height: number) => void, responseCallback: any) {
     const div = document.createElement("div");

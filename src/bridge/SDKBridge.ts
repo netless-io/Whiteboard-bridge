@@ -2,7 +2,7 @@ import { hookCreateElement } from '../utils/ImgError';
 import {CursorTool} from "@netless/cursor-tool";
 import dsBridge from "dsbridge";
 import { NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams } from "../utils/ParamTypes";
-import {WhiteWebSdk, Room, Player, createPlugins, PlayerPhase} from "white-web-sdk";
+import {WhiteWebSdk, Room, Player, createPlugins, PlayerPhase, setAsyncModuleLoadMode, AsyncModuleLoadMode} from "white-web-sdk";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
 import {videoPlugin2} from "@netless/white-video-plugin2";
@@ -38,6 +38,8 @@ let divRef: ()=>(HTMLElement | undefined);
 
 const textareaCSSId = "whiteboard-native-css"
 const nativeFontFaceCSS = "whiteboard-native-font-face";
+
+setAsyncModuleLoadMode(AsyncModuleLoadMode.StoreAsBase64);
 
 export function setWhiteboardDivGetter(aGetter: ()=>(HTMLElement)) {
     divRef = aGetter;
