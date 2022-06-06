@@ -1,11 +1,11 @@
-import dsBridge from "dsbridge";
-import { ImageInformation, ViewMode, Room, SceneDefinition, MemberState, GlobalState } from "white-web-sdk";
-import { registerDisplayerBridge } from "./DisplayerBridge";
-import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
 import { Attributes as SlideAttributes } from "@netless/app-slide";
-import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { TeleBoxColorScheme } from '@netless/telebox-insider';
+import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
+import dsBridge from "dsbridge";
+import { GlobalState, ImageInformation, MemberState, Room, SceneDefinition, ViewMode } from "white-web-sdk";
+import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
+import { registerDisplayerBridge } from "./DisplayerBridge";
 
 const pptNamespace = "ppt";
 const roomSyncNamespace = "room.sync";
@@ -48,15 +48,13 @@ function makeSlideParams(scenes: SceneDefinition[]): {
     taskId: string;
     url: string;
 } {
-    const scenesWithoutPPT: SceneDefinition[] = scenes.map(v => { return {name: v.name}});
+    const scenesWithoutPPT: SceneDefinition[] = scenes.map(v => { return { name: v.name } });
     let taskId = "";
     let url = "";
 
     // e.g. "ppt(x)://prefix/dynamicConvert/{taskId}/1.slide"
     const pptSrcRE = /^pptx?(?<prefix>:\/\/\S+?dynamicConvert)\/(?<taskId>\w+)\//;
-
     for (const { ppt } of scenes) {
-
         if (!ppt || !ppt.src.startsWith("ppt")) {
             continue;
         }
@@ -455,11 +453,24 @@ export class RoomAsyncBridge {
     addApp = (kind: string, options: any, attributes: any, responseCallback: any) => {
         if (window.manager) {
             if (kind === "Slide") {
-                const opts = options as AddAppOptions
-                addSlideApp(opts.scenePath!, opts.title!, opts.scenes!)
-                    .then(appId => {
+                // 检查是否使用由 projector 转换服务
+                const { taskId, url } = attributes || {}
+                if (taskId && url) {
+                    window.manager.addApp({
+                        kind: kind,
+                        options: options as AddAppOptions,
+                        attributes: attributes as SlideAttributes
+                    }).then(appId => {
                         responseCallback(appId)
-                    })
+                    });
+                } else {
+                    // 兼容Canvas版本转换服务
+                    const opts = options as AddAppOptions
+                    addSlideApp(opts.scenePath!, opts.title!, opts.scenes!)
+                        .then(appId => {
+                            responseCallback(appId)
+                        })
+                }
             } else {
                 window.manager.addApp({
                     kind: kind,
