@@ -1,4 +1,4 @@
-import dsBridge from "dsbridge";
+import { register, registerAsyn, call } from ".";
 import { Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerState } from "white-web-sdk";
 import { convertBound } from "../utils/BoundConvert";
 import html2canvas from "html2canvas";
@@ -20,8 +20,8 @@ const displayerNameSpace = "displayer";
 const asyncDisplayerNameSpace = "displayerAsync";
 
 export function registerDisplayerBridge(aDisplayer: Displayer) {
-    dsBridge.register(displayerNameSpace, new DisplayerBridge(aDisplayer));
-    dsBridge.registerAsyn(asyncDisplayerNameSpace, new AsyncDisplayerBridge(aDisplayer));
+    register(displayerNameSpace, new DisplayerBridge(aDisplayer));
+    registerAsyn(asyncDisplayerNameSpace, new AsyncDisplayerBridge(aDisplayer));
     addBridgeLogHook([displayerNameSpace, asyncDisplayerNameSpace], logger);
 }
 
@@ -181,9 +181,9 @@ export class DisplayerBridge {
                 return { uuid, eventName: evt.event, payload: evt.payload, scope: evt.scope, authorId: evt.authorId };
             });
             if (isRoom(this.aDisplayer)) {
-                dsBridge.call("room.fireHighFrequencyEvent", JSON.stringify(nativeEvts));
+                call("room.fireHighFrequencyEvent", JSON.stringify(nativeEvts));
             } else {
-                dsBridge.call("player.fireHighFrequencyEvent", JSON.stringify(nativeEvts));
+                call("player.fireHighFrequencyEvent", JSON.stringify(nativeEvts));
             }
         }, interval);
     }
@@ -199,9 +199,9 @@ export class DisplayerBridge {
                 authorId: evt.authorId,
             };
             if (isRoom(this.aDisplayer)) {
-                dsBridge.call("room.fireMagixEvent", JSON.stringify(nativeEvt));
+                call("room.fireMagixEvent", JSON.stringify(nativeEvt));
             } else {
-                dsBridge.call("player.fireMagixEvent", JSON.stringify(nativeEvt));
+                call("player.fireMagixEvent", JSON.stringify(nativeEvt));
             }
         });
     }

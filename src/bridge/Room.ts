@@ -6,6 +6,7 @@ import { GlobalState, ImageInformation, MemberState, Room, SceneDefinition, View
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
 import { registerDisplayerBridge } from "./Displayer";
+import { register, registerAsyn } from ".";
 
 const pptNamespace = "ppt";
 const roomSyncNamespace = "room.sync";
@@ -18,12 +19,11 @@ export function registerBridgeRoom(aRoom: Room) {
 
     // FIXME:同步方法尽量还是放在同步方法里。
     // 由于 Android 不方便改，暂时只把新加的 get 方法放在此处。dsbridge 注册时，同一个注册内容，会被覆盖，而不是合并。
-    dsBridge.register(roomNamespace, new RoomBridge());
-    dsBridge.registerAsyn(roomNamespace, new RoomAsyncBridge(aRoom));
-
-    dsBridge.register(pptNamespace, new RoomPPTBridge(aRoom));
-    dsBridge.register(roomSyncNamespace, new RoomSyncBridge(aRoom));
-    dsBridge.register(roomStateNamespace, new RoomStateBridge(aRoom));
+    register(roomNamespace, new RoomBridge());
+    registerAsyn(roomNamespace, new RoomAsyncBridge(aRoom));
+    register(pptNamespace, new RoomPPTBridge(aRoom));
+    register(roomSyncNamespace, new RoomSyncBridge(aRoom));
+    register(roomStateNamespace, new RoomStateBridge(aRoom));
 
     addBridgeLogHook([roomNamespace, pptNamespace, roomSyncNamespace, roomStateNamespace], logger);
 }

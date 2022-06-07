@@ -1,6 +1,6 @@
 import { hookCreateElement } from '../utils/ImgError';
 import {CursorTool} from "@netless/cursor-tool";
-import dsBridge from "dsbridge";
+import { registerAsyn } from '.';
 import { NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams } from "../utils/ParamTypes";
 import {WhiteWebSdk, Room, Player, createPlugins, PlayerPhase, setAsyncModuleLoadMode, AsyncModuleLoadMode} from "white-web-sdk";
 import {videoPlugin} from "@netless/white-video-plugin";
@@ -48,7 +48,7 @@ export function setWhiteboardDivGetter(aGetter: ()=>(HTMLElement)) {
 const sdkNameSpace = "sdk";
 
 export function registerSDKBridge() {
-    dsBridge.registerAsyn(sdkNameSpace, new SDKBridge());
+    registerAsyn(sdkNameSpace, new SDKBridge());
     addBridgeLogHook([sdkNameSpace], logger);
 }
 
