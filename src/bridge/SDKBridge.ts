@@ -83,7 +83,7 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
 }
 
 class SDKBridge {
-    newWhiteSdk(config: NativeSDKConfig) {
+    newWhiteSdk = (config: NativeSDKConfig) => {
         const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
             const modifyUrl: string = sdkCallbackHandler.onUrlInterrupter(url);
             if (modifyUrl.length > 0) {
@@ -189,7 +189,7 @@ class SDKBridge {
         }
     }
 
-    joinRoom(nativeParams: NativeJoinRoomParams, responseCallback: any) {
+    joinRoom = (nativeParams: NativeJoinRoomParams, responseCallback: any) => {
         if (!sdk) {
             responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
             return;
@@ -248,7 +248,7 @@ class SDKBridge {
         });
     }
 
-    replayRoom(nativeParams: NativeReplayParams, responseCallback: any) {
+    replayRoom = (nativeParams: NativeReplayParams, responseCallback: any) => {
         // nativeReplayParams = nativeParams;
         if (!sdk) {
             responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
@@ -317,7 +317,7 @@ class SDKBridge {
         });
     }
 
-    isPlayable(nativeReplayParams: NativeReplayParams, responseCallback: any) {
+    isPlayable = (nativeReplayParams: NativeReplayParams, responseCallback: any) => {
         if (!sdk) {
             responseCallback(false);
             return;
@@ -331,7 +331,7 @@ class SDKBridge {
         })
     }
 
-    asyncInsertFontFaces(fontFaces: any[], responseCallback: any) {
+    asyncInsertFontFaces = (fontFaces: any[], responseCallback: any) => {
         for (const f of fontFaces) {
             const fontWeight = f["font-weight"];
             const fontStyle = f["font-style"];
@@ -350,8 +350,7 @@ class SDKBridge {
         }
     }
 
-    updateNativeFontFaceCSS(fontFaces: any[]) {
-        logger("insertFontFaces", fontFaces);
+    updateNativeFontFaceCSS = (fontFaces: any[]) => {
         let sheet = document.getElementById(nativeFontFaceCSS);
         if (!sheet) {
             sheet = document.createElement("style");
@@ -375,8 +374,7 @@ class SDKBridge {
         sheet.innerHTML = fontCss.join("\n");
     }
 
-    updateNativeTextareaFont(fonts: string[]) {
-        logger("updateTextFont", fonts);
+    updateNativeTextareaFont = (fonts: string[]) => {
         let sheet = document.getElementById(textareaCSSId);
         if (!sheet) {
             sheet = document.createElement("style");
@@ -391,7 +389,7 @@ class SDKBridge {
         }`;
     }
 
-    registerApp(para: AppRegisterParams, responseCallback: any) {
+    registerApp = (para: AppRegisterParams, responseCallback: any) => {
         if (para.javascriptString) {
             let variable = para.variable!;
             let src = Function(`
