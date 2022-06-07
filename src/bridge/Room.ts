@@ -5,7 +5,7 @@ import dsBridge from "dsbridge";
 import { GlobalState, ImageInformation, MemberState, Room, SceneDefinition, ViewMode } from "white-web-sdk";
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
-import { registerDisplayerBridge } from "./DisplayerBridge";
+import { registerDisplayerBridge } from "./Displayer";
 
 const pptNamespace = "ppt";
 const roomSyncNamespace = "room.sync";

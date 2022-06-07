@@ -1,4 +1,4 @@
-import { sdkCallbackHandler } from '../bridge/SDKBridge';
+import { sdkCallbackHandler } from '../bridge/SDK';
 
 let reportLog = false;
 

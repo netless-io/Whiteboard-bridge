@@ -59,3 +59,10 @@ class Bridge {
 }
 const bridge = new Bridge();
 export default bridge;
+
+window.onmessage = function (event) {
+    // console.log(event);
+    // alert(event.data);
+    // alert(JSON.stringify(event.data));
+    bridge.recv(event.data);
+}

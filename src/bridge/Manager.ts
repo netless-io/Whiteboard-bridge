@@ -1,7 +1,7 @@
 import { WindowManager } from "@netless/window-manager";
 import "../utils/ParamTypes";
-import { RoomCallbackHandler } from "./RoomCallbackHandler";
-import { ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
+import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
+import { ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
 import dsBridge from "dsbridge";
 
 export function addManagerListener(manager: WindowManager, logger: (funName: string, ...param: any[]) => void, handler: RoomCallbackHandler | ReplayerCallbackHandler): void {

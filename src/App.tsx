@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { globalErrorEvent, postCustomMessage } from "./utils/Funs";
-import { setWhiteboardDivGetter } from "./bridge/SDKBridge";
+import { setWhiteboardDivGetter } from "./bridge/SDK";
 import "@netless/window-manager/dist/style.css";
 import "./App.css";
 import 'video.js/dist/video-js.css';
@@ -23,13 +23,6 @@ export default function App() {
 
     const getDiv = () => { return divRef.current as unknown as HTMLElement };
     setWhiteboardDivGetter(getDiv);
-
-    window.onmessage = function (event) {
-        // console.log(event);
-        // alert(event.data);
-        // alert(JSON.stringify(event.data));
-        bridge.recv(event.data);
-    }
 
     return (
         <div id={whiteboardContainerId} ref={divRef} style={fullStyle}></div>
