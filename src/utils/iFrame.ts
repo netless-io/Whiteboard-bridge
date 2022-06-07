@@ -3,11 +3,11 @@ export function postIframeMessage(payload: {eventName: string, params?: any[]}, 
     const iframes = document.getElementsByTagName("iframe");
     if (iframes.length > 0 && iframes[0].contentWindow) {
         const iframe = iframes[0];
-        logger?.("postmessage", message);
+        // logger?.("postmessage", message);
         iframe.contentWindow!.postMessage(message, "*");
     } else if (iframes.length == 0) {
-        logger?.("postmessage", "no frames exist");
+        logger?.("postmessage fail", "no frames exist");
     } else {
-        logger?.("postmessage", "no conentWindow");
+        logger?.("postmessage fail", "no conentWindow");
     }
 }

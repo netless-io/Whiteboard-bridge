@@ -3,9 +3,7 @@ import {Displayer, Room, Player, SceneState} from "white-web-sdk";
 import { sdkCallbackHandler } from "../bridge/SDKBridge";
 
 export function addBridgeLogHook(names: string[], logger: (funName: string, ...params: any[]) => void) {
-
     const async = window._dsaf;
-    
     const async_obj = async["_obs"] || {};
     for (const name of Object.getOwnPropertyNames(async_obj)) {
         if (names.includes(name)) {

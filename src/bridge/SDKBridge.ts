@@ -96,8 +96,6 @@ class SDKBridge {
 
         enableReport(!!log);
         nativeConfig = config;
-        
-        logger("newWhiteSdk", config);
 
         if (__platform) {
             window.__platform = __platform;
@@ -197,7 +195,6 @@ class SDKBridge {
             return;
         }
         removeBind();
-        logger("joinRoom", nativeParams);
         const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, ...joinRoomParams} = nativeParams;
         const {useMultiViews} = nativeConfig!;
         const invisiblePlugins = [
@@ -260,7 +257,6 @@ class SDKBridge {
 
         const {step = 500, cameraBound, mediaURL, windowParams, ...replayParams} = nativeParams;
         removeBind();
-        logger("replayRoom", nativeParams);
         const {useMultiViews} = nativeConfig!;
 
         let replayCallbackHanlder: ReplayerCallbackHandler;
@@ -336,7 +332,6 @@ class SDKBridge {
     }
 
     asyncInsertFontFaces(fontFaces: any[], responseCallback: any) {
-        logger("asyncInsertFontFaces", fontFaces);
         for (const f of fontFaces) {
             const fontWeight = f["font-weight"];
             const fontStyle = f["font-style"];
