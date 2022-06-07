@@ -99,9 +99,9 @@ export class DisplayerBridge {
             const iframe = iframes[0];
             iframe.contentWindow!.postMessage(message, "*");
         } else if (iframes.length == 0) {
-            logger("postmessage", "no frames exist");
+            logger("postmessage fail", "no frames exist");
         } else {
-            logger("postmessage", "no content Window");
+            logger("postmessage fail", "no content Window");
         }
     }
 
@@ -170,7 +170,6 @@ export class DisplayerBridge {
 
     setBackgroundColor = (r: number, g: number, b: number, a?: number) => {
         const div = document.getElementById(whiteboardContainerId)!;
-        logger("setBackgroundColor native", r, g, b, a);
         const color = (a === 1 || a === undefined) ? `rgb(${r}, ${g}, ${b})` : `rgb(${r}, ${g}, ${b})`;
         div.style.background = color;
     }
