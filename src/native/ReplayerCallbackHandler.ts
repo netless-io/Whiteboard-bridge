@@ -1,4 +1,4 @@
-import dsBridge from "dsbridge";
+import { call } from "../bridge";
 import { PlayerPhase, Room, PlayerState } from "white-web-sdk";
 import { postIframeMessage } from '../utils/iFrame';
 import { logger } from "../utils/Logger";
@@ -41,7 +41,7 @@ export class ReplayerCallbackHandler {
 
             const handle = (phase: PlayerPhase) => {
                 lastSchedule.time = 0;
-                dsBridge.call("player.onPhaseChanged", phase);
+                call("player.onPhaseChanged", phase);
                 if (enableIFramePlugin) {
                     postIframeMessage({ eventName: "onPhaseChanged", params: [phase] }, logger);
                 }
@@ -64,8 +64,8 @@ export class ReplayerCallbackHandler {
         // playerState 在此时才可读。这个时候需要把完整的 playerState 传递给 native，保证：
         // 1. native 端同步 API 状态的完整性
         // 2. Android 目前 playState diff 的正确性。
-        dsBridge.call("player.onPlayerStateChanged", JSON.stringify(window.player!.state));
-        dsBridge.call("player.onLoadFirstFrame");
+        call("player.onPlayerStateChanged", JSON.stringify(window.player!.state));
+        call("player.onLoadFirstFrame");
         if (enableIFramePlugin) {
             postIframeMessage({eventName: "onLoadFirstFrame", params: []}, logger);
         }
@@ -76,21 +76,21 @@ export class ReplayerCallbackHandler {
         if (window.manager && modifyState.sceneState) {
             return;
         }
-        dsBridge.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
+        call("player.onPlayerStateChanged", JSON.stringify(modifyState));
         if (enableIFramePlugin) {
             postIframeMessage({eventName: "onPlayerStateChanged", params: [modifyState]}, logger);
         }
     }
 
     onStoppedWithError = (error) => {
-        dsBridge.call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
+        call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
         if (enableIFramePlugin) {
             postIframeMessage({eventName: "onStoppedWithError", params: [error]}, logger);
         }
     }
 
     onProgressTimeChanged = (scheduleTime) => {
-        limitScheduleCallback(() => {dsBridge.call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
+        limitScheduleCallback(() => {call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
         if (enableIFramePlugin) {
             postIframeMessage({eventName: "onProgressTimeChanged", params: [scheduleTime]}, logger);
         }
@@ -102,6 +102,6 @@ export class ReplayerCallbackHandler {
     }
 
     onCatchErrorWhenRender = (err: Error) => {
-        dsBridge.call("player.onCatchErrorWhenRender", {error: err.message});
+        call("player.onCatchErrorWhenRender", {error: err.message});
     }
 }

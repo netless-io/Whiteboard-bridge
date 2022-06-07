@@ -1,25 +1,25 @@
 import { MediaType } from "white-web-sdk";
-import dsBridge from "dsbridge";
+import { call } from "../bridge"
 
 export class SDKCallbackHandler {
     onPostMessage = (message: string) => {
-        dsBridge.call("sdk.postMessage", message);
+        call("sdk.postMessage", message);
     }
 
     onThrowError = (message: any)=> {
-        dsBridge.call("sdk.throwError", message);
+        call("sdk.throwError", message);
     }
 
     onLogger = (args: any) => {
-        dsBridge.call("sdk.logger", args);
+        call("sdk.logger", args);
     }
 
     onUrlInterrupter = (url: string): string => {
-        return dsBridge.call("sdk.urlInterrupter", url);
+        return call("sdk.urlInterrupter", url);
     }
 
     onSetupFail = (e: Error) => {
-        dsBridge.call("sdk.setupFail", {message: e.message, jsStack: e.stack});
+        call("sdk.setupFail", {message: e.message, jsStack: e.stack});
     }
 
     onPPTLoadProgress = (uuid: string, progress: number) => {
@@ -28,10 +28,10 @@ export class SDKCallbackHandler {
 
     onPPTMediaPlay = (shapeId: string, type: MediaType) => {
         console.log('onPPTMediaPlay');
-        dsBridge.call("sdk.onPPTMediaPlay", {shapeId, type});
+        call("sdk.onPPTMediaPlay", {shapeId, type});
     }
     
     onPPTMediaPause = (shapeId: string, type: MediaType) => {
-        dsBridge.call("sdk.onPPTMediaPause", {shapeId, type});
+        call("sdk.onPPTMediaPause", {shapeId, type});
     }
 }
