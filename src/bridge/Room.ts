@@ -238,6 +238,22 @@ export class RoomAsyncBridge {
         }
     }
 
+    removePage = (index: number) => {
+        if (window.manager) {
+            window.manager.removePage(index)
+        } else {
+            const scenes = this.room.state.sceneState.scenes
+            if (index < scenes.length) {
+                const dir = this.room.state.sceneState.contextPath
+                // 根场景时 contextPath 为 "/", 其他场景示例 "/context/Path"
+                const dirWithSlash = dir.endsWith("/") ? dir : dir + "/";
+                this.room.removeScenes(dirWithSlash + scenes[index].name);
+            } else {
+                logger("removePage warning", "index out of range");
+            }
+        }
+    }
+
     nextPage = (responseCallback: any) => {
         if (window.manager) {
             window.manager.nextPage().then((result) => {
