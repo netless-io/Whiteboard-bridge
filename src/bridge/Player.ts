@@ -1,10 +1,10 @@
-import dsBridge from "dsbridge";
 import { ObserverMode, Player, PlayerPhase, PlayerSeekingResult } from "white-web-sdk";
 import { registerDisplayerBridge } from "./Displayer";
 import { CombinePlayer, PublicCombinedStatus } from "@netless/combine-player";
 import { ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
 import { addBridgeLogHook } from "../utils/Funs";
 import { logger } from "../utils/Logger";
+import { register, registerAsyn } from ".";
 
 const playerNameSpace = "player";
 const playerStateNameSpace = "player.state";
@@ -18,8 +18,8 @@ export function registerPlayerBridge(aPlayer: Player,
     window.combinePlayer = aCombinePlayer;
     registerDisplayerBridge(aPlayer);
 
-    dsBridge.registerAsyn(playerNameSpace, new PlayerAsyncBridge(aPlayer, aCombinePlayer));
-    dsBridge.register(playerStateNameSpace, new PlayerStateBridge(aPlayer, aCombinePlayer));
+    registerAsyn(playerNameSpace, new PlayerAsyncBridge(aPlayer, aCombinePlayer));
+    register(playerStateNameSpace, new PlayerStateBridge(aPlayer, aCombinePlayer));
     addBridgeLogHook([playerNameSpace, playerStateNameSpace], logger);
 
     if (aCombinePlayer) {
