@@ -1,8 +1,8 @@
 import {logger} from '../utils/Logger'
 import dsBridge from "dsbridge";
 import {createPageState} from '../utils/Funs'
-import {RoomPhase, MediaType, RoomState} from "white-web-sdk";
-import {NativeDisplayerState} from './DisplayerBridge';
+import {RoomPhase, RoomState} from "white-web-sdk";
+import {NativeDisplayerState} from '../bridge/Displayer';
 
 const reconnectingTimeout = 45000;
 
