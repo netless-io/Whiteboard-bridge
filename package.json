@@ -39,7 +39,6 @@
     "promise.any": "^2.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
-    "react-native-uuid": "^2.0.1",
     "whatwg-fetch": "^3.0.0",
     "white-web-sdk": "2.16.24"
   },
@@ -54,6 +53,7 @@
     "@types/css-font-loading-module": "^0.0.4",
     "@types/react": "^16.9.13",
     "@types/react-dom": "^16.9.4",
+    "@types/uuid": "^7.0.3",
     "babel-loader": "^8.0.6",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^3.2.0",
