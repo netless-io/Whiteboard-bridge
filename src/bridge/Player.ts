@@ -1,8 +1,8 @@
 import dsBridge from "dsbridge";
-import { ObserverMode, Player, PlayerCallbacks, PlayerPhase, PlayerSeekingResult, PlayerState, Room } from "white-web-sdk";
-import { registerDisplayerBridge } from "./DisplayerBridge";
+import { ObserverMode, Player, PlayerPhase, PlayerSeekingResult } from "white-web-sdk";
+import { registerDisplayerBridge } from "./Displayer";
 import { CombinePlayer, PublicCombinedStatus } from "@netless/combine-player";
-import { ReplayerCallbackHandler } from "./ReplayerCallbackHandler";
+import { ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
 import { addBridgeLogHook } from "../utils/Funs";
 import { logger } from "../utils/Logger";
 

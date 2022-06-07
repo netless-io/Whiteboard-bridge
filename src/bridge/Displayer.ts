@@ -1,5 +1,5 @@
 import dsBridge from "dsbridge";
-import { Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerState, ScenePathType, SceneMap, WhiteScene } from "white-web-sdk";
+import { Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerState } from "white-web-sdk";
 import { convertBound } from "../utils/BoundConvert";
 import html2canvas from "html2canvas";
 import { addBridgeLogHook, isRoom } from "../utils/Funs";

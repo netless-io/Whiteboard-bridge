@@ -1,8 +1,8 @@
 import dsBridge from "dsbridge";
-import { PlayerPhase, Room, PlayerState, MediaType } from "white-web-sdk";
+import { PlayerPhase, Room, PlayerState } from "white-web-sdk";
 import { postIframeMessage } from '../utils/iFrame';
 import { logger } from "../utils/Logger";
-import { NativeDisplayerState } from './DisplayerBridge';
+import { NativeDisplayerState } from '../bridge/Displayer';
 
 export const lastSchedule = {
     time: 0,

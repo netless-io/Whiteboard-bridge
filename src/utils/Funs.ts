@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import {Displayer, Room, Player, SceneState} from "white-web-sdk";
-import { sdkCallbackHandler } from "../bridge/SDKBridge";
+import { sdkCallbackHandler } from "../bridge/SDK";
 
 export function addBridgeLogHook(names: string[], logger: (funName: string, ...params: any[]) => void) {
     const async = window._dsaf;

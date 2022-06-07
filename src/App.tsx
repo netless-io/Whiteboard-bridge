@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { globalErrorEvent, postCustomMessage } from "./utils/Funs";
-import { setWhiteboardDivGetter } from "./bridge/SDKBridge";
+import { setWhiteboardDivGetter } from "./bridge/SDK";
 import "@netless/window-manager/dist/style.css";
 import "./App.css";
 import 'video.js/dist/video-js.css';
