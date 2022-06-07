@@ -1,10 +1,11 @@
-import uuid from 'uuid';
+import {v4 as uuid} from 'uuid';
 class Bridge {
     methods: Map<string, any> = new Map();
+    asyncMethods: Map<string, any> = new Map();
     queue: Map<string|number[], any> = new Map();
     public call(method: string, args): Promise<any> {
         return new Promise((resolve, reject) => {
-            const actionId = uuid.v4();
+            const actionId = uuid();
             const protocol = 'evt|' + actionId + '|0|' + method + '|' + args;
             this.queue.set(actionId, { ack: false, resolve: resolve, reject: reject });
             // call out
@@ -14,6 +15,10 @@ class Bridge {
     }
     public register(name: string, fun: any) {
         this.methods.set(name, fun);
+    }
+
+    public registerAsyn(name: string, fun: any) {
+        this.asyncMethods.set(name, fun);
     }
 
     public recv(protocol: string) {
@@ -28,6 +33,19 @@ class Bridge {
                 case 'req':
                     if (this.methods.has(methodOrRet)) {
                         let fun = this.methods.get(methodOrRet);
+                        try {
+                            const ret = fun.apply(argsOrErr);
+                            const protocolForAck = 'ack|' + action + '|0|' + ret;
+                            // call out
+                            (window as any).ReactNativeWebView.postMessage(protocolForAck);
+                        } catch (e) {
+                            const protocolForAck =
+                                'ack|' + action + '|0|undefined|' + JSON.stringify(e);
+                            // call out
+                            (window as any).ReactNativeWebView.postMessage(protocolForAck);
+                        }
+                    } else if (this.asyncMethods.has(methodOrRet)) {
+                        let fun = this.asyncMethods.get(methodOrRet);
                         try {
                             const ret = fun.apply(argsOrErr);
                             const protocolForAck = 'ack|' + action + '|0|' + ret;
