@@ -1177,10 +1177,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/window-manager@0.4.26":
-  version "0.4.26"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.26.tgz#f555d5a5abce32efd6adaad3aa882f8c977c6eed"
-  integrity sha512-DOHyxogcMOHTw7t2JjNpbChzfwmRhAwq47DmoIqemcBVEdDnzIhNeyZx4Kx7ehZo8EIUduDXbo8sGyJ9v0eknw==
+"@netless/window-manager@^0.4.27":
+  version "0.4.27"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.27.tgz#2bd990cc27bf2c8da0d0d42f271a37359eb80c09"
+  integrity sha512-Rlc9mI4iCiB0dLFMmS0rDIgsXtaW/Xz+plAduGe1riSvYZyT7O82u6HRUwmb0gSk4jl3hv2qNK49SM/yvdTz/Q==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.2.26"
