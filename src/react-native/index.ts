@@ -5,10 +5,10 @@ class Bridge {
     public call(method: string, args): Promise<any> {
         return new Promise((resolve, reject) => {
             const actionId = uuid.v4();
-            const potocol = 'evt|' + actionId + '|0|' + method + '|' + args;
+            const protocol = 'evt|' + actionId + '|0|' + method + '|' + args;
             this.queue.set(actionId, { ack: false, resolve: resolve, reject: reject });
             // call out
-            (window as any).ReactNativeWebView.postMessage(potocol); 
+            (window as any).ReactNativeWebView.postMessage(protocol); 
         });
       
     }
@@ -16,9 +16,9 @@ class Bridge {
         this.methods.set(name, fun);
     }
 
-    public recv(potocol: string) {
-        if (typeof potocol == "string") {
-            let dser: string[] = potocol.split("|");
+    public recv(protocol: string) {
+        if (typeof protocol == "string") {
+            let dser: string[] = protocol.split("|");
             let type = dser[0];
             let action = dser[1];
             let object = dser[2];
@@ -30,14 +30,14 @@ class Bridge {
                         let fun = this.methods.get(methodOrRet);
                         try {
                             const ret = fun.apply(argsOrErr);
-                            const potocolForAck = 'ack|' + action + '|0|' + ret;
+                            const protocolForAck = 'ack|' + action + '|0|' + ret;
                             // call out
-                            (window as any).ReactNativeWebView.postMessage(potocolForAck);
+                            (window as any).ReactNativeWebView.postMessage(protocolForAck);
                         } catch (e) {
-                            const potocolForAck =
+                            const protocolForAck =
                                 'ack|' + action + '|0|undefined|' + JSON.stringify(e);
                             // call out
-                            (window as any).ReactNativeWebView.postMessage(potocolForAck);
+                            (window as any).ReactNativeWebView.postMessage(protocolForAck);
                         }
                     }
                     break;
