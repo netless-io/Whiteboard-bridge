@@ -1,4 +1,13 @@
+
 import dsbridge from "dsbridge";
+
+
+let bridge: any;
+if (process.env.PLATFORM === "rn") {
+	bridge = require("../react-native").default;
+	console.log(bridge);
+}
+window.bridge = bridge;
 
 interface bridge {
 	call(
@@ -31,6 +40,10 @@ export function call(
     args?: any,
     responseCallback?: (retValue: any) => void
 ): any {
+	if (bridge) {
+		bridge.call(handlerName, args, responseCallback);
+		return;
+	}
     return dsbridge.call(handlerName, args, responseCallback);
 }
 
@@ -39,9 +52,17 @@ export function register(
     handler: object | (() => any),
     async?: boolean
 ) {
+	if (bridge) {
+		bridge.register(handlerName, handler, async);
+		return;
+	}
     return dsbridge.register(handlerName, handler, async);
 }
 
 export function registerAsyn(handlerName: string, handler: object | (() => void)): void {
+	if (bridge) {
+		bridge.register(handlerName, handler, true);
+		return;
+	}
     return dsbridge.registerAsyn(handlerName, handler);
 }

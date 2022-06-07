@@ -10,7 +10,9 @@
   "scripts": {
     "bundle": "webpack",
     "start": "webpack-dev-server --mode development --host local-ip --hot --open",
+    "startRN": "export PLATFORM=rn && webpack-dev-server --mode development --host local-ip --hot --open",
     "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
+    "buildRn": "tsc && export PLATFORM=rn webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "check": "tsc",
     "cy:server": "webpack-dev-server --mode development --host localhost --port 8760",
