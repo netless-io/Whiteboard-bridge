@@ -1,4 +1,4 @@
-import uuid from 'react-native-uuid';
+import uuid from 'uuid';
 class Bridge {
     methods: Map<string, any> = new Map();
     queue: Map<string|number[], any> = new Map();
