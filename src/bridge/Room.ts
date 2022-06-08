@@ -225,23 +225,22 @@ export class RoomAsyncBridge {
 
     addPage = (params: AddPageParams, responseCallback?: any) => {
         if (window.manager) {
-            try {
-                window.manager.addPage(params).then(()=>{
-                    if (responseCallback) {
-                        responseCallback();
-                    }
-                })
-            } catch(e) {
+            window.manager.addPage(params)
+            .then(() => {
+                if (responseCallback) {
+                    responseCallback();
+                }
+            }).catch(e => {
                 if (responseCallback) {
                     return responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
                 }
-            }
+            });
         } else {
-            const dir = this.room.state.sceneState.contextPath
-            const after = params.after
+            const dir = this.room.state.sceneState.contextPath;
+            const after = params.after;
             if (after) {
-                const tIndex = this.room.state.sceneState.index + 1
-                this.room.putScenes(dir, [params.scene || {}], tIndex)
+                const tIndex = this.room.state.sceneState.index + 1;
+                this.room.putScenes(dir, [params.scene || {}], tIndex);
             } else {
                 this.room.putScenes(dir, [params.scene || {}]);
             }
@@ -255,14 +254,13 @@ export class RoomAsyncBridge {
 
     removePage = (index: number, responseCallback: any) => {
         if (window.manager) {
-            try {
-                window.manager.removePage(index)
-                .then(() => {
-                    responseCallback();
-                })
-            } catch(e) {
+            window.manager.removePage(index)
+            .then(() => {
+                responseCallback();
+            })
+            .catch(e => {
                 return responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
-            }
+            })
         } else {
             const scenes = this.room.state.sceneState.scenes
             if (index < scenes.length) {
