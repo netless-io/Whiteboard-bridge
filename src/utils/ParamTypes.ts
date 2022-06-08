@@ -69,6 +69,11 @@ export type AppRegisterParams = {
     };
 };
 
+// window manager 中 删除page的参数
+export type RemovePageParams = {
+    index?: number
+}
+
 export type NativeSDKConfig = {
     /** enableImgErrorCallback */
     enableImgErrorCallback?: boolean;
