@@ -7,6 +7,7 @@ import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
 import { registerDisplayerBridge } from "./Displayer";
 import { register, registerAsyn } from ".";
+import { RemovePageParams } from "../utils/ParamTypes";
 
 const pptNamespace = "ppt";
 const roomSyncNamespace = "room.sync";
@@ -252,23 +253,28 @@ export class RoomAsyncBridge {
         }
     }
 
-    removePage = (index: number, responseCallback: any) => {
+    removePage = (params: RemovePageParams, responseCallback: any) => {
         if (window.manager) {
-            window.manager.removePage(index)
-            .then(() => {
-                responseCallback();
+            window.manager.removePage(params.index)
+            .then(success => {
+                responseCallback(success);
             })
             .catch(e => {
                 return responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
             })
         } else {
-            const scenes = this.room.state.sceneState.scenes
+            const scenes = this.room.state.sceneState.scenes;
+            const index = params.index || this.room.state.sceneState.index;
+            if (scenes.length == 1) {
+                logger("removePage warning", "can't remove the last page");
+                return responseCallback(JSON.stringify({ __error: { message: "removePage warning, can't remove the last page"} }));
+            }
             if (index < scenes.length) {
                 const dir = this.room.state.sceneState.contextPath
                 // 根场景时 contextPath 为 "/", 其他场景示例 "/context/Path"
                 const dirWithSlash = dir.endsWith("/") ? dir : dir + "/";
                 this.room.removeScenes(dirWithSlash + scenes[index].name);
-                return responseCallback();
+                return responseCallback(true);
             } else {
                 logger("removePage warning", "index out of range");
                 return responseCallback(JSON.stringify({ __error: { message: 'removePage warning, index out of range'} }));
