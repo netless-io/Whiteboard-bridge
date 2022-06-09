@@ -48,7 +48,10 @@ export function setWhiteboardDivGetter(aGetter: ()=>(HTMLElement)) {
 const sdkNameSpace = "sdk";
 
 export function registerSDKBridge() {
-    registerAsyn(sdkNameSpace, new SDKBridge());
+    const sdk = new SDKBridge();
+    registerAsyn(sdkNameSpace, sdk);
+    (window as any).newWhiteSdk = sdk.newWhiteSdk;
+    (window as any).joinRoom = sdk.joinRoom;
     addBridgeLogHook([sdkNameSpace], logger);
 }
 
