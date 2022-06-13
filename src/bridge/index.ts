@@ -1,11 +1,10 @@
 
 import dsbridge from "dsbridge";
-
+import {RNBridge} from "@netless/webview-bridge";
 
 let bridge: any;
-if (process.env.PLATFORM === "rn") {
-	bridge = require("../react-native").default;
-	console.log(bridge);
+if ((window as any).ReactNativeWebView) {
+	bridge = RNBridge;
 }
 window.bridge = bridge;
 
