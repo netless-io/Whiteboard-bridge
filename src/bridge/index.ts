@@ -34,7 +34,7 @@ export function register(
 
 export function registerAsyn(handlerName: string, handler: object | (() => void)): void {
 	if (bridge) {
-		bridge.register(handlerName, handler, true);
+		bridge.registerAsyn(handlerName, handler, true);
 		return;
 	}
     return dsbridge.registerAsyn(handlerName, handler);
