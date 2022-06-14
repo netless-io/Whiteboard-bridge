@@ -108,8 +108,7 @@ module.exports = (env, argv) => {
     config.module.rules[0].exclude = /node_modules/;
   }
   config.plugins.push(new DefinePlugin({
-    'process.env.NODE_ENV': JSON.stringify(argv.mode),
-    'process.env.PLATFORM': JSON.stringify(process.env.PLATFORM),
+    'process.env.NODE_ENV': JSON.stringify(argv.mode)
   }))
   return config;
 }
