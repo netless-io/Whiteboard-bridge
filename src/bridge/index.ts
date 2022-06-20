@@ -1,12 +1,12 @@
 
 import dsbridge from "dsbridge";
-import {RNBridge} from "@netless/webview-bridge";
+import {RNBridge, Bridge} from "@netless/webview-bridge";
 
-let bridge: any;
+let bridge: Bridge;
 if ((window as any).ReactNativeWebView) {
 	bridge = RNBridge;
+	window.bridge = bridge;
 }
-window.bridge = bridge;
 
 export function call(
     handlerName: string,
@@ -26,7 +26,7 @@ export function register(
     async?: boolean
 ) {
 	if (bridge) {
-		bridge.register(handlerName, handler, async);
+		bridge.register(handlerName, handler);
 		return;
 	}
     return dsbridge.register(handlerName, handler, async);
@@ -34,7 +34,7 @@ export function register(
 
 export function registerAsyn(handlerName: string, handler: object | (() => void)): void {
 	if (bridge) {
-		bridge.registerAsyn(handlerName, handler, true);
+		bridge.registerAsyn(handlerName, handler);
 		return;
 	}
     return dsbridge.registerAsyn(handlerName, handler);
