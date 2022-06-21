@@ -1,7 +1,7 @@
 import { hookCreateElement } from '../utils/ImgError';
 import {CursorTool} from "@netless/cursor-tool";
 import { registerAsyn } from '.';
-import { NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams } from "../utils/ParamTypes";
+import { NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams } from "@netless/whiteboard-bridge-types";
 import {WhiteWebSdk, Room, Player, createPlugins, PlayerPhase, setAsyncModuleLoadMode, AsyncModuleLoadMode} from "white-web-sdk";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";

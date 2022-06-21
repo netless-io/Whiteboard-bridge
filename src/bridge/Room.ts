@@ -7,12 +7,7 @@ import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
 import { registerDisplayerBridge } from "./Displayer";
 import { register, registerAsyn } from ".";
-import { RemovePageParams } from "../utils/ParamTypes";
-
-const pptNamespace = "ppt";
-const roomSyncNamespace = "room.sync";
-const roomNamespace = "room";
-const roomStateNamespace = "room.state";
+import { pptNamespace, RemovePageParams, roomNamespace, roomStateNamespace, roomSyncNamespace } from "@netless/whiteboard-bridge-types";
 
 export function registerBridgeRoom(aRoom: Room) {
     window.room = aRoom;

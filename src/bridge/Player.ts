@@ -5,9 +5,7 @@ import { ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
 import { addBridgeLogHook } from "../utils/Funs";
 import { logger } from "../utils/Logger";
 import { register, registerAsyn } from ".";
-
-const playerNameSpace = "player";
-const playerStateNameSpace = "player.state";
+import { playerNameSpace, playerStateNameSpace } from "@netless/whiteboard-bridge-types";
 
 export function registerPlayerBridge(aPlayer: Player,
     aCombinePlayer: CombinePlayer | undefined,

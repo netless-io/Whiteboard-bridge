@@ -3,7 +3,7 @@ import { Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerSta
 import { convertBound } from "../utils/BoundConvert";
 import html2canvas from "html2canvas";
 import { addBridgeLogHook, isRoom } from "../utils/Funs";
-import { NativeCameraBound } from "../utils/ParamTypes";
+import type { NativeCameraBound } from "@netless/whiteboard-bridge-types";
 import { Event as AkkoEvent } from "white-web-sdk";
 import { IframeBridge } from "@netless/iframe-bridge";
 import { TeleBoxState } from "@netless/telebox-insider";

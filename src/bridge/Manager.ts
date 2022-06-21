@@ -1,5 +1,4 @@
 import { WindowManager } from "@netless/window-manager";
-import "../utils/ParamTypes";
 import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
 import { ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
 import { call } from ".";

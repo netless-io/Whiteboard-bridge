@@ -1,5 +1,5 @@
 import {CameraBound, ContentMode, contentModeScale, contentModeAspectFit, contentModeAspectFill, contentModeAspectFillScale, contentModeAspectFitScale, contentModeAspectFitSpace} from "white-web-sdk";
-import {NativeCameraBound, ContentModeType, ScaleMode} from "./ParamTypes";
+import {NativeCameraBound, ContentModeType, ScaleMode} from "@netless/whiteboard-bridge-types";
 
 export function convertBound(nativeBound?: NativeCameraBound): CameraBound | undefined {
     if (!nativeBound) {
