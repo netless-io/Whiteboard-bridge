@@ -27,7 +27,7 @@
     "@netless/iframe-bridge": "2.1.9",
     "@netless/synced-store": "0.0.2",
     "@netless/video-js-plugin": "0.3.8",
-    "@netless/webview-bridge": "^0.0.9",
+    "@netless/webview-bridge": "^0.0.10",
     "@netless/white-audio-plugin": "^1.2.4",
     "@netless/white-audio-plugin2": "^2.0.4",
     "@netless/white-video-plugin": "^1.2.4",
