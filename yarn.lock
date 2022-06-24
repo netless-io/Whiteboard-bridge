@@ -1157,10 +1157,10 @@
   resolved "https://registry.yarnpkg.com/@netless/video-js-plugin/-/video-js-plugin-0.3.8.tgz#d4b1ecab19890fa9d5502706f5d86c04379678d0"
   integrity sha512-xCLfL8ISjPD5XQbeGWT/pwKdWXqYXmaEXiP4jcX8oaR83+vJo463znIg2JW8EXHkTq7KRrYnZqqlQdI6It4L+A==
 
-"@netless/webview-bridge@^0.0.12":
-  version "0.0.12"
-  resolved "https://registry.yarnpkg.com/@netless/webview-bridge/-/webview-bridge-0.0.12.tgz#fd9e7246ba0fd5a4e305a7316e395a917cdf7c81"
-  integrity sha512-lYk8V3RNVgCUsReMsdqsDszPZQ26N/Fuof9wn2JPlWaOJ6h4/leP778J3LliAD0CrOxCSc4HVRAhoSswEnHr0w==
+"@netless/webview-bridge@^0.0.13":
+  version "0.0.13"
+  resolved "https://registry.yarnpkg.com/@netless/webview-bridge/-/webview-bridge-0.0.13.tgz#6056e3a5d2aa6171605efb2c7b831e4a70205dcf"
+  integrity sha512-LvLqsnRxl4GNd/GYslKjxbAEXpvL410LVV8xXLVGZyb11WElDBCSKOwy91ZrVwcn7k/y7TnFS95iSziAtekLMg==
 
 "@netless/white-audio-plugin2@^2.0.4":
   version "2.0.5"

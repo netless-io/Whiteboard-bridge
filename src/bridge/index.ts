@@ -1,10 +1,10 @@
 
 import dsbridge from "dsbridge";
-import {RNBridge, Bridge} from "@netless/webview-bridge";
+import {Bridge} from "@netless/webview-bridge";
 
 let rnBridge: Bridge;
 if ((window as any).ReactNativeWebView) {
-	rnBridge = RNBridge;
+	rnBridge = new Bridge();
 	window.bridge = rnBridge;
 }
 
