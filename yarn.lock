@@ -1205,6 +1205,20 @@
     uuid "^7.0.3"
     video.js ">=7"
 
+"@netless/window-manager@^0.4.33":
+  version "0.4.33"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.33.tgz#1ed2a6a4a9e8ce4a42efa2342ccacb1eb63080e8"
+  integrity sha512-jNW++YKloYnfel6LUPBd8vseo/e2KnIbwRsckSRpEEGRjeiiFH7xjETqXdLEep+bZQaoEHJuhCOQYdMTE0q21g==
+  dependencies:
+    "@juggle/resize-observer" "^3.3.1"
+    "@netless/telebox-insider" "0.2.26"
+    emittery "^0.9.2"
+    lodash "^4.17.21"
+    p-retry "^4.6.1"
+    side-effect-manager "^0.1.5"
+    uuid "^7.0.3"
+    video.js ">=7"
+
 "@netless/xml-js@1.6.15":
   version "1.6.15"
   resolved "https://registry.yarnpkg.com/@netless/xml-js/-/xml-js-1.6.15.tgz#46516d547b21149bcca732bb199d664791b3240a"
