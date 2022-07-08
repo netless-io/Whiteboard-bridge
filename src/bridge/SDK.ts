@@ -12,7 +12,7 @@ import SlideApp, { addHooks as addHooksSlide } from "@netless/app-slide";
 import { MountParams, WindowManager } from "@netless/window-manager";
 import { SyncedStore } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
-import {logger, enableReport} from "../utils/Logger";
+import {logger, enableReport, reportDelayedLog} from "../utils/Logger";
 import {convertBound} from "../utils/BoundConvert";
 import { addManagerListener } from "./Manager";
 import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
@@ -104,6 +104,9 @@ class SDKBridge {
         const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         enableReport(!!log);
+        if (!!log) {
+            logger('newWhiteSdk', config);
+        }
         nativeConfig = config;
 
         if (__platform) {
@@ -249,6 +252,7 @@ class SDKBridge {
                 await initSyncedStore(room, roomCallbackHandler)
             }
             registerBridgeRoom(room);
+            reportDelayedLog();
             return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
