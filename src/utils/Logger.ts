@@ -1,3 +1,4 @@
+import { NativeJoinRoomParams } from '@netless/whiteboard-bridge-types';
 import { sdkCallbackHandler } from '../bridge/SDK';
 
 let reportLog = false;
@@ -32,7 +33,17 @@ function report(funName: string, ...params: any[]) {
     if (window.room) {
         (window.room as any).logger.info(funName, ...params);
     } else {
-        const logItem = [funName, ...params];
+        const safeParas = params.map(para => {
+            if (typeof para === 'string') {
+                const obj = JSON.parse(para);
+                if ((obj as Object).hasOwnProperty('roomToken')) {
+                    obj.roomToken = '***';
+                    return JSON.stringify(obj);
+                }
+            }
+            return para;
+        });
+        const logItem = [funName, ...safeParas];
         delayedLogs.push(logItem);
     }
     let message;
