@@ -25,7 +25,7 @@
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.0",
     "@netless/iframe-bridge": "2.1.9",
-    "@netless/synced-store": "0.0.2",
+    "@netless/synced-store": "1.1.5",
     "@netless/video-js-plugin": "0.3.8",
     "@netless/webview-bridge": "^0.0.14",
     "@netless/white-audio-plugin": "^1.2.4",

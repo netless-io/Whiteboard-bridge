@@ -23,6 +23,8 @@ import { registerBridgeRoom } from "./Room";
 import { registerPlayerBridge } from "./Player";
 import { Rtc } from '../Rtc';
 import { SDKCallbackHandler } from '../native/SDKCallbackHandler';
+import { destorySyncedStore, initSyncedStore } from './SyncedStore';
+
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
@@ -52,6 +54,7 @@ export function registerSDKBridge() {
     registerAsyn(sdkNameSpace, sdk);
     (window as any).newWhiteSdk = sdk.newWhiteSdk;
     (window as any).joinRoom = sdk.joinRoom;
+    (window as any).replayRoom = sdk.replayRoom;
     addBridgeLogHook([sdkNameSpace], logger);
 }
 
@@ -68,6 +71,9 @@ function removeBind() {
     } else if (player) {
         player.bindHtmlElement(null);
         player = undefined;
+    }
+    if (window.syncedStore) {
+        destorySyncedStore();
     }
 }
 
@@ -168,6 +174,8 @@ class SDKBridge {
             });
         }
 
+        // 新增的插件需要确定是否依赖此状态
+        const useMobXState =  enableSyncedStore || enableIFramePlugin || useMultiViews
         const invisiblePlugins = [
             ...enableIFramePlugin ? [IframeBridge as any] : [],
             ...enableSyncedStore ? [SyncedStore as any] : [],
@@ -184,7 +192,7 @@ class SDKBridge {
                     sdkCallbackHandler.onSetupFail(e);
                 },
                 pptParams,
-                useMobXState: enableIFramePlugin || useMultiViews,
+                useMobXState,
             });
             window.sdk = sdk;
         } catch (e) {
@@ -199,7 +207,7 @@ class SDKBridge {
         }
         removeBind();
         const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, ...joinRoomParams} = nativeParams;
-        const {useMultiViews} = nativeConfig!;
+        const {useMultiViews, enableSyncedStore} = nativeConfig!;
         const invisiblePlugins = [
             ...useMultiViews ? [WindowManager as any] : [],
         ]
@@ -237,12 +245,8 @@ class SDKBridge {
                 roomState = { ...roomState, ...createPageState(roomState.sceneState) };
             }
 
-            if (nativeConfig?.enableSyncedStore) {
-                window.syncedStore = await SyncedStore.create(room);
-                window.syncedStore.emitter.on("attributesUpdate", attributes => {
-                    logger("attributesUpdate", attributes);
-                    roomCallbackHandler.onAttributesUpdate(attributes);
-                });
+            if (enableSyncedStore) {
+                await initSyncedStore(room, roomCallbackHandler)
             }
             registerBridgeRoom(room);
             return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
@@ -260,7 +264,7 @@ class SDKBridge {
 
         const {step = 500, cameraBound, mediaURL, windowParams, ...replayParams} = nativeParams;
         removeBind();
-        const {useMultiViews} = nativeConfig!;
+        const {useMultiViews, enableSyncedStore} = nativeConfig!;
 
         let replayCallbackHanlder: ReplayerCallbackHandler;
 
@@ -293,6 +297,9 @@ class SDKBridge {
                 if (!!cursorAdapter) {
                     cursorAdapter?.setPlayer(player);
                 }
+            }
+            if (enableSyncedStore) {
+                await initSyncedStore(player, replayCallbackHanlder)
             }
             if (mediaURL) {
                 // FIXME: 多次初始化，会造成一些问题

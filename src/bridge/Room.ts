@@ -534,14 +534,6 @@ export class RoomAsyncBridge {
         let result = window.syncedStore ? window.syncedStore!.attributes : {}
         responseCallback(JSON.stringify(result))
     }
-
-    safeSetAttributes = (attributes: any) => {
-        window.syncedStore?.safeSetAttributes(attributes)
-    }
-
-    safeUpdateAttributes = (keys: string[], attributes: any) => {
-        window.syncedStore?.safeUpdateAttributes(keys, attributes)
-    }
 }
 
 export class RoomStateBridge {

@@ -104,4 +104,8 @@ export class ReplayerCallbackHandler {
     onCatchErrorWhenRender = (err: Error) => {
         call("player.onCatchErrorWhenRender", {error: err.message});
     }
+
+    onSyncedStoreUpdate = (update: { name: string, data: any }) => {
+        call("player.fireSyncedStoreUpdate",  JSON.stringify(update));
+    }
 }

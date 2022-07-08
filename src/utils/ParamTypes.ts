@@ -31,6 +31,6 @@ declare global {
     _dsaf: any;
     // dsBridge 同步方法，用来注册 js 回调
     _dsf: any;
-    syncedStore: SyncedStore;
+    syncedStore?: SyncedStore;
   }
 }
