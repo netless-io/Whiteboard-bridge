@@ -1133,12 +1133,10 @@
     lodash.debounce "^4.0.8"
     react "^16.13.1"
 
-"@netless/synced-store@0.0.2":
-  version "0.0.2"
-  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-0.0.2.tgz#350b83ba7eb633ae3032e959800f7814d6088c06"
-  integrity sha512-4qaGyS1s9oRATR11OjQThNIZGrp+iVDesvDfSz/DjRGpYEhKbza9IgSjp9jwqe65FfR3eNp3AAjRl0JWtuuftw==
-  dependencies:
-    eventemitter3 "^4.0.7"
+"@netless/synced-store@1.1.5":
+  version "1.1.5"
+  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-1.1.5.tgz#439cad3ff27589fb2a84e2d032f1c966064e4f72"
+  integrity sha512-ERXoJiPhsK26udMKhvcHhfzyUk1Q3JIIT71wgGoSoNiPpW2VCWQ4+FAFsoRwa0c1pM0wVHGRRcZkxvOTkXZvdg==
 
 "@netless/telebox-insider@0.2.26":
   version "0.2.26"

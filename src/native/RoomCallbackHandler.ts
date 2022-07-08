@@ -66,6 +66,10 @@ export class RoomCallbackHandler {
         call("room.fireAttributesUpdate", JSON.stringify(attributes));
     }
 
+    onSyncedStoreUpdate = (update: { name: string, data: any }) => {
+        call("room.fireSyncedStoreUpdate",  JSON.stringify(update));
+    }
+
     // DisplayerCallbacks
     onCatchErrorWhenAppendFrame = (userId: number, error: Error) => {
         logger("onCatchErrorWhenAppendFrame", [userId, error.message]);
