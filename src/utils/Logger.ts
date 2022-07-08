@@ -26,6 +26,9 @@ function report(funName: string, ...params: any[]) {
     // sdk 的 logger，会直接使用 toString 方法，进行转换。Object 的 toString 直接是 "[object Object]"，无法记录内容
     params = params.map(v => {
         if (typeof v === "object") {
+            if (v.hasOwnProperty('roomToken')) {
+                v.roomToken = '***';
+            }
             return JSON.stringify(v);
         }
         return v;
@@ -33,17 +36,7 @@ function report(funName: string, ...params: any[]) {
     if (window.room) {
         (window.room as any).logger.info(funName, ...params);
     } else {
-        const safeParas = params.map(para => {
-            if (typeof para === 'string') {
-                const obj = JSON.parse(para);
-                if ((obj as Object).hasOwnProperty('roomToken')) {
-                    obj.roomToken = '***';
-                    return JSON.stringify(obj);
-                }
-            }
-            return para;
-        });
-        const logItem = [funName, ...safeParas];
+        const logItem = [funName, ...params];
         delayedLogs.push(logItem);
     }
     let message;
