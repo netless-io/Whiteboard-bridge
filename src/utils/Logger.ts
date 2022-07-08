@@ -35,6 +35,9 @@ function report(funName: string, ...params: any[]) {
     });
     if (window.room) {
         (window.room as any).logger.info(funName, ...params);
+        if (delayedLogs.length > 0) {
+            reportDelayedLog();
+        }
     } else {
         const logItem = [funName, ...params];
         delayedLogs.push(logItem);
