@@ -104,9 +104,6 @@ class SDKBridge {
         const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         enableReport(!!log);
-        if (!!log) {
-            logger('newWhiteSdk', config);
-        }
         nativeConfig = config;
 
         if (__platform) {

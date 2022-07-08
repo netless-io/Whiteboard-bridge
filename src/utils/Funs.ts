@@ -15,9 +15,12 @@ export function addBridgeLogHook(names: string[], logger: (funName: string, ...p
                     continue;
                 }
                 namespace[funName] = (...args: any[]) => {
-                    // async 下， dsbridge 在调用时，会添加一个回调 function
-                    logger(funName, ...args.slice(0, -1));
-                    return fun(...args);
+                    try {
+                        return fun(...args);
+                    } finally {
+                        // async 下， dsbridge 在调用时，会添加一个回调 function
+                        logger(funName, ...args.slice(0, -1));
+                    }
                 };
             }
         }
@@ -35,8 +38,11 @@ export function addBridgeLogHook(names: string[], logger: (funName: string, ...p
                     continue;
                 }
                 namespace[funName] = (...args: any[]) => {
-                    logger(funName, ...args);
-                    return fun(...args);
+                    try {
+                        return fun(...args);
+                    } finally {
+                        logger(funName, ...args);
+                    }
                 };
             }
         }
