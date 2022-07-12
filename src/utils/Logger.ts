@@ -12,7 +12,7 @@ export function logger(funName: string, ...params: any[]) {
 }
 
 let delayedLogs: string[][] = [];
-export function reportDelayedLog() {
+function reportDelayedLog() {
     delayedLogs.forEach(log => {
         if (window.room) {
             (window.room as any).logger.info(...log);
@@ -23,7 +23,7 @@ export function reportDelayedLog() {
 
 function report(funName: string, ...params: any[]) {
     // sdk 的 logger，会直接使用 toString 方法，进行转换。Object 的 toString 直接是 "[object Object]"，无法记录内容
-    params = params.map(v => {
+    let message = params.map(v => {
         if (typeof v === "object") {
             if (v.hasOwnProperty('roomToken')) {
                 v.roomToken = '***';
@@ -33,27 +33,28 @@ function report(funName: string, ...params: any[]) {
         return v;
     });
     if (window.room) {
-        (window.room as any).logger.info(funName, ...params);
+        (window.room as any).logger.info(funName, ...message);
         if (delayedLogs.length > 0) {
             reportDelayedLog();
         }
     } else {
-        const logItem = [funName, ...params];
+        const logItem = [funName, ...message];
         delayedLogs.push(logItem);
     }
-    let message;
+
+    let nativeMessage;
     if (params.length === 0) {
-        message = undefined;
+        nativeMessage = undefined;
     } else if (params.length === 1) {
         // array element
-        message = params[0];
+        nativeMessage = params[0];
     } else if (params.every(v => typeof v === "string" || typeof v === "number" || typeof v === "boolean")) {
         // string
-        message = params.join(" ");
+        nativeMessage = params.join(" ");
     } else {
         // array
-        message = params;
+        nativeMessage = params;
     }
 
-    sdkCallbackHandler.onLogger({ funName, params: message });
+    sdkCallbackHandler.onLogger({ funName, params: nativeMessage });
 }

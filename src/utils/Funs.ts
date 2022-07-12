@@ -3,6 +3,7 @@ import {Displayer, Room, Player, SceneState} from "white-web-sdk";
 import { sdkCallbackHandler } from "../bridge/SDK";
 import { bridge } from '@netless/webview-bridge';
 
+// TODO: 考虑避免多次 hook
 export function addBridgeLogHook(names: string[], logger: (funName: string, ...params: any[]) => void) {
     const async_obj = bridge.registerMap.async;
     for (const name of Object.getOwnPropertyNames(async_obj)) {
