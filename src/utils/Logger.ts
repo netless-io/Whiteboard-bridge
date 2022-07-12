@@ -1,4 +1,3 @@
-import { NativeJoinRoomParams } from '@netless/whiteboard-bridge-types';
 import { sdkCallbackHandler } from '../bridge/SDK';
 
 let reportLog = false;

@@ -1,5 +1,5 @@
 import { MediaType } from "white-web-sdk";
-import { call } from "../bridge"
+import { call, syncCall } from "../bridge"
 
 export class SDKCallbackHandler {
     onPostMessage = (message: string) => {
@@ -15,7 +15,7 @@ export class SDKCallbackHandler {
     }
 
     onUrlInterrupter = (url: string): string => {
-        return call("sdk.urlInterrupter", url);
+        return syncCall("sdk.urlInterrupter", url) as string;
     }
 
     onSetupFail = (e: Error) => {

@@ -1,4 +1,4 @@
-import dsBridge from "dsbridge";
+import { call, register } from "./bridge";
 
 export class Rtc {
 
@@ -10,7 +10,7 @@ export class Rtc {
     private stopCallback?: (state: number, errorCode: number) => void;
 
     public constructor() {
-        dsBridge.register("rtc", {
+        register("rtc", {
             callback: (state: number, errorCode: number) => {
                 switch (state) {
                     case Rtc.kStopAudioMixing:
@@ -53,7 +53,7 @@ export class Rtc {
 
     public startAudioMixing = (filePath: string, loopback: boolean, replace: boolean, cycle: number, callback: (state: number, errorCode: number) => void) => {
         this.startCallback = callback;
-        return dsBridge.call("rtc.startAudioMixing", {filePath, loopback, replace, cycle});
+        return call("rtc.startAudioMixing", {filePath, loopback, replace, cycle});
     }
 
     /**
@@ -61,18 +61,18 @@ export class Rtc {
     */
     public stopAudioMixing = (callback: (state: number, errorCode: number) => void) => {
         this.stopCallback = callback;
-        return dsBridge.call("rtc.stopAudioMixing");
+        return call("rtc.stopAudioMixing");
     }
 
     public pauseAudioMixing() {
-        return dsBridge.call("rtc.pauseAudioMixing");
+        return call("rtc.pauseAudioMixing");
     }
 
     public resumeAudioMixing() {
-        return dsBridge.call("rtc.resumeAudioMixing");
+        return call("rtc.resumeAudioMixing");
     }
 
     public setAudioMixingPosition(pos) {
-        return dsBridge.call("rtc.setAudioMixingPosition", pos);
+        return call("rtc.setAudioMixingPosition", pos);
     }
 }

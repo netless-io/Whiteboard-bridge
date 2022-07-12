@@ -1,12 +1,11 @@
 import { Attributes as SlideAttributes } from "@netless/app-slide";
 import { TeleBoxColorScheme } from '@netless/telebox-insider';
 import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
-import dsBridge from "dsbridge";
 import { GlobalState, ImageInformation, MemberState, Room, SceneDefinition, ViewMode } from "white-web-sdk";
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
 import { registerDisplayerBridge } from "./Displayer";
-import { register, registerAsyn } from ".";
+import { call, register, registerAsyn } from ".";
 import { pptNamespace, RemovePageParams, roomNamespace, roomStateNamespace, roomSyncNamespace } from "@netless/whiteboard-bridge-types";
 
 export function registerBridgeRoom(aRoom: Room) {
@@ -144,8 +143,8 @@ export class RoomSyncBridge {
         this.room.disableSerialization = disable;
         /** 单窗口且开启序列化主动触发一次redo,undo次数回调 */
         if (!disable && window.manager == null) {
-            dsBridge.call("room.fireCanUndoStepsUpdate", this.room.canUndoSteps);
-            dsBridge.call("room.fireCanRedoStepsUpdate", this.room.canRedoSteps);
+            call("room.fireCanUndoStepsUpdate", this.room.canUndoSteps);
+            call("room.fireCanRedoStepsUpdate", this.room.canRedoSteps);
         }
     }
 

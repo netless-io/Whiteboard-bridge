@@ -1,41 +1,44 @@
 
-import dsbridge from "dsbridge";
-import {Bridge} from "@netless/webview-bridge";
+import type {JsonValue, CallFunction, SyncCallFunction} from "@netless/webview-bridge";
+import {RNBridge, bridge } from "@netless/webview-bridge";
 
-let rnBridge: Bridge;
+let rnBridge: RNBridge;
 if ((window as any).ReactNativeWebView) {
-	rnBridge = new Bridge();
+	rnBridge = new RNBridge();
 	window.bridge = rnBridge;
 }
 
-export function call(
-    handlerName: string,
-    args?: any,
-    responseCallback?: (retValue: any) => void
-): any {
+
+
+export const call: CallFunction = (nativeMethod: string, parameter?: JsonValue) => {
 	if (rnBridge) {
-		rnBridge.call(handlerName, args, responseCallback);
-		return;
+		rnBridge.call(nativeMethod, parameter);
+	} else {
+		bridge.call(nativeMethod, parameter);
 	}
-    return dsbridge.call(handlerName, args, responseCallback);
 }
 
-export function register(
-    handlerName: string,
-    handler: object | (() => any),
-    async?: boolean
-) {
+export const syncCall: SyncCallFunction = (nativeMethod: string, parameter?: JsonValue) => {
+	if (rnBridge) {
+		// react-native 暂时没做同步调用
+		return parameter;
+	} else {
+		return bridge.syncCall(nativeMethod, parameter);
+	}
+}
+
+export const register = (handlerName: string, handler: any) => {
 	if (rnBridge) {
 		rnBridge.register(handlerName, handler);
-		return;
+	} else {
+		bridge.register(handlerName, handler);
 	}
-    return dsbridge.register(handlerName, handler, async);
 }
 
-export function registerAsyn(handlerName: string, handler: object | (() => void)): void {
+export const registerAsyn = (handlerName: string, handler: any) => {
 	if (rnBridge) {
 		rnBridge.registerAsyn(handlerName, handler);
-		return;
+	} else {
+		bridge.registerAsync(handlerName, handler);
 	}
-    return dsbridge.registerAsyn(handlerName, handler);
 }

@@ -1,4 +1,5 @@
-import dsBridge from "dsbridge";
+import { call, register } from "./bridge";
+
 
 enum ReadyState {
     CONNECTING = 0,
@@ -74,7 +75,7 @@ export class WebSocketBridge implements FakeWebSocket {
         this.key = generateKey;
         generateKey += 1;
         this.registerBridge();
-        dsBridge.call("ws.setup", {url, key: this.key});
+        call("ws.setup", {url, key: this.key});
     }
 
     // TODO:测试该状态
@@ -95,16 +96,16 @@ export class WebSocketBridge implements FakeWebSocket {
     public send(data: string | ArrayBuffer): void {
         if (data instanceof ArrayBuffer) {
             const str = encodeArrayBufferAsBase64(data);
-            dsBridge.call("ws.send", {data: str, type: "arraybuffer", key: this.key});
+            call("ws.send", {data: str, type: "arraybuffer", key: this.key});
         } else {
-            dsBridge.call("ws.send", {data, type: "string", key: this.key});
+            call("ws.send", {data, type: "string", key: this.key});
         }
     }
 
     public close(code?: number, reason?: string): void {
         console.log("close: ", {code, reason});
         this._readyState = ReadyState.CLOSING;
-        dsBridge.call("ws.close", {code, reason, key: this.key});
+        call("ws.close", {code, reason, key: this.key});
         // 主动调用 websocket 的 close 方法，web 端应该仍然会主动触发 close 事件。这部分操作，在 native 端实现
     }
 
@@ -195,7 +196,7 @@ export class WebSocketBridge implements FakeWebSocket {
     }
 
     private registerBridge() {
-        dsBridge.register("ws", {
+        register("ws", {
             onError: this._onError,
             onMessage: this._onMessage,
             onClose: this._onClose,
@@ -203,10 +204,10 @@ export class WebSocketBridge implements FakeWebSocket {
         });
 
         if (process.env.NODE_ENV === 'development') {
-            dsBridge.register("ws.readyState", () => {
+            register("ws.readyState", () => {
                 return this._readyState;
             });
-            dsBridge.register("ws.mockCloseFromJs", () => {
+            register("ws.mockCloseFromJs", () => {
                 this.close(0, '');
             });
         }

@@ -1,10 +1,10 @@
 import { useEffect, useRef } from 'react';
 import {Displayer, Room, Player, SceneState} from "white-web-sdk";
 import { sdkCallbackHandler } from "../bridge/SDK";
+import { bridge } from '@netless/webview-bridge';
 
 export function addBridgeLogHook(names: string[], logger: (funName: string, ...params: any[]) => void) {
-    const async = window._dsaf;
-    const async_obj = async["_obs"] || {};
+    const async_obj = bridge.registerMap.async;
     for (const name of Object.getOwnPropertyNames(async_obj)) {
         if (names.includes(name)) {
             const namespace = async_obj[name];
@@ -26,8 +26,7 @@ export function addBridgeLogHook(names: string[], logger: (funName: string, ...p
         }
     }
 
-    const syn = window._dsf;
-    const syn_obj = syn["_obs"] || {};
+    const syn_obj = bridge.registerMap.normal;
     for (const name of Object.getOwnPropertyNames(syn_obj)) {
         if (names.includes(name)) {
             const namespace = syn_obj[name];
