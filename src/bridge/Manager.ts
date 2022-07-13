@@ -3,10 +3,14 @@ import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
 import { ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
 import { call } from ".";
 
+function isRoomCallbackHandler(handler: RoomCallbackHandler | ReplayerCallbackHandler): handler is RoomCallbackHandler {
+    return (handler as RoomCallbackHandler).onRoomStateChanged !== undefined;
+}
+
 export function addManagerListener(manager: WindowManager, logger: (funName: string, ...param: any[]) => void, handler: RoomCallbackHandler | ReplayerCallbackHandler): void {
     window.manager = manager;
 
-    if (handler instanceof RoomCallbackHandler) {
+    if (isRoomCallbackHandler(handler)) {
         addRoomListener(manager, logger, handler);
     } else {
         addReplayListener(manager, logger, handler);

@@ -17,7 +17,7 @@ import {convertBound} from "../utils/BoundConvert";
 import { addManagerListener } from "./Manager";
 import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
-import { lastSchedule, ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
+import { lastSchedule, ReplayerCallbackHandler, ReplayerCallbackHandlerImp } from "../native/ReplayerCallbackHandler";
 import CombinePlayerFactory from "@netless/combine-player";
 import { registerBridgeRoom } from "./Room";
 import { registerPlayerBridge } from "./Player";
@@ -280,7 +280,7 @@ class SDKBridge {
                 }, 0);
             }
         }
-        replayCallbackHanlder = new ReplayerCallbackHandler(step, !!mediaURL, !!(nativeConfig?.enableIFramePlugin), phaseChangeHook);
+        replayCallbackHanlder = new ReplayerCallbackHandlerImp(step, !!mediaURL, !!(nativeConfig?.enableIFramePlugin), phaseChangeHook);
 
         sdk!.replayRoom({
             ...replayParams,
