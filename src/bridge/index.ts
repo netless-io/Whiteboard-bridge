@@ -6,6 +6,8 @@ let rnBridge: RNBridge;
 if ((window as any).ReactNativeWebView) {
 	rnBridge = new RNBridge();
 	window.bridge = rnBridge;
+} else {
+	window.bridge = bridge;
 }
 
 

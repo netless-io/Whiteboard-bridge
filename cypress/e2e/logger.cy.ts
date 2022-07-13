@@ -20,20 +20,20 @@ describe('Test hook logger', () => {
             .visit('http://localhost:8760')
             .then(win => {
                 const sdkParams = { log: false, userCursor: true, __platform: "bridgeTest", appIdentifier, useMultiViews: true };
-                win._dsaf._obs.sdk.newWhiteSdk(sdkParams, () => { });
+                win.bridge.registerMap.async.sdk.newWhiteSdk(sdkParams, () => { });
                 const roomParams = {
                     uuid: testRoomUUID, uid: "0", roomToken: testRoomToken, isWritable: false, userPayload: {
                         avatar: "https://white-pan.oss-cn-shanghai.aliyuncs.com/40/image/mask.jpg"
                     }
                 };
-                try { win._dsaf._obs.sdk.joinRoom(roomParams, () => { }) }
+                try { win.bridge.registerMap.async.sdk.joinRoom(roomParams, () => { }) }
                 catch (error) { throw error };
             })
             .wait(5000)
             .then(window => {
                 const spy = cy.spy(window.console, 'log');
-                loopObj(window._dsaf._obs, spy);
-                loopObj(window._dsf._obs, spy);
+                loopObj(window.bridge.registerMap.async, spy);
+                loopObj(window.bridge.registerMap.normal, spy);
             })
 
             // test replayRoom
@@ -41,16 +41,16 @@ describe('Test hook logger', () => {
             .visit('http://localhost:8760')
             .then(win => {
                 const sdkParams = { log: false, userCursor: true, __platform: "bridgeTest", appIdentifier, useMultiViews: true };
-                win._dsaf._obs.sdk.newWhiteSdk(sdkParams, () => { });
+                win.bridge.registerMap.async.sdk.newWhiteSdk(sdkParams, () => { });
                 const replayParams = { room: testReplayUUID, roomToken: testReplayToken };
-                try { win._dsaf._obs.sdk.replayRoom(replayParams, ()=>{}) }
+                try { win.bridge.registerMap.async.sdk.replayRoom(replayParams, ()=>{}) }
                 catch (error) { throw error };
             })
             .wait(5000)
             .then(window => {
                 const spy = cy.spy(window.console, 'log');
-                loopObj(window._dsaf._obs, spy);
-                loopObj(window._dsf._obs, spy);
+                loopObj(window.bridge.registerMap.async, spy);
+                loopObj(window.bridge.registerMap.normal, spy);
             })
 
 
