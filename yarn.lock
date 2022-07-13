@@ -1133,10 +1133,15 @@
     lodash.debounce "^4.0.8"
     react "^16.13.1"
 
-"@netless/synced-store@1.1.5":
-  version "1.1.5"
-  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-1.1.5.tgz#439cad3ff27589fb2a84e2d032f1c966064e4f72"
-  integrity sha512-ERXoJiPhsK26udMKhvcHhfzyUk1Q3JIIT71wgGoSoNiPpW2VCWQ4+FAFsoRwa0c1pM0wVHGRRcZkxvOTkXZvdg==
+"@netless/synced-store@2.0.1":
+  version "2.0.1"
+  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-2.0.1.tgz#d06bdcf87552e54f1b2cb6c090673cc8d8ac94c2"
+  integrity sha512-8hyeMb3DPv1lMSC2vTZ03MGhcMXvtBUw7ZEiM7wCTu9WSZZwv5WAT/sSJzKitEPxZ+c2F9V9o52vaunkbJDTbg==
+  dependencies:
+    lodash-es "^4.17.21"
+    remitter "^0.2.6"
+    side-effect-manager "^1.1.1"
+    value-enhancer "^1.3.0"
 
 "@netless/telebox-insider@0.2.26":
   version "0.2.26"
@@ -2196,9 +2201,9 @@ caniuse-api@^3.0.0:
     lodash.uniq "^4.5.0"
 
 caniuse-lite@^1.0.0, caniuse-lite@^1.0.30001219, caniuse-lite@^1.0.30001286:
-  version "1.0.30001364"
-  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001364.tgz"
-  integrity sha512-9O0xzV3wVyX0SlegIQ6knz+okhBB5pE0PC40MNdwcipjwpxoUEHL24uJ+gG42cgklPjfO5ZjZPme9FTSN3QT2Q==
+  version "1.0.30001301"
+  resolved "https://registry.npmjs.org/caniuse-lite/-/caniuse-lite-1.0.30001301.tgz"
+  integrity sha512-csfD/GpHMqgEL3V3uIgosvh+SVIQvCh43SNu9HRbP1lnxkKm1kjDG4f32PP571JplkLjfS+mg2p1gxR7MYrrIA==
 
 caseless@~0.12.0:
   version "0.12.0"
@@ -4290,6 +4295,11 @@ locate-path@^5.0.0:
   dependencies:
     p-locate "^4.1.0"
 
+lodash-es@^4.17.21:
+  version "4.17.21"
+  resolved "https://registry.yarnpkg.com/lodash-es/-/lodash-es-4.17.21.tgz#43e626c46e6591b7750beb2b50117390c609e3ee"
+  integrity sha512-mKnC+QJ9pWVzv+C4/U3rRsHapFfHvQFoFB92e52xeyGMcX6/OlIl78je1u8vePzYZSkkogMPJ2yjxxsb89cxyw==
+
 lodash.debounce@^4.0.8:
   version "4.0.8"
   resolved "https://registry.yarnpkg.com/lodash.debounce/-/lodash.debounce-4.0.8.tgz#82d79bff30a67c4005ffd5e2515300ad9ca4d7af"
@@ -5457,6 +5467,11 @@ relateurl@^0.2.7:
   resolved "https://registry.yarnpkg.com/relateurl/-/relateurl-0.2.7.tgz#54dbf377e51440aca90a4cd274600d3ff2d888a9"
   integrity sha1-VNvzd+UUQKypCkzSdGANP/LYiKk=
 
+remitter@^0.2.6:
+  version "0.2.6"
+  resolved "https://registry.yarnpkg.com/remitter/-/remitter-0.2.6.tgz#46cdae7ace8e9ce9758e1f23243d4972f097e722"
+  integrity sha512-vg6psVwfJsg7zcX7HVJ0UxZiRc0V7EfFOOzcp6WAEP2Br0G75DEM5KUglyxyMuxG57ntrfEBzqP6Cd91Nf2CBw==
+
 renderkid@^3.0.0:
   version "3.0.0"
   resolved "https://registry.yarnpkg.com/renderkid/-/renderkid-3.0.0.tgz#5fd823e4d6951d37358ecc9a58b1f06836b6268a"
@@ -5762,6 +5777,11 @@ side-effect-manager@^0.1.5:
   version "0.1.5"
   resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-0.1.5.tgz#d9b205e4317b60f90876f6ad498a1ac7e038c7d7"
   integrity sha512-aAEXMS+9qW7rY2cwq4S6UjW3IBO/ZLWRI0sH1oGJ1eDE7YBFR1TW950qffnpx/0hByusAOVbu2zjThk9Vcjs+Q==
+
+side-effect-manager@^1.1.1:
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-1.1.1.tgz#77e01bdba9c7ffa0d9f85b8189f7f4f9e7e9eae1"
+  integrity sha512-ppUBbzOXLydre40Yz553eIIlTdf2WCJcqMI4n06sTRCA2o5AwG5WQ2qq6fHp5C8RK3TAfgtZKrhllNG2F1jzCA==
 
 signal-exit@^3.0.2:
   version "3.0.7"
@@ -6374,6 +6394,11 @@ value-enhancer@^0.0.8:
   integrity sha512-ba8Rcyp9ItqlLWoyZVqHGaEdY1tqP1mcbRhlOrCnIrDxdl8rKNH1Rq45syo4IMYNSkwC2oV9xBWcV9dmL14aQg==
   dependencies:
     side-effect-manager "^0.1.5"
+
+value-enhancer@^1.3.0:
+  version "1.3.2"
+  resolved "https://registry.yarnpkg.com/value-enhancer/-/value-enhancer-1.3.2.tgz#2414f852db30b69c4d15f45b9be6ae7b11239a31"
+  integrity sha512-RC+yfNMwuLZO2iDtHh4dxvtHP00DnSO0VARBkVoxT1eOwMJ/Rs5jKh6nBUcotWncJhjfGGhQE4SUK8goLEC5oQ==
 
 vary@~1.1.2:
   version "1.1.2"

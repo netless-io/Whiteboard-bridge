@@ -528,11 +528,6 @@ export class RoomAsyncBridge {
             });
         }
     }
-
-    getSyncedState = (responseCallback: any) => {
-        let result = window.syncedStore ? window.syncedStore!.attributes : {}
-        responseCallback(JSON.stringify(result))
-    }
 }
 
 export class RoomStateBridge {
