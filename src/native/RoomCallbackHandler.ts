@@ -62,10 +62,6 @@ export class RoomCallbackHandler {
         call("room.fireKickedWithReason", reason);
     }
 
-    onAttributesUpdate = (attributes)  => {
-        call("room.fireAttributesUpdate", JSON.stringify(attributes));
-    }
-
     onSyncedStoreUpdate = (update: { name: string, data: any }) => {
         call("room.fireSyncedStoreUpdate",  JSON.stringify(update));
     }

@@ -10,7 +10,7 @@ import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
 import SlideApp, { addHooks as addHooksSlide } from "@netless/app-slide";
 import { MountParams, WindowManager } from "@netless/window-manager";
-import { SyncedStore } from "@netless/synced-store";
+import { SyncedStorePlugin } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
 import {logger, enableReport} from "../utils/Logger";
 import {convertBound} from "../utils/BoundConvert";
@@ -178,7 +178,7 @@ class SDKBridge {
         const useMobXState =  enableSyncedStore || enableIFramePlugin || useMultiViews
         const invisiblePlugins = [
             ...enableIFramePlugin ? [IframeBridge as any] : [],
-            ...enableSyncedStore ? [SyncedStore as any] : [],
+            ...enableSyncedStore ? [SyncedStorePlugin as any] : [],
         ]
 
         try {
@@ -249,7 +249,7 @@ class SDKBridge {
                 await initSyncedStore(room, roomCallbackHandler)
             }
             registerBridgeRoom(room);
-            return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable, syncedStore : window.syncedStore?.attributes}));
+            return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
         });

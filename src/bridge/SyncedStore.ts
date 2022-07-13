@@ -1,4 +1,4 @@
-import { SyncedStore, Storage } from "@netless/synced-store";
+import { SyncedStorePlugin, Storage, SyncedStore } from "@netless/synced-store";
 import { Displayer, StorageStateChangedEvent } from "@netless/window-manager";
 import { register, registerAsyn } from ".";
 
@@ -12,7 +12,7 @@ export interface SyncedStoreUpdateHandler {
 }
 
 export async function initSyncedStore(displayer: Displayer, handler: SyncedStoreUpdateHandler) {
-    const syncedStore = await SyncedStore.init(displayer);
+    const syncedStore = await SyncedStorePlugin.init(displayer);
     window.syncedStore = syncedStore;
 
     register(syncedStoreNamespace, new StoreBridge(syncedStore))
@@ -22,21 +22,23 @@ export async function initSyncedStore(displayer: Displayer, handler: SyncedStore
 }
 
 export function destroySyncedStore() {
-    window.syncedStore = undefined
-
-    storages.forEach(storage => {
-        storage.destroy();
-    })
     storages.clear();
+    window.syncedStore?.destroy();
+    window.syncedStore = undefined
 }
 
 export class StoreAsyncBridge {
     constructor(readonly syncedStore: SyncedStore, readonly handler: SyncedStoreUpdateHandler) { }
 
     connectStorage = (name: string, object: any, responseCallback: any) => {
+        if (storages.has(name)) {
+            responseCallback(JSON.stringify(storages.get(name)!.state))
+            return
+        }
+
         try {
             const storage = this.syncedStore.connectStorage(name, object)
-            storage.addStateChangedListener((diff: StorageStateChangedEvent) => {
+            storage.on("stateChanged", (diff: StorageStateChangedEvent) => {
                 if (process.env.DEBUG) {
                     console.log(`storage[${name}] state changed ${JSON.stringify(diff)}`);
                 }
@@ -67,25 +69,26 @@ export class StoreAsyncBridge {
 export class StoreBridge {
     constructor(readonly syncedStore: SyncedStore) { }
 
-    // Destroy the Storage instance. The data will be kept.
-    destroyStorage = (name: string) => {
+    /** Disconnect from synced storage and release listeners */
+    disconnectStorage = (name: string) => {
         const storage = storages.get(name);
-        storage?.destroy();
+        storage?.disconnect();
+        storages.delete(name);
     }
 
-    // Empty storage data.
-    emptyStorage = (name: string) => {
-        const storage = storages.get(name);
-        storage?.emptyStorage();
-    }
-
-    // Delete storage index with all of its data and destroy the Storage instance.
+    /** delete synced storage data and disconnect from synced storage */
     deleteStorage = (name: string) => {
         const storage = storages.get(name);
         storage?.deleteStorage();
     }
 
-    // update storage state
+    /** reset storage state to default state */
+    resetState = (name: string) => {
+        const storage = storages.get(name);
+        storage?.resetState();
+    }
+
+    /** update storage state */
     setStorageState = (name: string, partialState: any) => {
         const storage = storages.get(name);
         storage?.setState(partialState);
