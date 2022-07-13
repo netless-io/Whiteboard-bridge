@@ -27,10 +27,6 @@ declare global {
     pluginContext: PluginContext[];
     appRegisterParams: AppRegisterParams[];
     nativeWebSocket?: boolean;
-    // dsBridge 异步方法，用来注册 js 回调, dsBridge 会在尾部加一个 function
-    _dsaf: any;
-    // dsBridge 同步方法，用来注册 js 回调
-    _dsf: any;
     syncedStore?: SyncedStore;
   }
 }
