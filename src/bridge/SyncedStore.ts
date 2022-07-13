@@ -21,7 +21,7 @@ export async function initSyncedStore(displayer: Displayer, handler: SyncedStore
     return syncedStore
 }
 
-export function destorySyncedStore() {
+export function destroySyncedStore() {
     window.syncedStore = undefined
 
     storages.forEach(storage => {

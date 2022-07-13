@@ -23,7 +23,7 @@ import { registerBridgeRoom } from "./Room";
 import { registerPlayerBridge } from "./Player";
 import { Rtc } from '../Rtc';
 import { SDKCallbackHandler } from '../native/SDKCallbackHandler';
-import { destorySyncedStore, initSyncedStore } from './SyncedStore';
+import { destroySyncedStore, initSyncedStore } from './SyncedStore';
 
 
 let sdk: WhiteWebSdk | undefined = undefined;
@@ -73,7 +73,7 @@ function removeBind() {
         player = undefined;
     }
     if (window.syncedStore) {
-        destorySyncedStore();
+        destroySyncedStore();
     }
 }
 
