@@ -1,6 +1,8 @@
 import { SyncedStorePlugin, Storage, SyncedStore } from "@netless/synced-store";
 import { Displayer, StorageStateChangedEvent } from "@netless/window-manager";
 import { call, register, registerAsyn } from ".";
+import { addBridgeLogHook } from "../utils/Funs";
+import { logger } from "../utils/Logger";
 
 const syncedStoreNamespace = "store";
 const syncedStoreAsyncNamespace = "store";
@@ -11,9 +13,9 @@ export async function initSyncedStore(displayer: Displayer) {
     const syncedStore = await SyncedStorePlugin.init(displayer);
     window.syncedStore = syncedStore;
 
-    register(syncedStoreNamespace, new StoreBridge(syncedStore))
-    registerAsyn(syncedStoreAsyncNamespace, new StoreAsyncBridge(syncedStore))
-
+    register(syncedStoreNamespace, new StoreBridge(syncedStore));
+    registerAsyn(syncedStoreAsyncNamespace, new StoreAsyncBridge(syncedStore));
+    addBridgeLogHook([syncedStoreNamespace], logger);
     return syncedStore
 }
 
