@@ -246,7 +246,7 @@ class SDKBridge {
             }
 
             if (enableSyncedStore) {
-                await initSyncedStore(room, roomCallbackHandler)
+                await initSyncedStore(room)
             }
             registerBridgeRoom(room);
             return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable}));
@@ -299,7 +299,7 @@ class SDKBridge {
                 }
             }
             if (enableSyncedStore) {
-                await initSyncedStore(player, replayCallbackHanlder)
+                await initSyncedStore(player)
             }
             if (mediaURL) {
                 // FIXME: 多次初始化，会造成一些问题

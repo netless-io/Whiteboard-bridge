@@ -3,7 +3,6 @@ import { PlayerPhase, Room, PlayerState } from "white-web-sdk";
 import { postIframeMessage } from '../utils/iFrame';
 import { logger } from "../utils/Logger";
 import { NativeDisplayerState } from '../bridge/Displayer';
-import { SyncedStoreUpdateHandler } from "../bridge/SyncedStore";
 
 export const lastSchedule = {
     time: 0,
@@ -36,7 +35,7 @@ export type ReplayerCallbackHandler = {
     onProgressTimeChanged(scheduleTime)
     onCatchErrorWhenAppendFrame(userId: number, error: Error)
     onCatchErrorWhenRender(err: Error)
-} & SyncedStoreUpdateHandler;
+};
 
 export class ReplayerCallbackHandlerImp implements ReplayerCallbackHandler {
     constructor(aStep: number, hasMedia: Boolean, isEnableIFramePlugin: boolean, phaseChangeHook: (player: Room, phase: PlayerPhase) => void) {
@@ -114,9 +113,5 @@ export class ReplayerCallbackHandlerImp implements ReplayerCallbackHandler {
 
     onCatchErrorWhenRender = (err: Error) => {
         call("player.onCatchErrorWhenRender", {error: err.message});
-    }
-
-    onSyncedStoreUpdate = (update: { name: string, data: any }) => {
-        call("player.fireSyncedStoreUpdate",  JSON.stringify(update));
     }
 }
