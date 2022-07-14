@@ -69,6 +69,7 @@ export class StoreBridge {
     deleteStorage = (name: string) => {
         const storage = storages.get(name);
         storage?.deleteStorage();
+        storages.delete(name);
     }
 
     /** reset storage state to default state */
