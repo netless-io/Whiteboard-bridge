@@ -38,6 +38,12 @@ export class StoreAsyncBridge {
                 if (process.env.DEBUG) {
                     console.log(`storage[${name}] state changed ${JSON.stringify(diff)}`);
                 }
+                const s = storages.get(name);
+                if (s) {
+                    Object.getOwnPropertyNames(diff).forEach(key => {
+                        s[key] = diff[key]?.newValue;
+                    });
+                }
                 call('store.fireSyncedStoreUpdate', JSON.stringify({ name, data: diff }));
             });
             storages.set(name, storage)
