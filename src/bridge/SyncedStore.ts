@@ -1,22 +1,18 @@
 import { SyncedStorePlugin, Storage, SyncedStore } from "@netless/synced-store";
 import { Displayer, StorageStateChangedEvent } from "@netless/window-manager";
-import { register, registerAsyn } from ".";
+import { call, register, registerAsyn } from ".";
 
 const syncedStoreNamespace = "store";
 const syncedStoreAsyncNamespace = "store";
 
 const storages = new Map<string, Storage>()
 
-export interface SyncedStoreUpdateHandler {
-    onSyncedStoreUpdate(update: { name: string, data: any }): void
-}
-
-export async function initSyncedStore(displayer: Displayer, handler: SyncedStoreUpdateHandler) {
+export async function initSyncedStore(displayer: Displayer) {
     const syncedStore = await SyncedStorePlugin.init(displayer);
     window.syncedStore = syncedStore;
 
     register(syncedStoreNamespace, new StoreBridge(syncedStore))
-    registerAsyn(syncedStoreAsyncNamespace, new StoreAsyncBridge(syncedStore, handler))
+    registerAsyn(syncedStoreAsyncNamespace, new StoreAsyncBridge(syncedStore))
 
     return syncedStore
 }
@@ -28,7 +24,7 @@ export function destroySyncedStore() {
 }
 
 export class StoreAsyncBridge {
-    constructor(readonly syncedStore: SyncedStore, readonly handler: SyncedStoreUpdateHandler) { }
+    constructor(readonly syncedStore: SyncedStore) { }
 
     connectStorage = (name: string, object: any, responseCallback: any) => {
         if (storages.has(name)) {
@@ -42,7 +38,7 @@ export class StoreAsyncBridge {
                 if (process.env.DEBUG) {
                     console.log(`storage[${name}] state changed ${JSON.stringify(diff)}`);
                 }
-                this.handler.onSyncedStoreUpdate({ name, data: diff })
+                call('store.fireSyncedStoreUpdate', JSON.stringify({ name, data: diff }));
             });
             storages.set(name, storage)
             responseCallback(JSON.stringify(storage.state))
