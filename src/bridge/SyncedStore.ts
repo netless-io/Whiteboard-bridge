@@ -42,16 +42,7 @@ export class StoreAsyncBridge {
                 if (process.env.DEBUG) {
                     console.log(`storage[${name}] state changed ${JSON.stringify(diff)}`);
                 }
-                const data = {};
-                Object.keys(diff).forEach((key) => {
-                    if (diff[key]) {
-                        data[key] = diff[key]!.newValue;
-                    }
-                })
-                if (process.env.DEBUG) {
-                    console.log(`storage[${name}] state changed processed ${JSON.stringify(data)}`);
-                }
-                this.handler.onSyncedStoreUpdate({ name, data })
+                this.handler.onSyncedStoreUpdate({ name, data: diff })
             });
             storages.set(name, storage)
             responseCallback(JSON.stringify(storage.state))
