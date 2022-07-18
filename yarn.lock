@@ -1191,10 +1191,10 @@
   resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.5.tgz#4346daa9cecb4d0f3c46a36cad0915e931b1675a"
   integrity sha512-N/3QKCYOnxHUUP8a40M/tiEUaGnWfhtgSKQ8xjy08IYIe90hO23buEArltF0/ypUO+FTlS7jtfkpQoBZA+FPmw==
 
-"@netless/window-manager@1.0.0-canary.44":
-  version "1.0.0-canary.44"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-1.0.0-canary.44.tgz#b98b145ab43c23d67c3b0378705147c1b5684ee3"
-  integrity sha512-E5RK/rXGndEHB7KjDVTjApzJ2Vc3TKa9JBVJJAad4028BTyNQjZbsecmqSypXsZ+ePySMz0q6KyHYwH7D4Qmyw==
+"@netless/window-manager@1.0.0-canary.45":
+  version "1.0.0-canary.45"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-1.0.0-canary.45.tgz#e22a2b0d3b2207b0a487d7a0724f5f8572b78bdd"
+  integrity sha512-oQlwc+E7oV1SGzpA/4Bj7Z2aZb7+t5RzBg+T6FByEyQaiTh+QQ8mHOEkpAv3KJl/NM9QCz9bYtD/wvIIqzL22g==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "1.0.0-alpha.35"
