@@ -510,8 +510,15 @@ export class RoomAsyncBridge {
                         })
                 }
             } else {
+                // window-manager redefine the strings of BuiltinApps.*.
+                let overrideKind = kind;
+                if (kind == "MediaPlayer") {
+                    overrideKind = BuiltinApps.MediaPlayer
+                } else if (kind == "DocsViewer") {
+                    overrideKind = BuiltinApps.DocsViewer
+                }
                 window.manager.addApp({
-                    kind: kind,
+                    kind: overrideKind,
                     options: options,
                     attributes: attributes
                 }).then(appId => {
