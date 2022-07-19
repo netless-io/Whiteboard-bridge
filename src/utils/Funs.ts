@@ -1,14 +1,22 @@
 import { useEffect, useRef } from 'react';
 import {Displayer, Room, Player, SceneState} from "white-web-sdk";
 import { sdkCallbackHandler } from "../bridge/SDK";
-import { bridge } from '@netless/webview-bridge';
 
 // TODO: 考虑避免多次 hook
 export function addBridgeLogHook(names: string[], logger: (funName: string, ...params: any[]) => void) {
-    const async_obj = bridge.registerMap.async;
-    for (const name of Object.getOwnPropertyNames(async_obj)) {
+    function getBridgeObjectKeys(obj: any): any {
+        return obj.keys && obj.keys() || Object.getOwnPropertyNames(obj);
+    }
+    function getBridgeObjectValue(obj: any, key: string): any {
+        return obj.get && obj.get(key) || obj[key];
+    }
+
+    const isReactNative = window.ReactNativeWebView !== undefined;
+
+    const async_obj = isReactNative ? window.bridge.asyncMethods : window.bridge.registerMap.async;
+    for (const name of getBridgeObjectKeys(async_obj)) {
         if (names.includes(name)) {
-            const namespace = async_obj[name];
+            const namespace = getBridgeObjectValue(async_obj, name);
             for (const funName of Object.getOwnPropertyNames(namespace)) {
                 const fun = namespace[funName];
                 // 只 hook 函数
@@ -27,10 +35,10 @@ export function addBridgeLogHook(names: string[], logger: (funName: string, ...p
         }
     }
 
-    const syn_obj = bridge.registerMap.normal;
-    for (const name of Object.getOwnPropertyNames(syn_obj)) {
+    const syn_obj = isReactNative ? window.bridge.methods : window.bridge.registerMap.normal;
+    for (const name of getBridgeObjectKeys(syn_obj)) {
         if (names.includes(name)) {
-            const namespace = syn_obj[name];
+            const namespace = getBridgeObjectValue(syn_obj, name);
             for (const funName of Object.getOwnPropertyNames(namespace)) {
                 const fun = namespace[funName];
                 // 只 hook 函数
