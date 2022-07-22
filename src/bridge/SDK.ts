@@ -399,6 +399,10 @@ class SDKBridge {
         }`;
     }
 
+    nativeLog = (logs: string[], responseCallback: any) => {
+        responseCallback();
+    }
+
     registerApp = (para: AppRegisterParams, responseCallback: any) => {
         if (para.javascriptString) {
             let variable = para.variable!;
