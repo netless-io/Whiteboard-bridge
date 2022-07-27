@@ -1133,10 +1133,10 @@
     lodash.debounce "^4.0.8"
     react "^16.13.1"
 
-"@netless/synced-store@2.0.2":
-  version "2.0.2"
-  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-2.0.2.tgz#16202fceb099e565365761c82633c38bd4addb6e"
-  integrity sha512-SrzwqFMssdo15o9hxtDzo93W4++TevGbuxFGfICECLdfgea0R/GNWk9fwBZ0jrT03C7FrEfHNsQTTNRbGiOETA==
+"@netless/synced-store@^2.0.3":
+  version "2.0.3"
+  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-2.0.3.tgz#92b9eae9a13db5ff90e3064971f41520666610b6"
+  integrity sha512-MyAOW+QX19PXXb41yrdJzwMmdCLbe9l3Jw8zHI125D6EF516zMvmGjnyXzo1iLHpoMx0JIj1kYlKwEAVNbbe7w==
   dependencies:
     lodash-es "^4.17.21"
     remitter "^0.2.6"
