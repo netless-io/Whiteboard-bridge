@@ -1102,10 +1102,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.3":
-  version "0.2.3"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.3.tgz#28ba5d824a46be64933d2093d90c06d11cca56cc"
-  integrity sha512-A3uQFDGyxX3xsHRRVwtm5VDANRBIOE96ElnywiHU9uq+WCshDOqTLNTlqvN2eZx5aMdCgM5vya+F8xwDULF6Rg==
+"@netless/app-slide@0.2.5":
+  version "0.2.5"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.5.tgz#76fd58b6ad8415da10eee4d5c0e41278151f651e"
+  integrity sha512-e3TB7INMqfKIzKY3TaGSTPoafYQCtpmFlIChQUc/+H5ZzzcxikmOniCmW3YH89nin1LqlZjOQxCeF2pzGmKk/A==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1132,6 +1132,13 @@
     eventemitter2 "^6.4.3"
     lodash.debounce "^4.0.8"
     react "^16.13.1"
+
+"@netless/slide-rtc-plugin@^0.5.13":
+  version "0.5.13"
+  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-0.5.13.tgz#43e098478de39080cc94ea5f59d9808fc398f547"
+  integrity sha512-3BcJrlNTeHWwQLtVoMC8yJRQFlww3m66juyiuHC71UKYpeSk+QDo2cCflU2PfbFS8lwqnwGUxXAagUAbjwXbbA==
+  dependencies:
+    eventemitter3 "4.0.7"
 
 "@netless/synced-store@^2.0.3":
   version "2.0.3"
@@ -3179,15 +3186,15 @@ eventemitter2@^6.4.3:
   resolved "https://registry.yarnpkg.com/eventemitter2/-/eventemitter2-6.4.3.tgz#35c563619b13f3681e7eb05cbdaf50f56ba58820"
   integrity sha512-t0A2msp6BzOf+QAcI6z9XMktLj52OjGQg+8SJH6v5+3uxNpWYRR3wQmfA+6xtMU9kOC59qk9licus5dYcrYkMQ==
 
+eventemitter3@4.0.7, eventemitter3@^4.0.7:
+  version "4.0.7"
+  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
+  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
+
 eventemitter3@^4.0.0:
   version "4.0.4"
   resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.4.tgz#b5463ace635a083d018bdc7c917b4c5f10a85384"
   integrity sha512-rlaVLnVxtxvoyLsQQFBx53YmXHDxRIzzTLbdfxqi4yocpSjAxXwkU0cScM5JgSKMqEhrZpnvQ2D9gjylR0AimQ==
-
-eventemitter3@^4.0.7:
-  version "4.0.7"
-  resolved "https://registry.yarnpkg.com/eventemitter3/-/eventemitter3-4.0.7.tgz#2de9b68f6528d5644ef5c59526a1b4a07306169f"
-  integrity sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==
 
 events@^3.2.0:
   version "3.3.0"
