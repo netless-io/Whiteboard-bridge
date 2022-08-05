@@ -1,7 +1,7 @@
+import { RTCClient } from "@netless/slide-rtc-plugin";
 import { call, register } from "./bridge";
 
-export class Rtc {
-
+export class Rtc implements RTCClient {
     static kStartAudioMixing = 710;
     static kStopAudioMixing = 713;
     static kAudioError = 714;
@@ -51,28 +51,33 @@ export class Rtc {
             *  714: 播放失败，error code 会有具体原因
     */
 
-    public startAudioMixing = (filePath: string, loopback: boolean, replace: boolean, cycle: number, callback: (state: number, errorCode: number) => void) => {
+    public startAudioMixing = (filePath: string, loopback: boolean, replace: boolean, cycle: number, callback?: (state: number, errorCode: number) => void): number => {
         this.startCallback = callback;
-        return call("rtc.startAudioMixing", {filePath, loopback, replace, cycle});
+        call("rtc.startAudioMixing", {filePath, loopback, replace, cycle});
+        return 0;
     }
 
     /**
     * callback?: (state: number, errorCode: number) => void
     */
-    public stopAudioMixing = (callback: (state: number, errorCode: number) => void) => {
+    public stopAudioMixing = (callback?: ((state: number, errorCode: number) => void)): number => {
         this.stopCallback = callback;
-        return call("rtc.stopAudioMixing");
+        call("rtc.stopAudioMixing");
+        return 0;
     }
 
-    public pauseAudioMixing() {
-        return call("rtc.pauseAudioMixing");
+    public pauseAudioMixing(): number {
+        call("rtc.pauseAudioMixing");
+        return 0;
     }
 
-    public resumeAudioMixing() {
-        return call("rtc.resumeAudioMixing");
+    public resumeAudioMixing(): number {
+        call("rtc.resumeAudioMixing");
+        return 0;
     }
 
-    public setAudioMixingPosition(pos) {
-        return call("rtc.setAudioMixingPosition", pos);
+    public setAudioMixingPosition(pos): number {
+        call("rtc.setAudioMixingPosition", pos);
+        return 0;
     }
 }
