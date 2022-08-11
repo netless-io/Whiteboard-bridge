@@ -1102,10 +1102,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.6":
-  version "0.2.6"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.6.tgz#78087cd0502ce0068856b0037a6ce26feca39e86"
-  integrity sha512-wIHLD1gROvPHlEahYOF76vlhV4WLg7nnf/FDbeWA0qkYvj/MX91nU5Nh0JgwLVLTGxpzldOdEv24fAUHmI5kHA==
+"@netless/app-slide@0.2.7":
+  version "0.2.7"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.7.tgz#e19e9356281b5ca959ebdcbf7434fb8bca23e2bc"
+  integrity sha512-LH2Q4do1RlmOl7uqrRcj3LEZcpyWZ8u8pgi5lk5bolwuigG1xZ/EvFgjHIFyryOXvk2X28qa98s9gHLdodK+mQ==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
