@@ -250,6 +250,10 @@ class SDKBridge {
                 await initSyncedStore(room)
             }
             registerBridgeRoom(room);
+            // joinRoom 的 disableCameraTransform 参数不生效的 workaround。等 web-sdk 修复后，删除这里的代码。
+            if (disableCameraTransform) {
+                room.disableCameraTransform = disableCameraTransform;
+            }
             return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
