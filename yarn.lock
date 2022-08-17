@@ -1197,10 +1197,10 @@
   resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.5.tgz#4346daa9cecb4d0f3c46a36cad0915e931b1675a"
   integrity sha512-N/3QKCYOnxHUUP8a40M/tiEUaGnWfhtgSKQ8xjy08IYIe90hO23buEArltF0/ypUO+FTlS7jtfkpQoBZA+FPmw==
 
-"@netless/window-manager@^0.4.38":
-  version "0.4.39"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.39.tgz#65e3140732cc7ca1dac6a9dfd5dcc06695557517"
-  integrity sha512-Fvls15ezxE0ic2Sfo/UpddiwVTItZGk+U5+HGtLuVRsMQOvoKek9reT6KpCxo0MgT89hZLdLjURyut04pT7JdA==
+"@netless/window-manager@^0.4.40":
+  version "0.4.40"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.40.tgz#9c8b951880ffede2f36bc46264c42fa2d65d1753"
+  integrity sha512-C3S/r8HMfXrNi5EISmZAq8QPvnexzGYSLg5s9FUtgwfgvuqciaBhacJI0Lx6vT3+mW3wWPmOQqE5SbbgjVI7ig==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.2.26"
