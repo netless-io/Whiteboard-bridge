@@ -1150,10 +1150,10 @@
     side-effect-manager "^1.1.1"
     value-enhancer "^1.3.0"
 
-"@netless/telebox-insider@0.2.26":
-  version "0.2.26"
-  resolved "https://registry.npmmirror.com/@netless/telebox-insider/-/telebox-insider-0.2.26.tgz#cc6dd229a5131225855b5780f3c180ed27534fbb"
-  integrity sha512-HOBi9HWK0Zf0nvzfjM0V/0QmZ69ec7L/lCKMwRcfiQHxAAJ/zo9fEm468WocYFsliixWW5L7HwMN0eHb0mw7hA==
+"@netless/telebox-insider@0.2.27":
+  version "0.2.27"
+  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-0.2.27.tgz#cfe62d979088c8052cea5a7f7adfb6b0fb54603f"
+  integrity sha512-6329Zf9Z8M7DI6EI4OyBM25HuVm1moKZfjuBguSEc6YkM0TvNFckq8UEszVYxPn4Wh5p1TJnho3i69gxzgXKLA==
   dependencies:
     "@types/shallowequal" "^1.1.1"
     eventemitter3 "^4.0.7"
@@ -1197,13 +1197,13 @@
   resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.5.tgz#4346daa9cecb4d0f3c46a36cad0915e931b1675a"
   integrity sha512-N/3QKCYOnxHUUP8a40M/tiEUaGnWfhtgSKQ8xjy08IYIe90hO23buEArltF0/ypUO+FTlS7jtfkpQoBZA+FPmw==
 
-"@netless/window-manager@^0.4.40":
-  version "0.4.40"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.40.tgz#9c8b951880ffede2f36bc46264c42fa2d65d1753"
-  integrity sha512-C3S/r8HMfXrNi5EISmZAq8QPvnexzGYSLg5s9FUtgwfgvuqciaBhacJI0Lx6vT3+mW3wWPmOQqE5SbbgjVI7ig==
+"@netless/window-manager@^0.4.41":
+  version "0.4.41"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.41.tgz#07ce5f700fcc7e42dd8de1f7bef47b8bc8fdee8c"
+  integrity sha512-R+vb+6nC0aECJqBjDJ3WJbkzGaT0ikfAd+hdqObLc6EPhjZlxKwfpVnyU+i/Z5P3OfclpaWFrh/qJq7KjSAGkQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
-    "@netless/telebox-insider" "0.2.26"
+    "@netless/telebox-insider" "0.2.27"
     emittery "^0.9.2"
     lodash "^4.17.21"
     p-retry "^4.6.1"
