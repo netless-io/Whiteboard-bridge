@@ -14,12 +14,23 @@ describe('Test hook logger', () => {
 
         // 这里列举所有的namespace，每调用一个方法，那么要出现一条对应的日志
         // 会依赖加入房间和回放房间，同时关闭了report
-        
+
+        // 这里由于参数没有填对，所有有些调用会触发 error, 这个时候要忽略这些错误。
+        cy.on(`uncaught:exception`, (err, runnable) => {
+            return false;
+        });
+
         // test joinRoom
         cy
             .visit('http://localhost:8760')
             .then(win => {
-                const sdkParams = { log: false, userCursor: true, __platform: "bridgeTest", appIdentifier, useMultiViews: true };
+                const sdkParams = { 
+                    log: false, 
+                    userCursor: true, 
+                    __platform: "bridgeTest", 
+                    appIdentifier, 
+                    useMultiViews: true,
+                    loggerOptions: {reportDebugLogMode: 'banReport',reportQualityMode: 'banReport'}};
                 win.bridge.registerMap.async.sdk.newWhiteSdk(sdkParams, () => { });
                 const roomParams = {
                     uuid: testRoomUUID, uid: "0", roomToken: testRoomToken, isWritable: false, userPayload: {
@@ -40,7 +51,13 @@ describe('Test hook logger', () => {
             cy
             .visit('http://localhost:8760')
             .then(win => {
-                const sdkParams = { log: false, userCursor: true, __platform: "bridgeTest", appIdentifier, useMultiViews: true };
+                const sdkParams = { 
+                    log: false, 
+                    userCursor: true, 
+                    __platform: "bridgeTest", 
+                    appIdentifier, 
+                    useMultiViews: true,
+                    loggerOptions: {reportDebugLogMode: 'banReport',reportQualityMode: 'banReport'}};
                 win.bridge.registerMap.async.sdk.newWhiteSdk(sdkParams, () => { });
                 const replayParams = { room: testReplayUUID, roomToken: testReplayToken };
                 try { win.bridge.registerMap.async.sdk.replayRoom(replayParams, ()=>{}) }
