@@ -1187,14 +1187,14 @@
     localforage "^1.10.0"
     lodash "^4.17.21"
 
-"@netless/synced-store@^2.0.3":
-  version "2.0.3"
-  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-2.0.3.tgz#92b9eae9a13db5ff90e3064971f41520666610b6"
-  integrity sha512-MyAOW+QX19PXXb41yrdJzwMmdCLbe9l3Jw8zHI125D6EF516zMvmGjnyXzo1iLHpoMx0JIj1kYlKwEAVNbbe7w==
+"@netless/synced-store@^2.0.7":
+  version "2.0.7"
+  resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-2.0.7.tgz#0455490eafc687c3009c7b06f4c5f5caff1d24dc"
+  integrity sha512-E5ukXMTLa0Mlhlv9Rcy3MJSAM5kwiLoXQy42OCSIFdBR8jf0BKbSUXSjnA8J+FZq6UidNtGaadDWjhwlM1z5MA==
   dependencies:
     lodash-es "^4.17.21"
     remitter "^0.2.6"
-    side-effect-manager "^1.1.1"
+    side-effect-manager "^1.1.3"
     value-enhancer "^1.3.0"
 
 "@netless/telebox-insider@1.0.0-alpha.37":
@@ -5874,6 +5874,11 @@ side-effect-manager@^1.1.1:
   version "1.1.1"
   resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-1.1.1.tgz#77e01bdba9c7ffa0d9f85b8189f7f4f9e7e9eae1"
   integrity sha512-ppUBbzOXLydre40Yz553eIIlTdf2WCJcqMI4n06sTRCA2o5AwG5WQ2qq6fHp5C8RK3TAfgtZKrhllNG2F1jzCA==
+
+side-effect-manager@^1.1.3:
+  version "1.2.1"
+  resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-1.2.1.tgz#4b73265ae79396a6e6405a16e729d2f80dbbcef7"
+  integrity sha512-RBosCqit8LYMfrEXBt+4klzwWi3faGy4vfXNmUFZhgJY/oY6ZqF7RyUxWOJb0EUfA3jsY3juvFBJHYTk1q/3RQ==
 
 signal-exit@^3.0.2:
   version "3.0.7"
