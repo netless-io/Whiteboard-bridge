@@ -8,7 +8,8 @@ import {audioPlugin} from "@netless/white-audio-plugin";
 import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
-import SlideApp, { addHooks as addHooksSlide } from "@netless/app-slide";
+import SlideApp, { addHooks as addHooksSlide, usePlugin}  from "@netless/app-slide";
+import { RTCPlugin } from '@netless/slide-rtc-plugin';
 import { MountParams, WindowManager } from "@netless/window-manager";
 import { SyncedStorePlugin } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
@@ -24,7 +25,6 @@ import { registerPlayerBridge } from "./Player";
 import { Rtc } from '../Rtc';
 import { SDKCallbackHandler } from '../native/SDKCallbackHandler';
 import { destroySyncedStore, initSyncedStore } from './SyncedStore';
-
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
@@ -127,6 +127,7 @@ class SDKBridge {
         const pptParams = restConfig.pptParams || {};
         if (enableRtcIntercept) {
             (pptParams as any).rtcClient = rtcClient;
+            usePlugin(new RTCPlugin(rtcClient));
         }
 
         const videoJsLogger = (message?: any, ...optionalParams: any[]) => {
@@ -249,6 +250,10 @@ class SDKBridge {
                 await initSyncedStore(room)
             }
             registerBridgeRoom(room);
+            // joinRoom 的 disableCameraTransform 参数不生效的 workaround。等 web-sdk 修复后，删除这里的代码。
+            if (disableCameraTransform) {
+                room.disableCameraTransform = disableCameraTransform;
+            }
             return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable}));
         }).catch((e: Error) => {
             return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));

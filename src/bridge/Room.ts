@@ -108,7 +108,7 @@ function updateIframePluginState(room: Room) {
 
 export class RoomBridge {
     setWindowManagerAttributes(attributes: any) {
-        window.manager?.setAttributes(attributes);
+        window.manager?.safeSetAttributes(attributes);
         window.manager?.refresh();
     }
 

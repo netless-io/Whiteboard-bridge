@@ -23,8 +23,9 @@
   "dependencies": {
     "@netless/app-slide": "0.3.0-canary.3",
     "@netless/combine-player": "^1.1.1",
-    "@netless/cursor-tool": "^0.1.0",
+    "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
+    "@netless/slide-rtc-plugin": "^0.6.1",
     "@netless/synced-store": "^2.0.3",
     "@netless/video-js-plugin": "0.3.8",
     "@netless/webview-bridge": "^0.1.8",
@@ -40,7 +41,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.16.27"
+    "white-web-sdk": "2.16.35"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
