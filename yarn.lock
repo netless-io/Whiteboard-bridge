@@ -1190,10 +1190,10 @@
     side-effect-manager "^1.1.1"
     value-enhancer "^1.3.0"
 
-"@netless/telebox-insider@1.0.0-alpha.36":
-  version "1.0.0-alpha.36"
-  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-1.0.0-alpha.36.tgz#edb4b836cdaa6ff59e1b70ed012c6bfc93ff2170"
-  integrity sha512-wW0/pmagLt1pzV7PfCWJAAsOm4+RED6GEh2mOSTGS/q6lIOV8Qjoe0MizaR3ild7d6rg/kIFj2II3IYF0d+OiA==
+"@netless/telebox-insider@1.0.0-alpha.37":
+  version "1.0.0-alpha.37"
+  resolved "https://registry.yarnpkg.com/@netless/telebox-insider/-/telebox-insider-1.0.0-alpha.37.tgz#a35b70a2053c6adbe662cc314cfe9b433b4f64f9"
+  integrity sha512-Fazjl/sLaqXPASEvc3ZC+uQSzaCmlmOIpcTwokP//Hn9u4f6C1HvU1veIF1An+s6s44gSYkS9IegYZrGt5cOsg==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@types/shallowequal" "^1.1.1"
@@ -1238,13 +1238,13 @@
   resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.5.tgz#4346daa9cecb4d0f3c46a36cad0915e931b1675a"
   integrity sha512-N/3QKCYOnxHUUP8a40M/tiEUaGnWfhtgSKQ8xjy08IYIe90hO23buEArltF0/ypUO+FTlS7jtfkpQoBZA+FPmw==
 
-"@netless/window-manager@1.0.0-canary.46":
-  version "1.0.0-canary.46"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-1.0.0-canary.46.tgz#478029519c951def4d5e451e4556e2f8c133a892"
-  integrity sha512-UVvVb3AuAm/Hg9smU6AIzEUYsUS+HT5iFN2y7X6lCxTpYZflN99lwu+EVryTsIWVBblbwhqmO5o8782H2BlgXQ==
+"@netless/window-manager@1.0.0-canary.53":
+  version "1.0.0-canary.53"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-1.0.0-canary.53.tgz#29a1cf1b94fd0bfdd3b69a1a1ede8d4c94b888b8"
+  integrity sha512-5npiGhvXcPsHULOim2q10B3IqSev8+UcsY7zyPyMoiY2uY/BmJuF/Ps+oJvECpflwCb7DtTVSQgDZ7D+7HHqqQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
-    "@netless/telebox-insider" "1.0.0-alpha.36"
+    "@netless/telebox-insider" "1.0.0-alpha.37"
     emittery "^0.11.0"
     lodash "^4.17.21"
     p-retry "^4.6.2"
