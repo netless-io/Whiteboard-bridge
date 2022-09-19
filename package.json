@@ -21,18 +21,19 @@
     "**/video.js": "7.10.0"
   },
   "dependencies": {
-    "@netless/app-slide": "0.3.0-canary.3",
+    "@netless/app-slide": "0.3.0-canary.10",
     "@netless/combine-player": "^1.1.1",
-    "@netless/cursor-tool": "^0.1.0",
+    "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
-    "@netless/synced-store": "^2.0.3",
+    "@netless/slide-rtc-plugin": "^0.6.1",
+    "@netless/synced-store": "^2.0.7",
     "@netless/video-js-plugin": "0.3.8",
     "@netless/webview-bridge": "^0.1.8",
     "@netless/white-audio-plugin": "^1.2.4",
     "@netless/white-audio-plugin2": "^2.0.4",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
-    "@netless/window-manager": "1.0.0-canary.46",
+    "@netless/window-manager": "1.0.0-canary.53",
     "buffer": "^6.0.3",
     "core-js": "^3",
     "html2canvas": "^1.3.3",
@@ -40,7 +41,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.16.27"
+    "white-web-sdk": "2.16.35"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",

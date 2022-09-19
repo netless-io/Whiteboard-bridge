@@ -1,14 +1,12 @@
 import { sdkCallbackHandler } from '../bridge/SDK';
 
-let reportLog = false;
+let reportToNative = false;
 
-export function enableReport(enable: boolean) { reportLog = enable; }
+export function enableReport(enable: boolean) { reportToNative = enable; }
 
 export function logger(funName: string, ...params: any[]) {
     console.log(funName, ...params);
-    if (reportLog) {
-        report(funName, ...params);
-    }
+    report(reportToNative, funName, ...params);
 }
 
 let delayedLogs: string[][] = [];
@@ -21,7 +19,7 @@ function reportDelayedLog() {
     delayedLogs = [];
 }
 
-function report(funName: string, ...params: any[]) {
+function report(reportToNative: boolean, funName: string, ...params: any[]) {
     // sdk 的 logger，会直接使用 toString 方法，进行转换。Object 的 toString 直接是 "[object Object]"，无法记录内容
     let message = params.map(v => {
         if (typeof v === "object") {
@@ -56,5 +54,7 @@ function report(funName: string, ...params: any[]) {
         nativeMessage = params;
     }
 
-    sdkCallbackHandler.onLogger({ funName, params: nativeMessage });
+    if (reportToNative) {
+        sdkCallbackHandler.onLogger({ funName, params: nativeMessage });
+    }
 }
