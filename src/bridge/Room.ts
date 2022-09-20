@@ -233,11 +233,13 @@ export class RoomAsyncBridge {
         } else {
             const dir = this.room.state.sceneState.contextPath;
             const after = params.after;
+            const scene = params.scene || {};
+            const scenes = Array.isArray(scene) ? scene : [scene];
             if (after) {
                 const tIndex = this.room.state.sceneState.index + 1;
-                this.room.putScenes(dir, [params.scene || {}], tIndex);
+                this.room.putScenes(dir, scenes, tIndex);
             } else {
-                this.room.putScenes(dir, [params.scene || {}]);
+                this.room.putScenes(dir, scenes);
             }
             if (responseCallback) {
                 setTimeout(() => {
