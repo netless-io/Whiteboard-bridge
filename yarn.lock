@@ -1252,17 +1252,18 @@
   resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-1.0.0-alpha.2.tgz#d52941ec5b0e41085f69d3685671f3fb01345805"
   integrity sha512-7xYRjUtZ6oX8kg6jY2Fz/8VnKKKXlUEdBWm4XfsRaYgdUoZgAP29Q0jObTFhuW1kfuL8r5k2x5bRplgV3MVazQ==
 
-"@netless/window-manager@1.0.0-canary.53":
-  version "1.0.0-canary.53"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-1.0.0-canary.53.tgz#29a1cf1b94fd0bfdd3b69a1a1ede8d4c94b888b8"
-  integrity sha512-5npiGhvXcPsHULOim2q10B3IqSev8+UcsY7zyPyMoiY2uY/BmJuF/Ps+oJvECpflwCb7DtTVSQgDZ7D+7HHqqQ==
+"@netless/window-manager@1.0.0-canary.59":
+  version "1.0.0-canary.59"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-1.0.0-canary.59.tgz#e9221d9cf0906f8fbf91f2473e536f120f09d7e0"
+  integrity sha512-5rsFFG2fM+rsfpShyHFQnwfNl00TVYl0UU9lIWntFvdX5UkkR2gnAUywwRmdno48EuyryW98FUxV+QDsK5AVkA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
+    "@netless/synced-store" "^2.0.7"
     "@netless/telebox-insider" "1.0.0-alpha.37"
     emittery "^0.11.0"
     lodash "^4.17.21"
     p-retry "^4.6.2"
-    side-effect-manager "^1.1.1"
+    side-effect-manager "^1.2.1"
     uuid "^7.0.3"
     value-enhancer "^1.3.2"
 
@@ -5882,7 +5883,7 @@ side-effect-manager@^1.1.1:
   resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-1.1.1.tgz#77e01bdba9c7ffa0d9f85b8189f7f4f9e7e9eae1"
   integrity sha512-ppUBbzOXLydre40Yz553eIIlTdf2WCJcqMI4n06sTRCA2o5AwG5WQ2qq6fHp5C8RK3TAfgtZKrhllNG2F1jzCA==
 
-side-effect-manager@^1.1.3:
+side-effect-manager@^1.1.3, side-effect-manager@^1.2.1:
   version "1.2.1"
   resolved "https://registry.yarnpkg.com/side-effect-manager/-/side-effect-manager-1.2.1.tgz#4b73265ae79396a6e6405a16e729d2f80dbbcef7"
   integrity sha512-RBosCqit8LYMfrEXBt+4klzwWi3faGy4vfXNmUFZhgJY/oY6ZqF7RyUxWOJb0EUfA3jsY3juvFBJHYTk1q/3RQ==
