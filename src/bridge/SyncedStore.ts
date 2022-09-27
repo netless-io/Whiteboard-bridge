@@ -1,5 +1,5 @@
 import { SyncedStorePlugin, Storage, SyncedStore } from "@netless/synced-store";
-import { Displayer, StorageStateChangedEvent } from "@netless/window-manager";
+import { Displayer } from "@netless/window-manager";
 import { call, register, registerAsyn } from ".";
 import { addBridgeLogHook } from "../utils/Funs";
 import { logger } from "../utils/Logger";
@@ -36,7 +36,7 @@ export class StoreAsyncBridge {
 
         try {
             const storage = this.syncedStore.connectStorage(name, object)
-            storage.on("stateChanged", (diff: StorageStateChangedEvent) => {
+            storage.on("stateChanged", (diff) => {
                 if (process.env.DEBUG) {
                     console.log(`storage[${name}] state changed ${JSON.stringify(diff)}`);
                 }
