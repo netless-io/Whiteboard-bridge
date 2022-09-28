@@ -21,7 +21,7 @@
     "**/video.js": "7.10.0"
   },
   "dependencies": {
-    "@netless/app-slide": "0.3.0-canary.12",
+    "@netless/app-slide": "0.3.0-canary.13",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
