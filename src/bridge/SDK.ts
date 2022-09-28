@@ -10,7 +10,7 @@ import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
 import SlideApp, { addHooks as addHooksSlide, usePlugin}  from "@netless/app-slide";
 import { RTCPlugin } from '@netless/slide-rtc-plugin';
-import { MountParams, WindowManager } from "@netless/window-manager";
+import { ManagerViewMode, MountParams, WindowManager } from "@netless/window-manager";
 import { SyncedStorePlugin } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
 import {logger, enableReport} from "../utils/Logger";
@@ -233,7 +233,9 @@ class SDKBridge {
             /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
             if (useMultiViews) {
                 try {
-                    const mountWindowParams = {...windowParams, room};
+                    const scrollVertical = (windowParams as any).scrollVerticalOnly || false;
+                    const viewMode: ManagerViewMode | undefined = scrollVertical ? "scroll" : undefined;
+                    const mountWindowParams = {...windowParams, room, viewMode};
                     const manager = await mountWindowManager(room, roomCallbackHandler, mountWindowParams);       
                     roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
                 } catch (error) {
