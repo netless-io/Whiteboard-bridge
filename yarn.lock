@@ -1142,12 +1142,12 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.3.0-canary.12":
-  version "0.3.0-canary.12"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.3.0-canary.12.tgz#5c0591d44cbd38483c74a3e556356b7915375363"
-  integrity sha512-XcTX+tVUoDNwjIoo6TkeJ3pBugYUuHk8kyWGx9+PHKG0Pa1h5TNhfG/VzNrkC283Ch8JEb32x0ICDRgrcjI+FA==
+"@netless/app-slide@0.3.0-canary.13":
+  version "0.3.0-canary.13"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.3.0-canary.13.tgz#582363b6dfa89349b0a845d66fb3e0906c7224aa"
+  integrity sha512-PHzhx322hpWto5wm1ldOmtZhnwi/Aj/VQ/dxTUxB0HZuZMy4Rnmj3LQSbkMDjwJC3ioIeu5LQi6WI0t+VlFkKw==
   dependencies:
-    "@netless/slide" "^0.7.2"
+    "@netless/slide" "^0.7.4"
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1182,7 +1182,7 @@
   dependencies:
     eventemitter3 "4.0.7"
 
-"@netless/slide@^0.7.2":
+"@netless/slide@^0.7.4":
   version "0.7.4"
   resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-0.7.4.tgz#1d7372ca5084f6338dd1ff5ac2da5247245543f2"
   integrity sha512-9Gd6BY/JWcvpBotyyS7c/IHaGC1yVOb5AfvF7l9ZdSWnqyMU5GEMxcmc2AgFn+DezS24wDJN/zAL33M6fGS+3Q==
