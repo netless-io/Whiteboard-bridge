@@ -25,7 +25,7 @@
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
-    "@netless/slide-rtc-plugin": "^0.6.1",
+    "@netless/slide-rtc-plugin": "^0.7.5",
     "@netless/synced-store": "^2.0.3",
     "@netless/video-js-plugin": "0.3.8",
     "@netless/webview-bridge": "^0.1.8",
