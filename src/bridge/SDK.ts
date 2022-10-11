@@ -233,7 +233,8 @@ class SDKBridge {
             /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
             if (useMultiViews) {
                 try {
-                    const scrollVertical = (windowParams as any).scrollVerticalOnly || false;
+                    const hasWindowParams = (typeof windowParams !== 'undefined');
+                    const scrollVertical = hasWindowParams && ((windowParams as any).scrollVerticalOnly || false);
                     const viewMode: ManagerViewMode | undefined = scrollVertical ? "scroll" : undefined;
                     const mountWindowParams = {...windowParams, room, viewMode};
                     const manager = await mountWindowManager(room, roomCallbackHandler, mountWindowParams);       
