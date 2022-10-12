@@ -1102,10 +1102,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.16":
-  version "0.2.16"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.16.tgz#b1b99812c1b2159e5fed4584a356093ca173fadc"
-  integrity sha512-mjwtHRdy8wktL/pqFnEp/zqDTHIIC8hlIMwrscsHxrY3GNCmxSrmXwt2wBYBUDwkN1XY1C0oBMid0zZ4uaalxA==
+"@netless/app-slide@0.2.17":
+  version "0.2.17"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.17.tgz#e0ee6354af566d38cb389dc113e3985aeda4349e"
+  integrity sha512-Jcd/4immlfQ+/gOHrftmNVZmyBb/k89iVDtmxqg4VDJaDvQsnCR14SV2bjViYN15fqmcV5e+5Yj0sUxX+XusIw==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1197,10 +1197,10 @@
   resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.5.tgz#4346daa9cecb4d0f3c46a36cad0915e931b1675a"
   integrity sha512-N/3QKCYOnxHUUP8a40M/tiEUaGnWfhtgSKQ8xjy08IYIe90hO23buEArltF0/ypUO+FTlS7jtfkpQoBZA+FPmw==
 
-"@netless/window-manager@^0.4.44":
-  version "0.4.44"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.44.tgz#084e888630e89339ba75d2901ad62c304442d455"
-  integrity sha512-Xnrh3RAZl9DxDia+0hXnxfLCw+rYBcHTgN+P89NVP93ObOvAq487rpSpf1nHIAX5EN/CA8ZAZMwPlIdb05U1xw==
+"@netless/window-manager@^0.4.46":
+  version "0.4.46"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.46.tgz#1f63ce671f952ed5cb53142f8813cb346335333d"
+  integrity sha512-w2IiPkC3klNIzl13H6snv9WACekBj/5Gj9RSv7H2OllrmrOfNQqVRBVT9j2F4zYse7uUlbSCGYgchT/X65HwlQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.2.27"
