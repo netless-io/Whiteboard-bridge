@@ -1133,10 +1133,10 @@
     lodash.debounce "^4.0.8"
     react "^16.13.1"
 
-"@netless/slide-rtc-plugin@^0.8.2":
-  version "0.8.2"
-  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-0.8.2.tgz#cb42b6ab2a0b8f806da35bc4886583cc174a6778"
-  integrity sha512-nG5qFIWvZsiq67BNIClrROk4VVMCNemwQJuX5Ur9LEHA3KMzMQsXBKwcJcZ+DJptIJKb5ZzlkZnUioZsojTzGg==
+"@netless/slide-rtc-plugin@^0.8.3":
+  version "0.8.3"
+  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-0.8.3.tgz#f23a267a601c8885b9b53496e343d13eff02a85e"
+  integrity sha512-Mn2XuyIOBVQRdy38hUcDrGIwS9/S5hiY4LtlrsqPSRCJeXxZCdK82URPZfhiH/lU5Ld4oZaEJvP1k0TwpV9ZMQ==
   dependencies:
     eventemitter3 "4.0.7"
 
