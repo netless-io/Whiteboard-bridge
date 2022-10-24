@@ -67,7 +67,8 @@ export function globalErrorEvent(e: ErrorEvent) {
 
 export function createPageState(sceneState: SceneState) {
     if (sceneState) {
-        return { pageState: { index: sceneState.index, length: sceneState.scenes.length } };
+        const pageNames = sceneState.scenes.map(i=>i.name);
+        return { pageState: { index: sceneState.index, length: sceneState.scenes.length, pages: pageNames } };
     } else {
         return {};
     }

@@ -3,6 +3,7 @@ import { call } from '../bridge';
 import {createPageState} from '../utils/Funs'
 import {RoomPhase, RoomState} from "white-web-sdk";
 import {NativeDisplayerState} from '../bridge/Displayer';
+import { PageState } from '@netless/window-manager';
 
 const reconnectingTimeout = 45000;
 
