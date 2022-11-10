@@ -3,10 +3,10 @@ import { Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerSta
 import { convertBound } from "../utils/BoundConvert";
 import html2canvas from "html2canvas";
 import { addBridgeLogHook, isRoom } from "../utils/Funs";
-import type { NativeCameraBound } from "@netless/whiteboard-bridge-types";
+import type { NativeCameraBound, TeleBoxColorScheme } from "@netless/whiteboard-bridge-types";
 import { Event as AkkoEvent } from "white-web-sdk";
 import { IframeBridge } from "@netless/iframe-bridge";
-import { TeleBoxState } from "@netless/telebox-insider";
+import { TeleBoxState, TeleBoxManagerThemeConfig } from "@netless/telebox-insider";
 import { PageState } from "@netless/window-manager";
 import { whiteboardContainerId } from "../App";
 import { logger } from "../utils/Logger";
@@ -103,6 +103,14 @@ export class DisplayerBridge {
         } else {
             logger("postmessage fail", "no content Window");
         }
+    }
+
+    setTeleBoxTheme(theme: TeleBoxManagerThemeConfig) {
+        window.manager?.teleboxManager.setTheme(theme);
+    }
+
+    setPrefersColorScheme(scheme: TeleBoxColorScheme) {
+        window.manager?.setPrefersColorScheme(scheme);
     }
 
     scaleIframeToFit = () => {
