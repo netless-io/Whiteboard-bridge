@@ -1,5 +1,4 @@
 import { Attributes as SlideAttributes } from "@netless/app-slide";
-import { TeleBoxColorScheme } from '@netless/telebox-insider';
 import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
 import { GlobalState, ImageInformation, MemberState, Room, SceneDefinition, ViewMode } from "white-web-sdk";
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
@@ -114,10 +113,6 @@ export class RoomBridge {
 
     setContainerSizeRatio(ratio) {
         window.manager?.setContainerSizeRatio(ratio);
-    }
-
-    setPrefersColorScheme(scheme: TeleBoxColorScheme) {
-        window.manager?.setPrefersColorScheme(scheme);
     }
 }
 
