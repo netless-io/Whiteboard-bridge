@@ -77,18 +77,20 @@ function removeBind() {
     }
 }
 
-async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: MountParams) {
+async function mountWindowManager(windowParams: MountParams, handler: RoomCallbackHandler | ReplayerCallbackHandler) {
     const manager = await WindowManager.mount({
-        // 高比宽
-        containerSizeRatio: 9/16,
-        chessboard: true,
         cursor: !!cursorAdapter,
         ...windowParams,
         container: divRef(),
-        room
     });
     addManagerListener(manager, logger, handler);
     return manager;
+}
+
+function getViewModeFromNativeWindowParams(windowParams: Omit<Omit<MountParams, 'room'>, 'container'> | undefined): ManagerViewMode | undefined {
+    const hasWindowParams = (typeof windowParams !== 'undefined');
+    const scrollVertical = hasWindowParams && ((windowParams as any).scrollVerticalOnly || false);
+    return scrollVertical ? "scroll" : undefined;
 }
 
 class SDKBridge {
@@ -233,14 +235,12 @@ class SDKBridge {
             /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
             if (useMultiViews) {
                 try {
-                    const hasWindowParams = (typeof windowParams !== 'undefined');
-                    const scrollVertical = hasWindowParams && ((windowParams as any).scrollVerticalOnly || false);
-                    const viewMode: ManagerViewMode | undefined = scrollVertical ? "scroll" : undefined;
-                    const mountWindowParams = {...windowParams, room, viewMode};
-                    const manager = await mountWindowManager(room, roomCallbackHandler, mountWindowParams);       
+                    const viewMode = getViewModeFromNativeWindowParams(windowParams);
+                    const mountWindowParams = { ...windowParams, viewMode, room };
+                    const manager = await mountWindowManager(mountWindowParams, roomCallbackHandler);
                     roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
                 } catch (error) {
-                    return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+                    return responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } }));
                 }
             } else {
                 room.bindHtmlElement(divRef() as HTMLDivElement);
@@ -283,7 +283,9 @@ class SDKBridge {
                 const { windowParams } = nativeParams!;
                 // sdk 内部，先触发回调，才更新 invisiblePlugins，所以要带一个延迟，放到回调后执行
                 setTimeout(() => {
-                    mountWindowManager(room, replayCallbackHanlder, windowParams).catch(e => {
+                    const viewMode = getViewModeFromNativeWindowParams(windowParams);
+                    const mountWindowParams = { ...windowParams, room, viewMode };
+                    mountWindowManager(mountWindowParams, replayCallbackHanlder).catch(e => {
                         console.error("mount error", e);
                     })
                 }, 0);
