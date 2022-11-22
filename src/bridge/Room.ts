@@ -107,16 +107,16 @@ function updateIframePluginState(room: Room) {
 }
 
 export class RoomBridge {
-    setWindowManagerAttributes(attributes: any) {
+    setWindowManagerAttributes = (attributes: any) => {
         window.manager?.safeSetAttributes(attributes);
         window.manager?.refresh();
     }
 
-    setContainerSizeRatio(ratio) {
+    setContainerSizeRatio = (ratio) => {
         window.manager?.setContainerSizeRatio(ratio);
     }
 
-    setPrefersColorScheme(scheme: TeleBoxColorScheme) {
+    setPrefersColorScheme = (scheme: TeleBoxColorScheme) => {
         window.manager?.setPrefersColorScheme(scheme);
     }
 }
