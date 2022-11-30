@@ -37,6 +37,7 @@
     "buffer": "^6.0.3",
     "core-js": "^3",
     "html2canvas": "^1.3.3",
+    "jspdf": "^2.5.1",
     "promise.any": "^2.0.1",
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
