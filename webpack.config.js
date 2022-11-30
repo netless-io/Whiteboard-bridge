@@ -20,7 +20,6 @@ config = {
   target: ["web", "es5"],
   resolve: {
     extensions: ['.ts', '.tsx', '.js', "cjs"],
-    mainFields: ["main", "module"],
     fallback: {
       buffer: "buffer",
     }
