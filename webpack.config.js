@@ -22,7 +22,17 @@ config = {
     extensions: ['.ts', '.tsx', '.js', "cjs"],
     fallback: {
       buffer: "buffer",
-    }
+    },
+    // XXX: These packages either have {"type":"module"} in package.json or have ".mjs" file names
+    //      which leads to webpack cannot bundle them in current configuration.
+    //      Here we do a workaround to manually resolve them to CJS files.
+    alias: {
+      "@netless/window-manager/dist/style.css": require.resolve("@netless/window-manager").replace("index.js", "style.css"),
+      "@netless/window-manager": require.resolve("@netless/window-manager"),
+      "@netless/app-slide": require.resolve("@netless/app-slide"),
+      "p-retry": require.resolve("p-retry"),
+      "canvg": require.resolve("canvg"),
+    },
   },
   optimization: {
     minimizer: [new TerserJSPlugin({extractComments: false, parallel: true}), new CssMinimizerPlugin({})],
