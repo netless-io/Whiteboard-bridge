@@ -1149,10 +1149,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.3.0-canary.15":
-  version "0.3.0-canary.15"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.3.0-canary.15.tgz#c5cc46a86f17d2b90f2a2da5ca82845eac2239be"
-  integrity sha512-t4UDv+zXItvPC/DwY+Fdk5Z/HCXNt+NBvrtbLy9NeJMBUkegX4iiaxqfkHHQc2V/pFmgfrzshVqconb1ER7QZw==
+"@netless/app-slide@0.3.0-canary.16":
+  version "0.3.0-canary.16"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.3.0-canary.16.tgz#9ba29aee4eea2bc0e12d8b3bc91d76af81a21af8"
+  integrity sha512-0Wc/LpKuR8mGqFVtnnpwOCoGpr7Vrv+yshNIqxNxV2fKLupEW5PPk7pJAmTuwZq4iG5s4ow05XEGzJnbZ30qZA==
   dependencies:
     "@netless/slide" "^0.9.2"
     jspdf "2.5.1"
