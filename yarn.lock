@@ -1109,10 +1109,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.29-beta.1":
-  version "0.2.29-beta.1"
-  resolved "https://mirrors.cloud.tencent.com/npm/@netless%2fapp-slide/-/app-slide-0.2.29-beta.1.tgz#f1ae9940e52d7d359a9239b7ad9722d314788fde"
-  integrity sha512-I2NcmgpucVT89kM3bDOavh+uxm+XcRC/yNVKadbWxlQNvK//I/rZ8ZB1m458x+HoSGRJRAUuqMse31nYbea95A==
+"@netless/app-slide@0.2.29":
+  version "0.2.29"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.29.tgz#6a055f2a6e4c1b1d9b7ee7a24eb45fb9831174e7"
+  integrity sha512-riQ6irt9y2c2no5Lf1j6LxE1ui8qjj+oCj77d1JxpDrIK4n3kBW9Ifp4YzUcjyErtftD8WNBrFwAZYxnqsTrUw==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
