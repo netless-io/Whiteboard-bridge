@@ -1140,12 +1140,13 @@
     lodash.debounce "^4.0.8"
     react "^16.13.1"
 
-"@netless/slide-rtc-plugin@0.9.3":
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-0.9.3.tgz#77689ee19b17724576136e77e5f3b2cf9d300cea"
-  integrity sha512-XmDgQemR5nNLs5Dtc5z/HmHHrlBTLh/naF6ac7hcpx7TXMuKQlUigdBqq524eH5LmoDSUHI2WfPxmV+ec5MZXg==
+"@netless/slide-rtc-plugin@0.10.1":
+  version "0.10.1"
+  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-0.10.1.tgz#7a16f708143f8818c7036ad94c976389320c968f"
+  integrity sha512-xtcpJc/amYwun650BR4UHS9pF5hk5cjfPbKlyyZxDk8YlrDVM0ukMfWo452FeF2SOk+2qgw/MmPg4bKAWGUzNA==
   dependencies:
     eventemitter3 "4.0.7"
+    howler "^2.2.3"
 
 "@netless/synced-store@^2.0.3":
   version "2.0.3"
@@ -3714,6 +3715,11 @@ hey-listen@^1.0.5, hey-listen@^1.0.8:
   version "1.0.8"
   resolved "https://registry.npmmirror.com/hey-listen/-/hey-listen-1.0.8.tgz#8e59561ff724908de1aa924ed6ecc84a56a9aa68"
   integrity sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==
+
+howler@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/howler/-/howler-2.2.3.tgz#a2eff9b08b586798e7a2ee17a602a90df28715da"
+  integrity sha512-QM0FFkw0LRX1PR8pNzJVAY25JhIWvbKMBFM4gqk+QdV+kPXOhleWGCB6AiAF/goGjIHK2e/nIElplvjQwhr0jg==
 
 hpack.js@^2.1.6:
   version "2.1.6"
