@@ -1,7 +1,7 @@
 import { hookCreateElement } from '../utils/ImgError';
 import {CursorTool} from "@netless/cursor-tool";
 import { registerAsyn } from '.';
-import { NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams } from "@netless/whiteboard-bridge-types";
+import { NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams, NativeSlideAppOptions } from "@netless/whiteboard-bridge-types";
 import {WhiteWebSdk, Room, Player, createPlugins, PlayerPhase, setAsyncModuleLoadMode, AsyncModuleLoadMode} from "white-web-sdk";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
@@ -77,7 +77,7 @@ function removeBind() {
     }
 }
 
-async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: MountParams) {
+async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: Omit<Omit<MountParams, "room">, "container"> | undefined) {
     const manager = await WindowManager.mount({
         // 高比宽
         containerSizeRatio: 9/16,
@@ -101,6 +101,15 @@ class SDKBridge {
             return url;
         } : undefined;
 
+        const slideUrlInterrupter = async (url: string) => {
+            if (config.enableSlideInterrupterAPI) {
+              const modifyUrl = await sdkCallbackHandler.slideUrlInterrupter(url);
+              console.log("slideUrlInterrupter", url, modifyUrl);
+              return modifyUrl.length > 0 ? modifyUrl : url;
+            }
+            return url;
+        };
+
         const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         enableReport(!!log);
@@ -121,7 +130,7 @@ class SDKBridge {
         cursorAdapter = !!userCursor ? new CursorTool() : undefined;
 
         if (__nativeTags) {
-            window.__nativeTags = {...window.__nativeTags, ...__nativeTags};
+            window.__nativeTags = { ...window.__nativeTags, ...__nativeTags };
         }
 
         const pptParams = restConfig.pptParams || {};
@@ -156,11 +165,13 @@ class SDKBridge {
         }
         window.plugins = plugins;
 
+        const slideAppOptions = config.slideAppOptions || {} ;
         const slideKind = "Slide";
         WindowManager.register({
             kind: slideKind,
             appOptions: {
-                debug: false,
+                urlInterrupter: slideUrlInterrupter,
+                ...slideAppOptions,
             },
             addHooks: addHooksSlide,
             src: async () => {
@@ -180,7 +191,7 @@ class SDKBridge {
         const invisiblePlugins = [
             ...enableIFramePlugin ? [IframeBridge as any] : [],
             ...enableSyncedStore ? [SyncedStorePlugin as any] : [],
-        ]
+        ];
 
         try {
             sdk = new WhiteWebSdk({
@@ -199,7 +210,7 @@ class SDKBridge {
         } catch (e) {
             sdkCallbackHandler.onSetupFail(e);
         }
-    }
+    };
 
     joinRoom = (nativeParams: NativeJoinRoomParams, responseCallback: any) => {
         if (!sdk) {

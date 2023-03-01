@@ -1,5 +1,5 @@
 
-import type {JsonValue, CallFunction, SyncCallFunction} from "@netless/webview-bridge";
+import type {JsonValue, CallFunction, SyncCallFunction, AsyncCallFunction} from "@netless/webview-bridge";
 import {RNBridge, bridge } from "@netless/webview-bridge";
 
 let rnBridge: RNBridge;
@@ -17,6 +17,15 @@ export const call: CallFunction = (nativeMethod: string, parameter?: JsonValue) 
 		rnBridge.call(nativeMethod, parameter);
 	} else {
 		bridge.call(nativeMethod, parameter);
+	}
+}
+
+export const asyncCall: AsyncCallFunction = (nativeMethod: string, parameter?: JsonValue) => {
+	if (rnBridge) {
+		// TODO react-native 暂时没做异步调用
+		return Promise.resolve(parameter);
+	} else {
+		return bridge.asyncCall(nativeMethod, parameter);
 	}
 }
 
