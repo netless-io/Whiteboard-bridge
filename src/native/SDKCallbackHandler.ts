@@ -1,5 +1,5 @@
 import { MediaType } from "white-web-sdk";
-import { call, syncCall } from "../bridge"
+import { call, syncCall, asyncCall} from "../bridge"
 
 export class SDKCallbackHandler {
     onPostMessage = (message: string) => {
@@ -18,6 +18,10 @@ export class SDKCallbackHandler {
         return syncCall("sdk.urlInterrupter", url) as string;
     }
 
+    slideUrlInterrupter = (url: string) => {
+        return asyncCall("sdk.slideUrlInterrupter", url) as Promise<string>;
+    }
+    
     onSetupFail = (e: Error) => {
         call("sdk.setupFail", {message: e.message, jsStack: e.stack});
     }

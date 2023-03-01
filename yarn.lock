@@ -1109,10 +1109,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.33":
-  version "0.2.33"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.33.tgz#709c248f7ec57a5d9e755f004995f574a6aadf7d"
-  integrity sha512-FQyTxCveo7KILsIFTxL1Y8a4ZbnQ9lc5EfmmXynH3rtWtPlrnIXXbrzcF0Mc/ZwUa01F1C24p/HuGfJK7DALiA==
+"@netless/app-slide@0.2.34-beta.2":
+  version "0.2.34-beta.2"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.34-beta.2.tgz#cc8767434e9626d9669fe243fd1dc686b16d2d1e"
+  integrity sha512-7pNxYHDQPdrqYe8ujeFnL1gtYphkEpmWiC0OcnjdJYCcvij+ruvwGZ+GZ78KwVGvtENpVnECjAGmlR0jTX6azw==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1175,10 +1175,10 @@
   resolved "https://registry.yarnpkg.com/@netless/video-js-plugin/-/video-js-plugin-0.3.8.tgz#d4b1ecab19890fa9d5502706f5d86c04379678d0"
   integrity sha512-xCLfL8ISjPD5XQbeGWT/pwKdWXqYXmaEXiP4jcX8oaR83+vJo463znIg2JW8EXHkTq7KRrYnZqqlQdI6It4L+A==
 
-"@netless/webview-bridge@^0.1.8":
-  version "0.1.8"
-  resolved "https://registry.yarnpkg.com/@netless/webview-bridge/-/webview-bridge-0.1.8.tgz#01809294c82b24094b9b7e9afa7795a7f0f1321f"
-  integrity sha512-VlNtxeWNnF/aEJ0Ktg0DPa+XLNED5iBof6NHSnkvINd6daRxFTyM75Rj425R0t4zhjd/kGLGN9Wo6qv0Kgagrg==
+"@netless/webview-bridge@^0.1.9yar":
+  version "0.1.9"
+  resolved "https://registry.yarnpkg.com/@netless/webview-bridge/-/webview-bridge-0.1.9.tgz#5a5f27e59cf6a98430536360e0477bc285a2bc42"
+  integrity sha512-E/9IbSIjJGru7qos+dVMKvBAPRfnYSI0+rHZtTutBN8Q78wo9lT23cRKKR4GExyuiB2V5n6WoqAyABdL0+dwxw==
 
 "@netless/white-audio-plugin2@^2.0.4":
   version "2.0.5"
@@ -1200,10 +1200,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/whiteboard-bridge-types@^0.1.5":
-  version "0.1.5"
-  resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.5.tgz#4346daa9cecb4d0f3c46a36cad0915e931b1675a"
-  integrity sha512-N/3QKCYOnxHUUP8a40M/tiEUaGnWfhtgSKQ8xjy08IYIe90hO23buEArltF0/ypUO+FTlS7jtfkpQoBZA+FPmw==
+"@netless/whiteboard-bridge-types@^0.1.11":
+  version "0.1.11"
+  resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.11.tgz#326f1361877fd2c769095293e42f3d7294cdca4d"
+  integrity sha512-/ZeYS4Ff6n/MfbEpC5dy7zXqZzyo5PX22SRkVTPAhv1t2v0reJ15KbS0GcvhwM3qGYR0fJDQ/FbubN8i4xFKtA==
 
 "@netless/window-manager@^0.4.54":
   version "0.4.54"
