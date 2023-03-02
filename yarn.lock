@@ -1109,10 +1109,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.34-beta.2":
-  version "0.2.34-beta.2"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.34-beta.2.tgz#cc8767434e9626d9669fe243fd1dc686b16d2d1e"
-  integrity sha512-7pNxYHDQPdrqYe8ujeFnL1gtYphkEpmWiC0OcnjdJYCcvij+ruvwGZ+GZ78KwVGvtENpVnECjAGmlR0jTX6azw==
+"@netless/app-slide@0.2.34":
+  version "0.2.34"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.34.tgz#6fc669f23c61566350cd46848ba98e44c6ab05ee"
+  integrity sha512-ADCNSsE+0MVe8OR/Ys/4O4k4QEZChs+svWeNAx78NALhgK8Ph+knsiDPojDXQTdrQYHX0Gi58oNAjQCEzuo/ug==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1175,7 +1175,7 @@
   resolved "https://registry.yarnpkg.com/@netless/video-js-plugin/-/video-js-plugin-0.3.8.tgz#d4b1ecab19890fa9d5502706f5d86c04379678d0"
   integrity sha512-xCLfL8ISjPD5XQbeGWT/pwKdWXqYXmaEXiP4jcX8oaR83+vJo463znIg2JW8EXHkTq7KRrYnZqqlQdI6It4L+A==
 
-"@netless/webview-bridge@^0.1.9yar":
+"@netless/webview-bridge@^0.1.9":
   version "0.1.9"
   resolved "https://registry.yarnpkg.com/@netless/webview-bridge/-/webview-bridge-0.1.9.tgz#5a5f27e59cf6a98430536360e0477bc285a2bc42"
   integrity sha512-E/9IbSIjJGru7qos+dVMKvBAPRfnYSI0+rHZtTutBN8Q78wo9lT23cRKKR4GExyuiB2V5n6WoqAyABdL0+dwxw==
