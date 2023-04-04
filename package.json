@@ -10,6 +10,7 @@
   "scripts": {
     "bundle": "webpack",
     "start": "webpack-dev-server --mode development --host local-ip --hot --open",
+    "buildWithoutGitHash": "tsc && webpack --mode production",
     "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "check": "tsc",
