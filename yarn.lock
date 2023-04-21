@@ -1219,10 +1219,10 @@
     uuid "^7.0.3"
     video.js ">=7"
 
-"@netless/xml-js@1.6.15":
-  version "1.6.15"
-  resolved "https://registry.yarnpkg.com/@netless/xml-js/-/xml-js-1.6.15.tgz#46516d547b21149bcca732bb199d664791b3240a"
-  integrity sha512-e0emMs7YtDB/ATUns1SJ61R9n9nfVvwwFodoc539Qt0ScksaCLCaFWgpEbLloj9sr60ry6Xd8QFHKULFIZB6zA==
+"@netless/xml-js@1.6.16":
+  version "1.6.16"
+  resolved "https://registry.yarnpkg.com/@netless/xml-js/-/xml-js-1.6.16.tgz#cbf6cc6d73b668162967c371b35c9ff0535fc83a"
+  integrity sha512-QnSH8y3j3DDEW0S3MalYBmR0opeyaecAkzx0ocKYncMDiOdQkhByJgD7AVhXQqH8bA/PVHU0VFP445AbJq6fDQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -6734,14 +6734,14 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.37:
-  version "2.16.37"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.37.tgz#598bdfedc903fd3dc4f2a5a20afe33ed873332ae"
-  integrity sha512-hpx8merZN56f7KDNHXRxIU+j5xIB9fCAPHQBBlbcrojHlAt0kTPKbgzq5VGcvM9hI400FHsGU67XrwdOyjyglg==
+white-web-sdk@2.16.42:
+  version "2.16.42"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.42.tgz#601b8e72f3e5abeb188a84990a97a0a867d70727"
+  integrity sha512-yhuqkzvDCfdpCuLdCeYSUjkTrrrbXEAo8rvIvdwG6yxZ9x4MdSlQ+xMyAV9pwtvGvep8Uh7PVpfTu5PEfvKQdQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
-    "@netless/xml-js" "1.6.15"
+    "@netless/xml-js" "1.6.16"
     atob "^2.1.2"
     bezier-js "^2.4.4"
     bowser "^2.11.0"
