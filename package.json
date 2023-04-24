@@ -22,11 +22,11 @@
     "**/video.js": "7.10.0"
   },
   "dependencies": {
-    "@netless/app-slide": "0.3.0-canary.17",
+    "@netless/app-slide": "0.3.0-canary.19",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
-    "@netless/slide-rtc-plugin": "0.9.3",
+    "@netless/slide-rtc-plugin": "1.0.0",
     "@netless/synced-store": "^2.0.7",
     "@netless/video-js-plugin": "0.3.8",
     "@netless/webview-bridge": "^0.1.8",

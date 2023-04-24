@@ -1154,12 +1154,12 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@netless/app-slide@0.3.0-canary.17":
-  version "0.3.0-canary.17"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.3.0-canary.17.tgz#84890fdf6f51c02974b76d7bffc8a6b9171e5bde"
-  integrity sha512-8ofQEB301xEOJi6SdrziVEOA1M3ts83ZAIHA9ctO7uSHufkITElyQ4mAqVmrzZzUdO9c93w+kCZwZHBQRLEigw==
+"@netless/app-slide@0.3.0-canary.19":
+  version "0.3.0-canary.19"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.3.0-canary.19.tgz#a5482302b8353f5afe194dff2e28e50399732e84"
+  integrity sha512-xyyp4GLoh9iwz6UBQM/qFbemThmUaCfovg3sp+KDmPgyNq/huwMYeBPvoMJivAbOjsLHWMwPqaIgFrdiTOBucw==
   dependencies:
-    "@netless/slide" "^0.10.0"
+    "@netless/slide" "^1.0.1"
     jspdf "2.5.1"
 
 "@netless/canvas-polyfill@^0.0.4":
@@ -1188,17 +1188,18 @@
     lodash.debounce "^4.0.8"
     react "^16.13.1"
 
-"@netless/slide-rtc-plugin@0.9.3":
-  version "0.9.3"
-  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-0.9.3.tgz#77689ee19b17724576136e77e5f3b2cf9d300cea"
-  integrity sha512-XmDgQemR5nNLs5Dtc5z/HmHHrlBTLh/naF6ac7hcpx7TXMuKQlUigdBqq524eH5LmoDSUHI2WfPxmV+ec5MZXg==
+"@netless/slide-rtc-plugin@1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-1.0.0.tgz#9c25733ce5a1770ca546cb0adf06762d8d812bd6"
+  integrity sha512-wq4XEZdM2dBVvsL0OTfBQA3fieTQSG55+7pJr3TuSKHNjeQPEfNzzvFADHYe0JaUoldhZQcb1MYQkPx7tArLYw==
   dependencies:
     eventemitter3 "4.0.7"
+    howler "^2.2.3"
 
-"@netless/slide@^0.10.0":
-  version "0.10.0"
-  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-0.10.0.tgz#078b047f94eb6f0922568bc1cbaab327885b644a"
-  integrity sha512-kS5jjrZCc8hdqHZVXG2kFOr+HBOuI4LGKmflvgXamwRSpaxtc8eRUzauK1QyVcwQjRr8sJnLY8+gf6tEqigspA==
+"@netless/slide@^1.0.1":
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-1.0.3.tgz#4ae9cc4b3fd752b36b59c8c6c8fb1e9574266231"
+  integrity sha512-Zaql5otzHV8Ol1YZipjv0CwBEv2p61OwoVJE5PhdI98ygLijtHvtc4oJQ9kReuE1GSWZyXBJom6kGkf1Lql79Q==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@types/lodash" "^4.14.182"
@@ -3787,6 +3788,11 @@ hey-listen@^1.0.5, hey-listen@^1.0.8:
   version "1.0.8"
   resolved "https://registry.npmmirror.com/hey-listen/-/hey-listen-1.0.8.tgz#8e59561ff724908de1aa924ed6ecc84a56a9aa68"
   integrity sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==
+
+howler@^2.2.3:
+  version "2.2.3"
+  resolved "https://registry.yarnpkg.com/howler/-/howler-2.2.3.tgz#a2eff9b08b586798e7a2ee17a602a90df28715da"
+  integrity sha512-QM0FFkw0LRX1PR8pNzJVAY25JhIWvbKMBFM4gqk+QdV+kPXOhleWGCB6AiAF/goGjIHK2e/nIElplvjQwhr0jg==
 
 hpack.js@^2.1.6:
   version "2.1.6"
