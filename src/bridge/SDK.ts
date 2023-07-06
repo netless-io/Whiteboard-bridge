@@ -247,7 +247,7 @@ class SDKBridge {
                     const manager = await mountWindowManager(room, roomCallbackHandler, windowParams );       
                     roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
 
-                    const fullscreen = (windowParams as any).fullscreen
+                    const fullscreen = windowParams && (windowParams as any).fullscreen;
                     if (fullscreen) {
                         manager.setMaximized(true);
                         document.body.appendChild(document.createElement("style")).textContent = `
