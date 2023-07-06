@@ -246,6 +246,14 @@ class SDKBridge {
                 try {
                     const manager = await mountWindowManager(room, roomCallbackHandler, windowParams );       
                     roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
+
+                    const fullscreen = (windowParams as any).fullscreen
+                    if (fullscreen) {
+                        manager.setMaximized(true);
+                        document.body.appendChild(document.createElement("style")).textContent = `
+                            .telebox-titlebar, .telebox-max-titlebar-maximized,.netless-app-slide-footer { display: none }
+                        `;
+                    }
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
                 }
