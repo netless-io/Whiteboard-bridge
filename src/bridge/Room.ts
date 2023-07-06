@@ -1,6 +1,6 @@
-import { Attributes as SlideAttributes } from "@netless/app-slide";
+import { AppResult, Attributes as SlideAttributes } from "@netless/app-slide";
 import { TeleBoxColorScheme } from '@netless/telebox-insider';
-import { AddAppOptions, AddPageParams, BuiltinApps } from "@netless/window-manager";
+import { AddAppOptions, AddPageParams, BuiltinApps, WindowManager } from "@netless/window-manager";
 import { GlobalState, ImageInformation, MemberState, Room, SceneDefinition, ViewMode } from "white-web-sdk";
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
@@ -37,6 +37,13 @@ type EventEntry = {
     eventName: string;
     payload: any;
 };
+
+type DocsEventOptions = {
+    /** If provided, will dispatch to the specific app. Default to the focused app. */
+    appId?: string;
+    /** Used by `jumpToPage` event, range from 1 to total pages count. */
+    page?: number;
+}
 
 function makeSlideParams(scenes: SceneDefinition[]): {
     scenesWithoutPPT: SceneDefinition[];
@@ -526,6 +533,105 @@ export class RoomAsyncBridge {
             window.manager.closeApp(appId).then(() => {
                 return responseCallback(undefined);
             });
+        }
+    }
+
+    dispatchDocsEvent = (
+        event: "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage",
+        options: DocsEventOptions = {},
+        responseCallback: any
+    ) => {
+        if (window.manager) {
+            responseCallback(this._dispatchDocsEvent(window.manager, event, options || {}));
+        };
+    }
+
+    _dispatchDocsEvent = (
+        manager: WindowManager,
+        event: "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage",
+        options: DocsEventOptions = {}
+    ): boolean => {
+        const appId = options.appId || manager.focused;
+        if (!appId) {
+            console.warn("not found " + (options.appId || "focused app"));
+            return false;
+        }
+
+        let page: number | undefined, input: HTMLInputElement | null;
+
+        // Click the DOM elements for static docs
+        if (appId.startsWith("DocsViewer-")) {
+            const dom = manager.queryOne(appId)?.box?.$footer;
+            if (!dom) {
+                console.warn("not found app with id " + appId);
+                return false;
+            }
+
+            const click = (el: Element | null) => {
+                el && el.dispatchEvent(new MouseEvent("click"));
+            };
+
+            switch (event) {
+                case "prevPage":
+                case "prevStep":
+                    click(dom.querySelector('button[class$="btn-page-back"]'));
+                    break;
+                case "nextPage":
+                case "nextStep":
+                    click(dom.querySelector('button[class$="btn-page-next"]'));
+                    break;
+                case "jumpToPage":
+                    page = options.page;
+                    input = dom.querySelector('input[class$="page-number-input"]');
+                    if (!input || typeof page !== "number") {
+                        console.warn("failed to jump" + (page ? " to page " + page : ""));
+                        return false;
+                    }
+                    input.value = "" + page;
+                    input.dispatchEvent(new InputEvent("change"));
+                    break;
+                default:
+                    console.warn("unknown event " + event);
+                    return false;
+            }
+
+            return true;
+        }
+
+        // Check controller for slide docs
+        else if (appId.startsWith("Slide-")) {
+            const app = manager.queryOne(appId)?.appResult as AppResult | undefined;
+            if (!app) {
+                console.warn("not found app with id " + appId);
+                return false;
+            }
+
+            switch (event) {
+                case "prevPage":
+                    return app.prevPage();
+                case "nextPage":
+                    return app.nextPage();
+                case "prevStep":
+                    return app.prevStep();
+                case "nextStep":
+                    return app.nextStep();
+                case "jumpToPage":
+                    page = options.page;
+                    if (typeof page !== "number") {
+                        console.warn("failed to jump" + (page ? " to page " + page : ""));
+                        return false;
+                    }
+                    return app.jumpToPage(page);
+                default:
+                    console.warn("unknown event " + event);
+                    return false;
+            }
+        }
+
+        // No support for any other kind
+        else {
+            console.warn("not supported app " + appId);
+            return false;
         }
     }
 }
