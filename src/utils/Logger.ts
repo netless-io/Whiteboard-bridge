@@ -23,7 +23,7 @@ function report(reportToNative: boolean, funName: string, ...params: any[]) {
     // sdk 的 logger，会直接使用 toString 方法，进行转换。Object 的 toString 直接是 "[object Object]"，无法记录内容
     let message = params.map(v => {
         if (typeof v === "object") {
-            if (v.hasOwnProperty('roomToken')) {
+            if (v && v.hasOwnProperty('roomToken')) {
                 v.roomToken = '***';
             }
             return JSON.stringify(v);
