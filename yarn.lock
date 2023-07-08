@@ -1266,10 +1266,10 @@
   resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-1.0.0-alpha.2.tgz#d52941ec5b0e41085f69d3685671f3fb01345805"
   integrity sha512-7xYRjUtZ6oX8kg6jY2Fz/8VnKKKXlUEdBWm4XfsRaYgdUoZgAP29Q0jObTFhuW1kfuL8r5k2x5bRplgV3MVazQ==
 
-"@netless/window-manager@1.0.0-canary.76":
-  version "1.0.0-canary.76"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-1.0.0-canary.76.tgz#53972e738d3cf0f97403f3f1ab18fd3d50599857"
-  integrity sha512-pKIhbRumaC7MAZ7sS7nf/W/csmOZjvLk0g84+Kt3qGxEu8xPH5QDlb7zw0cytqtxsfmCz8psxQX2ox3HjHAkrw==
+"@netless/window-manager@1.0.0-canary.78":
+  version "1.0.0-canary.78"
+  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-1.0.0-canary.78.tgz#9c97227789b1315ef8df04d9dee8335fdd440075"
+  integrity sha512-Zawg/Ds+8UHD9/0c92y1s4CZIyqG/tyqDKQ8BkeWAhs/EdoAHvC4dFOgADbd/osU0UYq9xkNkk9epApX7+N9aw==
   dependencies:
     "@juggle/resize-observer" "^3.4.0"
     "@netless/synced-store" "^2.0.7"
