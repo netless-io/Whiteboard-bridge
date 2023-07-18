@@ -1208,6 +1208,18 @@
     localforage "^1.10.0"
     lodash "^4.17.21"
 
+"@netless/slide@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-1.1.1.tgz#f774f5c558944968b80616428c8f893ffec0b759"
+  integrity sha512-wKcpAdye8TKqcKv2qA91al8ErK89TZ1bdFQtT2lfimuWAm6/+x/usHkMzFJGPJ9DxilVR+fb5I1jPLGaHQSiTQ==
+  dependencies:
+    "@juggle/resize-observer" "^3.3.1"
+    "@types/lodash" "^4.14.182"
+    dat.gui "^0.7.7"
+    eventemitter3 "^4.0.7"
+    localforage "^1.10.0"
+    lodash "^4.17.21"
+
 "@netless/synced-store@^2.0.7":
   version "2.0.7"
   resolved "https://registry.yarnpkg.com/@netless/synced-store/-/synced-store-2.0.7.tgz#0455490eafc687c3009c7b06f4c5f5caff1d24dc"
