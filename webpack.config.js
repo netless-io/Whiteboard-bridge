@@ -19,6 +19,10 @@ config = {
   },
   target: ["web", "es5"],
   resolve: {
+    alias: {
+      "@netless/window-manager/dist/style.css": require.resolve("@netless/window-manager").replace("index.js", "style.css"),
+      "@netless/window-manager": require.resolve("@netless/window-manager"),
+    },
     extensions: ['.ts', '.tsx', '.js', "cjs"],
     fallback: {
       buffer: "buffer",
