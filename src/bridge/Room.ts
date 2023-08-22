@@ -626,6 +626,38 @@ export class RoomAsyncBridge {
         }
     }
 
+    focusApp = (appId: string) => {
+        if (window.manager) {
+            window.manager.focusApp(appId);
+        }
+    }
+
+    queryAllApps = (responseCallback: any) => {
+        if (window.manager) {
+            const apps = window.manager.apps;
+            if (apps) {
+                return responseCallback(JSON.stringify(window.manager.apps))
+            } else {
+                return responseCallback({});
+            }
+        }
+    }
+
+    queryApp = (appId: string, responseCallback: any) => {
+        if (window.manager) {
+            const apps = window.manager.apps;
+            if (!apps) {
+                return responseCallback(JSON.stringify({ __error: { message: "apps not existed" } }));
+            }
+            const app = apps[appId];
+            if (app) {
+                return responseCallback(JSON.stringify(app));
+            } else {
+                return responseCallback(JSON.stringify({ __error: { message: "app " + appId + " not existed" } }));
+            }
+        }
+    }
+
     dispatchDocsEvent = (
         event: "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage",
         options: DocsEventOptions = {},
