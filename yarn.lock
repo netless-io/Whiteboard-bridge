@@ -1208,10 +1208,10 @@
     localforage "^1.10.0"
     lodash "^4.17.21"
 
-"@netless/slide@^1.1.1":
-  version "1.1.1"
-  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-1.1.1.tgz#f774f5c558944968b80616428c8f893ffec0b759"
-  integrity sha512-wKcpAdye8TKqcKv2qA91al8ErK89TZ1bdFQtT2lfimuWAm6/+x/usHkMzFJGPJ9DxilVR+fb5I1jPLGaHQSiTQ==
+"@netless/slide@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-1.1.2.tgz#f7032b5181c9ecea6583548e2ad4c1bbdd40f7f7"
+  integrity sha512-16WaaE/EFZlDYeqmmokjCAQIS98KZcuXkB4e4sGxdHdrGDYLMIchKIqTEZYXddlQdJ3ezhUcJHJ01inGPlqeRA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@types/lodash" "^4.14.182"
