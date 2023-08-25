@@ -1294,10 +1294,10 @@
     uuid "^9.0.0"
     value-enhancer "^1.3.2"
 
-"@netless/xml-js@1.6.15":
-  version "1.6.15"
-  resolved "https://registry.yarnpkg.com/@netless/xml-js/-/xml-js-1.6.15.tgz#46516d547b21149bcca732bb199d664791b3240a"
-  integrity sha512-e0emMs7YtDB/ATUns1SJ61R9n9nfVvwwFodoc539Qt0ScksaCLCaFWgpEbLloj9sr60ry6Xd8QFHKULFIZB6zA==
+"@netless/xml-js@1.6.16":
+  version "1.6.16"
+  resolved "https://registry.yarnpkg.com/@netless/xml-js/-/xml-js-1.6.16.tgz#cbf6cc6d73b668162967c371b35c9ff0535fc83a"
+  integrity sha512-QnSH8y3j3DDEW0S3MalYBmR0opeyaecAkzx0ocKYncMDiOdQkhByJgD7AVhXQqH8bA/PVHU0VFP445AbJq6fDQ==
 
 "@nodelib/fs.scandir@2.1.5":
   version "2.1.5"
@@ -6840,14 +6840,14 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.35:
-  version "2.16.35"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.35.tgz#d44cc2d99ac5d5250bdfba5b32f0c6b50e331d15"
-  integrity sha512-HgpTTPN0np9/4UWDVBFV05bpfEBHyN0mseXKdUjS+31VcjbvLhbeX7kSM3wRAEkh7svmzZAAUhOWwBHD14MACA==
+white-web-sdk@2.16.43:
+  version "2.16.43"
+  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.43.tgz#8d7263c31023f99ea997b70771c96262667d7f98"
+  integrity sha512-jDNcUQnyN8E83GzdZE+kBa07ZfTP4Socr0trDcK5ex1GMpDa/qta7YLNfusdo+blWICUFAZG74Q28Iu+YrNZWw==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
-    "@netless/xml-js" "1.6.15"
+    "@netless/xml-js" "1.6.16"
     atob "^2.1.2"
     bezier-js "^2.4.4"
     bowser "^2.11.0"
