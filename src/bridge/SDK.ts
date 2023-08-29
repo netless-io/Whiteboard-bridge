@@ -248,6 +248,7 @@ class SDKBridge {
                     roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
 
                     const fullscreen = windowParams && (windowParams as any).fullscreen;
+                    window.fullScreen = fullscreen;
                     if (fullscreen) {
                         manager.setMaximized(true);
                         document.body.appendChild(document.createElement("style")).textContent = `
