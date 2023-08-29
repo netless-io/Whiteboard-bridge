@@ -13,6 +13,7 @@ declare global {
     sdk?: WhiteWebSdk;
     player?: Player;
     combinePlayer?: CombinePlayer;
+    fullScreen?: boolean;
     bridge?: any;
     __nativeTags?: any;
     __platform?: any;

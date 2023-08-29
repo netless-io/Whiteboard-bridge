@@ -88,7 +88,12 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
                     taskId,
                     url,
                 } as SlideAttributes,
-            });
+            }).then((id)=> {
+                if (window.fullScreen || false) {
+                    window.manager!.setMaximized(true);
+                }
+                return id;
+            })
         } else {
             return window.manager!.addApp({
                 kind: BuiltinApps.DocsViewer,
@@ -97,6 +102,11 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
                     title,
                     scenes,
                 },
+            }).then((id)=> {
+                if (window.fullScreen || false) {
+                    window.manager!.setMaximized(true);
+                }
+                return id;
             });
         }
     } catch (err) {
@@ -614,6 +624,9 @@ export class RoomAsyncBridge {
                 }).then(appId => {
                     responseCallback(appId)
                 });
+            }
+            if (window.fullScreen || false) {
+                window.manager.setMaximized(true);
             }
         }
     }
