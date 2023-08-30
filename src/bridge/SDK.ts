@@ -252,7 +252,7 @@ class SDKBridge {
                     if (fullscreen) {
                         manager.setMaximized(true);
                         document.body.appendChild(document.createElement("style")).textContent = `
-                            .telebox-titlebar, .telebox-max-titlebar-maximized,.netless-app-slide-footer { display: none }
+                            .telebox-titlebar, .telebox-max-titlebar-maximized,.netless-app-slide-footer, .telebox-footer-wrap, .telebox-titlebar-wrap { display: none }
                         `;
                     }
                 } catch (error) {
