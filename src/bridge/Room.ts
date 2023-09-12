@@ -565,6 +565,19 @@ export class RoomAsyncBridge {
         }
     }
 
+    /**
+     * 编辑指定文字的内容
+     * @param identifier 文字的标识符。为 ``insertText()`` 的返回值。
+     * @param textContent 文字要改成的内容
+     */
+    updateText = (identifier: string, textContent: string) => {
+        if (window.manager) {
+            window.manager.mainView.updateText(identifier, textContent);
+        } else {
+            this.room.updateText(identifier, textContent);
+        }
+    }
+
     cleanScene = (retainPpt: boolean) => {
         let retain: boolean;
         if (retainPpt === undefined) {
