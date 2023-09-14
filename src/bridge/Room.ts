@@ -559,7 +559,7 @@ export class RoomAsyncBridge {
      */
     insertText = (x: number, y: number, textContent: string, responseCallback: any) => {
         if (window.manager) {
-            responseCallback(window.manager.mainView.insertText(x, y, textContent));
+            responseCallback(window.manager.focusedView?.insertText(x, y, textContent));
         } else {
             responseCallback(this.room.insertText(x, y, textContent));
         }
@@ -572,7 +572,7 @@ export class RoomAsyncBridge {
      */
     updateText = (identifier: string, textContent: string) => {
         if (window.manager) {
-            window.manager.mainView.updateText(identifier, textContent);
+            window.manager.focusedView?.updateText(identifier, textContent);
         } else {
             this.room.updateText(identifier, textContent);
         }
