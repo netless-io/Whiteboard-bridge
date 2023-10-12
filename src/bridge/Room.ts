@@ -693,6 +693,10 @@ export class RoomAsyncBridge {
             responseCallback(dispatchDocsEventOuter(window.manager, event, options || {}));
         };
     }
+
+    syncMode = (useSyncMode: boolean) => {
+        this.room.syncMode = useSyncMode;
+    }
 }
 
 export class RoomStateBridge {
