@@ -25,6 +25,7 @@ import { registerPlayerBridge } from "./Player";
 import { RtcAudioMixingClient } from '../RtcAudioMixingClient';
 import { SDKCallbackHandler } from '../native/SDKCallbackHandler';
 import { destroySyncedStore, initSyncedStore } from './SyncedStore';
+import { SlideLoggerPlugin } from '../utils/SlideLogger';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 
 let sdk: WhiteWebSdk | undefined = undefined;
@@ -141,6 +142,9 @@ class SDKBridge {
             let rtcAudioMixingClient = new RtcAudioMixingClient();
             pptParams.rtcClient = rtcAudioMixingClient; // 旧版 ppt 使用的 audio mixing 接口。
             usePlugin(new MixingPlugin(rtcAudioMixingClient));
+        }
+        if (config.loggerOptions && config.loggerOptions.printLevelMask === "debug") {
+            usePlugin(new SlideLoggerPlugin());
         }
 
         const videoJsLogger = (message?: any, ...optionalParams: any[]) => {
