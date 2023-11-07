@@ -31,7 +31,7 @@ function report(reportToNative: boolean, funName: string, ...params: any[]) {
         return v;
     });
     if (window.room) {
-        (window.room as any).logger.info(funName, ...message);
+        (window.room as any).logger.info(`[Bridge]${funName}`, ...message);
         if (delayedLogs.length > 0) {
             reportDelayedLog();
         }
