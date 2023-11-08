@@ -244,16 +244,20 @@ class SDKBridge {
             /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
             if (useMultiViews) {
                 try {
-                    const manager = await mountWindowManager(room, roomCallbackHandler, windowParams );       
-                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
-
                     const fullscreen = windowParams && (windowParams as any).fullscreen;
                     window.fullScreen = fullscreen;
                     if (fullscreen) {
-                        manager.setMaximized(true);
+                        // css should be inject before mount
                         document.body.appendChild(document.createElement("style")).textContent = `
                             .telebox-titlebar, .telebox-max-titlebar-maximized,.netless-app-slide-footer, .telebox-footer-wrap, .telebox-titlebar-wrap { display: none }
                         `;
+                    }
+                    
+                    const manager = await mountWindowManager(room, roomCallbackHandler, windowParams );       
+                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
+
+                    if (fullscreen) {
+                        manager.setMaximized(true);
                     }
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
