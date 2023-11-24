@@ -9,7 +9,7 @@ import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
 import SlideApp, { addHooks as addHooksSlide, usePlugin}  from "@netless/app-slide";
-import { RTCPlugin } from '@netless/slide-rtc-plugin';
+import { EffectPlugin, MixingPlugin } from '@netless/slide-rtc-plugin';
 import { MountParams, WindowManager } from "@netless/window-manager";
 import { SyncedStorePlugin } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
@@ -22,14 +22,14 @@ import { lastSchedule, ReplayerCallbackHandler, ReplayerCallbackHandlerImp } fro
 import CombinePlayerFactory from "@netless/combine-player";
 import { registerBridgeRoom } from "./Room";
 import { registerPlayerBridge } from "./Player";
-import { Rtc } from '../Rtc';
+import { RtcAudioMixingClient } from '../RtcAudioMixingClient';
 import { SDKCallbackHandler } from '../native/SDKCallbackHandler';
 import { destroySyncedStore, initSyncedStore } from './SyncedStore';
+import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
 let player: Player | undefined = undefined;
-let rtcClient = new Rtc();
 
 let nativeConfig: NativeSDKConfig | undefined = undefined;
 let cursorAdapter: CursorTool | undefined = undefined;
@@ -110,7 +110,7 @@ class SDKBridge {
             return url;
         };
 
-        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
+        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
 
         enableReport(!!log);
         nativeConfig = config;
@@ -134,9 +134,13 @@ class SDKBridge {
         }
 
         const pptParams = restConfig.pptParams || {};
-        if (enableRtcIntercept) {
-            (pptParams as any).rtcClient = rtcClient;
-            usePlugin(new RTCPlugin(rtcClient));
+        if (enableRtcAudioEffectIntercept) {
+            let rtcAudioEffectClient = new RtcAudioEffectClient();
+            usePlugin(new EffectPlugin(rtcAudioEffectClient));
+        } else if (enableRtcIntercept) {
+            let rtcAudioMixingClient = new RtcAudioMixingClient();
+            pptParams.rtcClient = rtcAudioMixingClient; // 旧版 ppt 使用的 audio mixing 接口。
+            usePlugin(new MixingPlugin(rtcAudioMixingClient));
         }
 
         const videoJsLogger = (message?: any, ...optionalParams: any[]) => {
