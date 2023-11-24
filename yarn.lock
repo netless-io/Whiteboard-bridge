@@ -1109,10 +1109,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.44":
-  version "0.2.44"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.44.tgz#6d322f9d70f01722e4a3525a1cebcca5af9ebd24"
-  integrity sha512-4oZI/EvlKvJWI43MPaqvTHsuW6y6BYJzgYTypoIuO23usDjEAJXRhktiJGZjHMp5pBuGXH0qRYv/M1OTky9q9g==
+"@netless/app-slide@0.2.47":
+  version "0.2.47"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.47.tgz#1a425b24649786fe4ce6de576503744236c5baf1"
+  integrity sha512-ZiEziLqYfkszMhCQRaR/Lh1eagVZOv2A7GxyRaqDY3rio08oQdQw14aeACXFh6l/paP3i8HMdB1cDI6BNCbzgg==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1140,10 +1140,10 @@
     lodash.debounce "^4.0.8"
     react "^16.13.1"
 
-"@netless/slide-rtc-plugin@0.10.1":
-  version "0.10.1"
-  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-0.10.1.tgz#7a16f708143f8818c7036ad94c976389320c968f"
-  integrity sha512-xtcpJc/amYwun650BR4UHS9pF5hk5cjfPbKlyyZxDk8YlrDVM0ukMfWo452FeF2SOk+2qgw/MmPg4bKAWGUzNA==
+"@netless/slide-rtc-plugin@1.1.9":
+  version "1.1.9"
+  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-1.1.9.tgz#c983caeebc065d108b10184bed90c785861651a1"
+  integrity sha512-9aE/8W2ELmHHbRaW7rr+bwl50kkHBcgc/dUf6hIZyZ6AchUFrzHyM9S5/OSFbbEtfQDkGyqyDKNJ5a8/6mOMEw==
   dependencies:
     eventemitter3 "4.0.7"
     howler "^2.2.3"
@@ -1200,10 +1200,10 @@
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin/-/white-video-plugin-1.2.23.tgz#ca7ecbc13e9cd76f2656e2dd3e946f97f09708af"
   integrity sha512-8Qvz1NcBhGb+2S9FYy9Xuln0/82q+Bn0EluXxM+BDw/aimhkN1QWxGl++ZysztZ60vzn18vl7p4cJuF2cfslIQ==
 
-"@netless/whiteboard-bridge-types@^0.1.11":
-  version "0.1.11"
-  resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.11.tgz#326f1361877fd2c769095293e42f3d7294cdca4d"
-  integrity sha512-/ZeYS4Ff6n/MfbEpC5dy7zXqZzyo5PX22SRkVTPAhv1t2v0reJ15KbS0GcvhwM3qGYR0fJDQ/FbubN8i4xFKtA==
+"@netless/whiteboard-bridge-types@^0.1.12":
+  version "0.1.12"
+  resolved "https://registry.yarnpkg.com/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.12.tgz#b462082a8eceddaf3032d65bc83aaca0bb5eabf4"
+  integrity sha512-NITC/uci0ClFP5g0sT/0VP0h0fABZO1PeeQAokLnQAiwlGm+f8WlZN7oWjTOhU4cwl+sJB/tHtBFrH1RZJJAFQ==
 
 "@netless/window-manager@^0.4.62":
   version "0.4.62"
