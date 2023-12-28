@@ -1154,12 +1154,12 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.4.0.tgz#08d6c5e20cf7e4cc02fd181c4b0c225cd31dbb60"
   integrity sha512-dfLbk+PwWvFzSxwk3n5ySL0hfBog779o8h68wK/7/APo/7cgyWp5jcXockbxdk5kFRkbeXWm4Fbi9FrdN381sA==
 
-"@netless/app-slide@0.3.0-canary.19":
-  version "0.3.0-canary.19"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.3.0-canary.19.tgz#a5482302b8353f5afe194dff2e28e50399732e84"
-  integrity sha512-xyyp4GLoh9iwz6UBQM/qFbemThmUaCfovg3sp+KDmPgyNq/huwMYeBPvoMJivAbOjsLHWMwPqaIgFrdiTOBucw==
+"@netless/app-slide@0.3.0-canary.21":
+  version "0.3.0-canary.21"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.3.0-canary.21.tgz#d366b90d10779b3d75b4d74272b04fc5f7f43aa7"
+  integrity sha512-EoAUPA9axyAbW7qC9UakqpvMmt9y0pRcxi/s6GYIDsdZTeJmH946ZVMBrReUnUHYVqZkT+c28ObZEM7eIK1M8Q==
   dependencies:
-    "@netless/slide" "^1.0.1"
+    "@netless/slide" "^1.2.0"
     jspdf "2.5.1"
 
 "@netless/canvas-polyfill@^0.0.4":
@@ -1196,10 +1196,10 @@
     eventemitter3 "4.0.7"
     howler "^2.2.3"
 
-"@netless/slide@^1.0.1":
-  version "1.0.3"
-  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-1.0.3.tgz#4ae9cc4b3fd752b36b59c8c6c8fb1e9574266231"
-  integrity sha512-Zaql5otzHV8Ol1YZipjv0CwBEv2p61OwoVJE5PhdI98ygLijtHvtc4oJQ9kReuE1GSWZyXBJom6kGkf1Lql79Q==
+"@netless/slide@^1.1.2":
+  version "1.1.2"
+  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-1.1.2.tgz#f7032b5181c9ecea6583548e2ad4c1bbdd40f7f7"
+  integrity sha512-16WaaE/EFZlDYeqmmokjCAQIS98KZcuXkB4e4sGxdHdrGDYLMIchKIqTEZYXddlQdJ3ezhUcJHJ01inGPlqeRA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@types/lodash" "^4.14.182"
@@ -1208,10 +1208,10 @@
     localforage "^1.10.0"
     lodash "^4.17.21"
 
-"@netless/slide@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-1.1.2.tgz#f7032b5181c9ecea6583548e2ad4c1bbdd40f7f7"
-  integrity sha512-16WaaE/EFZlDYeqmmokjCAQIS98KZcuXkB4e4sGxdHdrGDYLMIchKIqTEZYXddlQdJ3ezhUcJHJ01inGPlqeRA==
+"@netless/slide@^1.2.0":
+  version "1.2.0"
+  resolved "https://registry.yarnpkg.com/@netless/slide/-/slide-1.2.0.tgz#5182505bc620499b9a2b5231c6b0be8856734193"
+  integrity sha512-szj0NGgR5X8LCp/p8DXh+IdPIQ4TdQinoJ5jMs7sSX45YwjcJCa586+7VDSLEzsHzUcIz5lteoRgFCxS/nRYRw==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@types/lodash" "^4.14.182"
