@@ -1109,10 +1109,10 @@
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.53":
-  version "0.2.53"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.53.tgz#a2cd5905bbb4791899b47da7ca0578b02c50ba1d"
-  integrity sha512-3sC439M3q+idzxCEOfF6ryGwe4Ch6NgvqwI3hzxg2F0gasv9z3Rh0VSSpr9eJz6sDyggLxpWg2s6K0daucQMug==
+"@netless/app-slide@0.2.55":
+  version "0.2.55"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.55.tgz#fb358447ed224404d577fd551adab499804a1417"
+  integrity sha512-cjhbmjTE4HNpUgkV3qAiM6uapc4emsiH+egHUlWrx0IV/s5napLu8YfQDkl8dMwcwXNlRqnUbL0JX0wg1E8HYQ==
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"
@@ -1140,10 +1140,10 @@
     lodash.debounce "^4.0.8"
     react "^16.13.1"
 
-"@netless/slide-rtc-plugin@1.3.0":
-  version "1.3.0"
-  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-1.3.0.tgz#5036a0662f59f87e5815fe5712aedc8f7a6a3807"
-  integrity sha512-x00XbJX9/eHtt/sUYYwGF+ouZBhWT/E4UJIT96EUx3TBG0OuYLQt1A6v5T9DVQHDpo5ndNllW0B2j/arGY3Xgg==
+"@netless/slide-rtc-plugin@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@netless/slide-rtc-plugin/-/slide-rtc-plugin-1.3.1.tgz#1420cdd17e4866b136cb60cf83705be59038d58d"
+  integrity sha512-4T0I9O5X5W/CZueLbUc7I2ZWmZOE6End8gDvEJHcoFX1smCnXCNm/wWYO/d3lubQEwo2/ZMR6VKobzbOgc714A==
   dependencies:
     eventemitter3 "4.0.7"
     howler "^2.2.3"
