@@ -21,11 +21,11 @@
     "**/video.js": "7.10.0"
   },
   "dependencies": {
-    "@netless/app-slide": "0.2.53",
+    "@netless/app-slide": "0.2.55",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
-    "@netless/slide-rtc-plugin": "1.3.0",
+    "@netless/slide-rtc-plugin": "1.3.1",
     "@netless/synced-store": "^2.0.3",
     "@netless/video-js-plugin": "0.3.8",
     "@netless/webview-bridge": "^0.1.9",
