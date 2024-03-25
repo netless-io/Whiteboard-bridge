@@ -3,43 +3,66 @@ import { EventEmitter } from "events";
 import { RTCEffectClient } from "@netless/slide-rtc-plugin";
 import { logger } from "./utils/Logger";
 
-export class RtcAudioEffectClient extends EventEmitter implements RTCEffectClient {
+class RTCAudioEffectCallbackBridge extends EventEmitter {
     static kAgoraAudioEffectStatePlaying = 810;
     static kAgoraAudioEffectStatePaused = 811;
     static kAgoraAudioEffectStateStopped = 813;
     static kAgoraAudioEffectStateFailed = 814;
 
-    public constructor() {
+    audioEffectCallback = (soundId: number, state: number) => {
+        logger("audioEffectCallback", { soundId, state });
+        switch (state) {
+            case RTCAudioEffectCallbackBridge.kAgoraAudioEffectStatePlaying:
+                this.emit("play", soundId);
+                return;
+            case RTCAudioEffectCallbackBridge.kAgoraAudioEffectStatePaused:
+                this.emit("pause", soundId);
+                return;
+            case RTCAudioEffectCallbackBridge.kAgoraAudioEffectStateStopped:
+                this.emit("pause", soundId);
+                return;
+            case RTCAudioEffectCallbackBridge.kAgoraAudioEffectStateFailed:
+                this.emit("error", soundId);
+                return;
+        }
+    }
+    setEffectFinished = (soundId: number) => {
+        logger("setEffectFinished", { soundId });
+        this.emit("effectFinished", soundId);
+    }
+    effectDurationCallback = (filePath: string, duration: number) => {
+        logger("effectDurationCallback", { filePath, duration });
+        this.emit("duration", filePath, duration);
+    }
+}
+let rtcAudioEffectCallbackBridge: RTCAudioEffectCallbackBridge | undefined;
+export class RtcAudioEffectClient extends EventEmitter implements RTCEffectClient {
+    identifier: string;
+    public constructor(identifier: string) {
         super();
-        this.addListener("error", (...args)=> {
+        this.identifier = identifier;
+        this.addListener("error", (...args) => {
             console.log("audio effect client callback error", args);
         })
-        register("rtc", {
-            audioEffectCallback: (soundId: number, state: number) => {
-                logger("audioEffectCallback", { soundId, state });
-                switch (state) {
-                    case RtcAudioEffectClient.kAgoraAudioEffectStatePlaying:
-                        this.emit("play", soundId);
-                        return;
-                    case RtcAudioEffectClient.kAgoraAudioEffectStatePaused:
-                        this.emit("pause", soundId);
-                        return;
-                    case RtcAudioEffectClient.kAgoraAudioEffectStateStopped:
-                        this.emit("pause", soundId);
-                        return;
-                    case RtcAudioEffectClient.kAgoraAudioEffectStateFailed:
-                        this.emit("error", soundId);
-                        return;
-                }
-            },
-            setEffectFinished: (soundId: number) => {
-                logger("setEffectFinished", { soundId });
-                this.emit("effectFinished", soundId);
-            },
-            effectDurationCallback: (filePath: string, duration: number) => {
-                logger("effectDurationCallback", { filePath, duration });
-                this.emit("duration", filePath, duration);
-            }
+        if (!rtcAudioEffectCallbackBridge) { // initRtcAudioEffectCallbackBridge.
+            rtcAudioEffectCallbackBridge = new RTCAudioEffectCallbackBridge();
+            register("rtc", rtcAudioEffectCallbackBridge);
+        }
+        const shareBridge = rtcAudioEffectCallbackBridge as RTCAudioEffectCallbackBridge;
+        shareBridge.on("play", (soundId: number) => {
+            this.emit("play", soundId);
+        });
+        shareBridge.on("pause", (soundId: number) => {
+            this.emit("pause", soundId);
+        });
+        shareBridge.on("error", (soundId: number) => {
+            this.emit("error", soundId);
+        });
+        shareBridge.on("effectFinished", (soundId: number) => {
+            this.emit("effectFinished", soundId);
+        });
+        shareBridge.on("duration", (filePath: string, duration: number) => {
+            this.emit("duration", filePath, duration);
         });
     }
 
@@ -71,7 +94,7 @@ export class RtcAudioEffectClient extends EventEmitter implements RTCEffectClien
         publish: boolean,
         startPos: number
     ): Promise<number> {
-        logger("playEffect", { soundId, filePath, loopCount, pitch, pan, gain, publish, startPos });
+        logger("playEffect", { soundId, filePath, loopCount, pitch, pan, gain, publish, startPos, identifier: this.identifier });
         return asyncCall("rtc.playEffect", {
             soundId,
             filePath,
@@ -81,6 +104,7 @@ export class RtcAudioEffectClient extends EventEmitter implements RTCEffectClien
             gain,
             publish,
             startPos,
+            identifier: this.identifier
         }) as Promise<number>;
     }
 
