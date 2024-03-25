@@ -11,6 +11,9 @@ export class RtcAudioEffectClient extends EventEmitter implements RTCEffectClien
 
     public constructor() {
         super();
+        this.addListener("error", (...args)=> {
+            console.log("audio effect client callback error", args);
+        })
         register("rtc", {
             audioEffectCallback: (soundId: number, state: number) => {
                 logger("audioEffectCallback", { soundId, state });
