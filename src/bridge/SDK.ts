@@ -440,6 +440,12 @@ class SDKBridge {
         responseCallback();
     }
 
+    setParameters = (params: any) => {
+        if (Boolean(params.effectMixingForMediaPlayer)) {
+            window.__mediaPlayerAudioEffectClient = new RtcAudioEffectClient();
+        }
+    }
+
     registerApp = (para: AppRegisterParams, responseCallback: any) => {
         if (para.javascriptString) {
             let variable = para.variable!;
