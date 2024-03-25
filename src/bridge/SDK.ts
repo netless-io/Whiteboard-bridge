@@ -136,8 +136,7 @@ class SDKBridge {
 
         const pptParams = restConfig.pptParams || {};
         if (enableRtcAudioEffectIntercept) {
-            let rtcAudioEffectClient = new RtcAudioEffectClient();
-            usePlugin(new EffectPlugin(rtcAudioEffectClient));
+            usePlugin(new EffectPlugin(new RtcAudioEffectClient("ppt")));
         } else if (enableRtcIntercept) {
             let rtcAudioMixingClient = new RtcAudioMixingClient();
             pptParams.rtcClient = rtcAudioMixingClient; // 旧版 ppt 使用的 audio mixing 接口。
@@ -442,7 +441,7 @@ class SDKBridge {
 
     setParameters = (params: any) => {
         if (Boolean(params.effectMixingForMediaPlayer)) {
-            window.__mediaPlayerAudioEffectClient = new RtcAudioEffectClient();
+            window.__mediaPlayerAudioEffectClient = new RtcAudioEffectClient("mediaPlayer");
         }
     }
 
