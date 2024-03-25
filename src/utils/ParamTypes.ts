@@ -3,6 +3,7 @@ import type { CombinePlayer } from "@netless/combine-player";
 import { WhiteWebSdk, Room, Player, } from 'white-web-sdk';
 import { AppRegisterParams, PluginContext, PluginParams } from '@netless/whiteboard-bridge-types';
 import { SyncedStore } from '@netless/synced-store';
+import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 
 declare global {
   interface Window {
@@ -19,6 +20,7 @@ declare global {
     __platform?: any;
     __netlessUA?: string;
     __netlessMobXUseProxies?: string;
+    __mediaPlayerAudioEffectClient?: RtcAudioEffectClient;
     testRoom: () => void;
     testReplay: () => void;
     html2canvas: any;
