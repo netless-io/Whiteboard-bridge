@@ -9,6 +9,7 @@ import App from "./App";
 import { addDebugFunctions } from "./Debug";
 import { WindowManager } from '@netless/window-manager';
 import { registerSDKBridge } from "./bridge/SDK";
+import { prepare } from "@netless/white-prepare";
 
 ReactDOM.render(
   <App />,
@@ -18,6 +19,8 @@ ReactDOM.render(
 registerSDKBridge();
 
 window.registerApp = WindowManager.register;
+
+window._prepareWhiteConnection = prepare;
 
 // Debug functions
 addDebugFunctions();

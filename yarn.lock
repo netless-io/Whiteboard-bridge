@@ -1190,6 +1190,11 @@
   resolved "https://registry.yarnpkg.com/@netless/white-audio-plugin/-/white-audio-plugin-1.2.23.tgz#8867c4a90a23f297a8cb01701ce068846b847c67"
   integrity sha512-qwUVDhJheKaQnXiVIJVEuL5lMil82nIdBoh8QW4K/HFxWz8z4ok7xAOQj16nkH+3627Usk0YXKqK5RzErSSvCg==
 
+"@netless/white-prepare@^1.1.0":
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/@netless/white-prepare/-/white-prepare-1.0.1.tgz#a06e653e76c012be092fbdf203d515cf5366328b"
+  integrity sha512-SImcWbnq36S5+wNyzIc0etmKodrLmvuH5oKb9PN9Azctp7uiATTgnJvIQArrknS4zPYUumDUEDUOHHvXWrOd4g==
+
 "@netless/white-video-plugin2@^2.0.4":
   version "2.0.5"
   resolved "https://registry.yarnpkg.com/@netless/white-video-plugin2/-/white-video-plugin2-2.0.5.tgz#13cc2497d640bd1b01cc56aa9930cbf0ffa84db1"

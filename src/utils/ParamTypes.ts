@@ -31,5 +31,6 @@ declare global {
     appRegisterParams: AppRegisterParams[];
     nativeWebSocket?: boolean;
     syncedStore?: SyncedStore;
+    _prepareWhiteConnection: any;
   }
 }
