@@ -27,6 +27,7 @@ import { SDKCallbackHandler } from '../native/SDKCallbackHandler';
 import { destroySyncedStore, initSyncedStore } from './SyncedStore';
 import { SlideLoggerPlugin } from '../utils/SlideLogger';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
+import { prepare } from '@netless/white-prepare';
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
@@ -473,5 +474,15 @@ class SDKBridge {
                 appOptions: para.appOptions
             }).then(() => responseCallback());
         }
+    }
+
+    prepareWhiteConnection = (params: PrepareParams, responseCallback: any) => {
+        const {appId, region, expire} = params;
+        const expireMS = expire || 12 * 3600 * 100;
+        prepare(appId, region as any, expireMS).then(() => {
+            responseCallback();
+        }).catch((e: Error) => {
+            responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
+        });
     }
 }
