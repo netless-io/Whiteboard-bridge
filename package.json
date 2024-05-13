@@ -31,7 +31,7 @@
     "@netless/webview-bridge": "^0.1.11",
     "@netless/white-audio-plugin": "^1.2.4",
     "@netless/white-audio-plugin2": "^2.0.4",
-    "@netless/white-prepare": "^1.0.0",
+    "@netless/white-prepare": "^1.0.2",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
     "@netless/window-manager": "^0.4.69",
