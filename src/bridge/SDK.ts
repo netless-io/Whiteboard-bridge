@@ -478,7 +478,7 @@ class SDKBridge {
 
     prepareWhiteConnection = (params: PrepareParams, responseCallback: any) => {
         const {appId, region, expire} = params;
-        const expireMS = expire || 12 * 3600 * 100;
+        const expireMS = expire || 12 * 3600 * 1000;
         prepare(appId, region as any, expireMS).then(() => {
             responseCallback();
         }).catch((e: Error) => {
