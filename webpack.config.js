@@ -22,6 +22,11 @@ config = {
     alias: {
       "@netless/window-manager/dist/style.css": require.resolve("@netless/window-manager").replace("index.js", "style.css"),
       "@netless/window-manager": require.resolve("@netless/window-manager"),
+
+      "@netless/appliance-plugin/dist/style.css": require.resolve("@netless/appliance-plugin").replace("appliance-plugin.js", "style.css"),
+      "@netless/appliance-plugin/dist/subWorker.js": require.resolve("@netless/appliance-plugin").replace("appliance-plugin.js", "subWorker.js"),
+      "@netless/appliance-plugin/dist/fullWorker.js": require.resolve("@netless/appliance-plugin").replace("appliance-plugin.js", "fullWorker.js"),
+      "@netless/appliance-plugin": require.resolve("@netless/appliance-plugin"),
     },
     extensions: ['.ts', '.tsx', '.js', "cjs"],
     fallback: {
@@ -80,6 +85,7 @@ config = {
     rules: [
       {
         test: /\.(ts|js|cjs)x?$/,
+        resourceQuery: { not: [/raw/] },
         use: [
           "thread-loader",
           'babel-loader',
@@ -92,6 +98,10 @@ config = {
       {
         test: /\.(svg|png)/,
         use: ['file-loader']
+      },
+      {
+        resourceQuery: /raw/,
+        type: 'asset/source',
       }
     ],
     unknownContextCritical: false,
