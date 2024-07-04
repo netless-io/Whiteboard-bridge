@@ -24,10 +24,19 @@ import { registerBridgeRoom } from "./Room";
 import { registerPlayerBridge } from "./Player";
 import { RtcAudioMixingClient } from '../RtcAudioMixingClient';
 import { SDKCallbackHandler } from '../native/SDKCallbackHandler';
-import { destroySyncedStore, initSyncedStore } from './SyncedStore';
+import { destroySyncedStore, initSyncedStore } from './SyncedStore'
 import { SlideLoggerPlugin } from '../utils/SlideLogger';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 import { prepare } from '@netless/white-prepare';
+
+import { ApplianceMultiPlugin } from '@netless/appliance-plugin';
+import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
+import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
+const fullWorkerBlob = new Blob([fullWorkerString], { type: 'text/javascript' });
+const fullWorkerUrl = URL.createObjectURL(fullWorkerBlob);
+const subWorkerBlob = new Blob([subWorkerString], { type: 'text/javascript' });
+const subWorkerUrl = URL.createObjectURL(subWorkerBlob);
+
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
@@ -85,9 +94,10 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
         containerSizeRatio: 9/16,
         chessboard: true,
         cursor: !!cursorAdapter,
+        supportAppliancePlugin: nativeConfig?.enableAppliancePlugin,
         ...windowParams,
         container: divRef(),
-        room
+        room,
     });
     addManagerListener(manager, logger, handler);
     return manager;
@@ -112,7 +122,7 @@ class SDKBridge {
             return url;
         };
 
-        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, ...restConfig } = config;
+        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, ...restConfig } = config;
 
         enableReport(!!log);
         nativeConfig = config;
@@ -199,13 +209,18 @@ class SDKBridge {
         const invisiblePlugins = [
             ...enableIFramePlugin ? [IframeBridge as any] : [],
             ...enableSyncedStore ? [SyncedStorePlugin as any] : [],
+            ...enableAppliancePlugin ? [ApplianceMultiPlugin as any] : [],
         ];
+
+        const wrappedComponents = [
+            ...enableIFramePlugin ? [IframeWrapper] : [],
+        ]
 
         try {
             sdk = new WhiteWebSdk({
                 ...restConfig,
                 invisiblePlugins: invisiblePlugins,
-                wrappedComponents: enableIFramePlugin ? [IframeWrapper] : undefined,
+                wrappedComponents: wrappedComponents,
                 plugins: plugins,
                 urlInterrupter: urlInterrupter,
                 onWhiteSetupFailed: e => {
@@ -267,6 +282,20 @@ class SDKBridge {
                     if (fullscreen) {
                         manager.setMaximized(true);
                     }
+
+                    if (nativeConfig?.enableAppliancePlugin) {
+                        const plugin = await ApplianceMultiPlugin.getInstance(manager,
+                            {
+                                options: {
+                                    cdn: {
+                                        fullWorkerUrl,
+                                        subWorkerUrl,
+                                    }
+                                }
+                            }
+                        );
+                        window.appliancePlugin = plugin;
+                    }
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
                 }
@@ -319,11 +348,15 @@ class SDKBridge {
         }
         replayCallbackHanlder = new ReplayerCallbackHandlerImp(step, !!mediaURL, !!(nativeConfig?.enableIFramePlugin), phaseChangeHook);
 
+        const invisiblePlugins = [
+            ...useMultiViews ? [WindowManager as any] : [],
+        ]
+
         sdk!.replayRoom({
             ...replayParams,
             cursorAdapter: useMultiViews ? undefined : cursorAdapter,
             cameraBound: convertBound(cameraBound),
-            invisiblePlugins: useMultiViews ? [WindowManager] : [],
+            invisiblePlugins: invisiblePlugins,
             useMultiViews
         }, {...replayCallbackHanlder, ...sdkCallbackHandler}).then(async mPlayer => {
             removeBind();

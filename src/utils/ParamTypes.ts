@@ -36,5 +36,6 @@ declare global {
     appRegisterParams: AppRegisterParams[];
     nativeWebSocket?: boolean;
     syncedStore?: SyncedStore;
+    appliancePlugin: any;
   }
 }
