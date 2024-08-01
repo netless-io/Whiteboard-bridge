@@ -49,7 +49,7 @@ function setBackgroundColor(r: number, g: number, b: number, a?: number) {
 }
 window.setBackgroundColor = setBackgroundColor;
 
-function screenshot(scenePath: string, fn: (scenePath: string, div: HTMLElement, width: number, height: number) => void, responseCallback: any) {
+function screenshot(scenePath: string, fn: (scenePath: string, div: HTMLElement, width: number, height: number) => void | Promise<void>, responseCallback: any) {
     const div = document.createElement("div");
     div.setAttribute("class", "shadow");
     const whiteboard = document.getElementById(whiteboardContainerId);
@@ -58,18 +58,20 @@ function screenshot(scenePath: string, fn: (scenePath: string, div: HTMLElement,
         div.style.background = color;
     }
     document.body.appendChild(div);
-    fn(scenePath, div, div.clientWidth, div.clientHeight);
-    html2canvas(div, {
-        useCORS: true, onclone: async function (div: Document): Promise<void> {
-            const images = Array.from(div.getElementsByTagName("image"));
-            for (const i of images) {
-                const image = i as SVGImageElement;
-                const url = image.href.baseVal;
-                // https://github.com/niklasvh/html2canvas/issues/2104
-                const dataUri = await urlContentToDataUri(url);
-                image.href.baseVal = dataUri as string;
+    Promise.resolve(fn(scenePath, div, div.clientWidth, div.clientHeight)).then(() => {
+        return html2canvas(div, {
+            useCORS: true, 
+            onclone: async function (div: Document): Promise<void> {
+                const images = Array.from(div.getElementsByTagName("image"));
+                for (const i of images) {
+                    const image = i as SVGImageElement;
+                    const url = image.href.baseVal;
+                    // https://github.com/niklasvh/html2canvas/issues/2104
+                    const dataUri = await urlContentToDataUri(url);
+                    image.href.baseVal = dataUri as string;
+                }
             }
-        }
+        });
     }).then(canvas => {
         const data = canvas.toDataURL();
         document.body.removeChild(div);
@@ -81,11 +83,17 @@ export class AsyncDisplayerBridge {
     constructor(readonly aDisplayer: Displayer) { }
 
     sceneSnapshot = (scenePath: string, responseCallback: any) => {
-        screenshot(scenePath, this.aDisplayer.fillSceneSnapshot.bind(this.aDisplayer), responseCallback);
+        const f = window.appliancePlugin ?
+            (this.aDisplayer as any).fillSceneSnapshotAsync.bind(this.aDisplayer) :
+            this.aDisplayer.fillSceneSnapshot.bind(this.aDisplayer);
+        screenshot(scenePath, f, responseCallback);
     };
 
     scenePreview = (scenePath: string, responseCallback: any) => {
-        screenshot(scenePath, this.aDisplayer.scenePreview.bind(this.aDisplayer), responseCallback);
+        const f = window.appliancePlugin ?
+            (this.aDisplayer as any).scenePreviewAsync.bind(this.aDisplayer) :
+            this.aDisplayer.scenePreview.bind(this.aDisplayer);
+        screenshot(scenePath,f, responseCallback);
     };
 }
 
