@@ -29,9 +29,9 @@ import { SlideLoggerPlugin } from '../utils/SlideLogger';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 import { prepare } from '@netless/white-prepare';
 
-import { ApplianceMultiPlugin } from '@netless/appliance-plugin';
-import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
-import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
+import { ApplianceMultiPlugin } from '@hqer/appliance-plugin';
+import fullWorkerString from '@hqer/appliance-plugin/dist/fullWorker.js?raw';
+import subWorkerString from '@hqer/appliance-plugin/dist/subWorker.js?raw';
 const fullWorkerBlob = new Blob([fullWorkerString], { type: 'text/javascript' });
 const fullWorkerUrl = URL.createObjectURL(fullWorkerBlob);
 const subWorkerBlob = new Blob([subWorkerString], { type: 'text/javascript' });

@@ -1111,6 +1111,21 @@
   dependencies:
     "@hapi/hoek" "^9.0.0"
 
+"@hqer/appliance-plugin@^1.0.9":
+  version "1.0.9"
+  resolved "https://registry.yarnpkg.com/@hqer/appliance-plugin/-/appliance-plugin-1.0.9.tgz#fbbcdb4f76d17e891cc510426475c344dbb86ce4"
+  integrity sha512-lP3+liwNnBQQwiAoGkaZknlf13nCceYXLOPo1flw6LwtdSTEeSoYMK0h44LpkZ42zBxxLkY1DGfBm8pxlTHDOA==
+  dependencies:
+    eventemitter2 "^6.4.9"
+    lineclip "^1.1.5"
+    lodash "^4.17.21"
+    lz-string "^1.5.0"
+    re-resizable "^6.9.11"
+    react "^16.8.0"
+    react-dom "^16.8.0"
+    react-draggable "^4.4.6"
+    spritejs "^3.8.3"
+
 "@juggle/resize-observer@^3.3.1":
   version "3.3.1"
   resolved "https://registry.yarnpkg.com/@juggle/resize-observer/-/resize-observer-3.3.1.tgz#b50a781709c81e10701004214340f25475a171a0"
@@ -1139,21 +1154,6 @@
   version "0.2.60"
   resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.60.tgz#8a4ab6087172ddbba93616777cc8310fd5c9b538"
   integrity sha512-YhB0vzCVBQD31UpJ8XftnLrGEJrpDWrWWpzpYhBvOzb1RGKpDejZAkBLhbgAoIYR6Xjjwh2aWOdZOAqIrX+8uQ==
-
-"@netless/appliance-plugin@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.yarnpkg.com/@netless/appliance-plugin/-/appliance-plugin-1.0.8.tgz#18526a71fe1f9858e9aaa98c9c9d23a8602dcb35"
-  integrity sha512-G/nfN+NAYDtf66LDgQns2TutTaHMqxbsnhqxRx8G9U9IDnKSe5w65YtugV8+u63AcnkiNg4TVRXS1jVqOT3T6Q==
-  dependencies:
-    eventemitter2 "^6.4.9"
-    lineclip "^1.1.5"
-    lodash "^4.17.21"
-    lz-string "^1.5.0"
-    re-resizable "^6.9.11"
-    react "^16.8.0"
-    react-dom "^16.8.0"
-    react-draggable "^4.4.6"
-    spritejs "^3.8.3"
 
 "@netless/canvas-polyfill@^0.0.4":
   version "0.0.4"

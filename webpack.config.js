@@ -23,10 +23,10 @@ config = {
       "@netless/window-manager/dist/style.css": require.resolve("@netless/window-manager").replace("index.js", "style.css"),
       "@netless/window-manager": require.resolve("@netless/window-manager"),
 
-      "@netless/appliance-plugin/dist/style.css": require.resolve("@netless/appliance-plugin").replace("appliance-plugin.js", "style.css"),
-      "@netless/appliance-plugin/dist/subWorker.js": require.resolve("@netless/appliance-plugin").replace("appliance-plugin.js", "subWorker.js"),
-      "@netless/appliance-plugin/dist/fullWorker.js": require.resolve("@netless/appliance-plugin").replace("appliance-plugin.js", "fullWorker.js"),
-      "@netless/appliance-plugin": require.resolve("@netless/appliance-plugin"),
+      "@hqer/appliance-plugin/dist/style.css": require.resolve("@hqer/appliance-plugin").replace("appliance-plugin.js", "style.css"),
+      "@hqer/appliance-plugin/dist/subWorker.js": require.resolve("@hqer/appliance-plugin").replace("appliance-plugin.js", "subWorker.js"),
+      "@hqer/appliance-plugin/dist/fullWorker.js": require.resolve("@hqer/appliance-plugin").replace("appliance-plugin.js", "fullWorker.js"),
+      "@hqer/appliance-plugin": require.resolve("@hqer/appliance-plugin"),
     },
     extensions: ['.ts', '.tsx', '.js', "cjs"],
     fallback: {
