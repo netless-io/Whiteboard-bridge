@@ -1140,10 +1140,10 @@
   resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.60.tgz"
   integrity sha512-YhB0vzCVBQD31UpJ8XftnLrGEJrpDWrWWpzpYhBvOzb1RGKpDejZAkBLhbgAoIYR6Xjjwh2aWOdZOAqIrX+8uQ==
 
-"@netless/appliance-plugin@^1.0.8":
-  version "1.0.8"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.0.8.tgz"
-  integrity sha512-G/nfN+NAYDtf66LDgQns2TutTaHMqxbsnhqxRx8G9U9IDnKSe5w65YtugV8+u63AcnkiNg4TVRXS1jVqOT3T6Q==
+"@netless/appliance-plugin@^1.1.0":
+  version "1.1.0"
+  resolved "https://registry.yarnpkg.com/@netless/appliance-plugin/-/appliance-plugin-1.1.0.tgz#70df84fa5c4e6a0a1242ca1347954d9d651c7f2d"
+  integrity sha512-JxBSHBRBWz1kVgHp1GgfDQqCzE7H+rfXMWbN6/QQSZqjmOeDENSesV4vLdLcY2SW+cYFyNOvu5h5s1tiyvR0sA==
   dependencies:
     eventemitter2 "^6.4.9"
     lineclip "^1.1.5"
