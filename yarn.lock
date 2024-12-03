@@ -1140,10 +1140,10 @@
   resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.60.tgz"
   integrity sha512-YhB0vzCVBQD31UpJ8XftnLrGEJrpDWrWWpzpYhBvOzb1RGKpDejZAkBLhbgAoIYR6Xjjwh2aWOdZOAqIrX+8uQ==
 
-"@netless/appliance-plugin@^1.1.2":
-  version "1.1.2"
-  resolved "https://registry.yarnpkg.com/@netless/appliance-plugin/-/appliance-plugin-1.1.2.tgz#d374116f4fa4f0dea9710a28661f60b20058a365"
-  integrity sha512-pd5yh4XxIRFhfp9wMEX5wSNdmmxTiXUeYCPws6psDTZqLyo0LbMpP9fErmfo9AxHV3mqOp/yyO+6z93BRCt1Uw==
+"@netless/appliance-plugin@^1.1.6":
+  version "1.1.6"
+  resolved "https://registry.yarnpkg.com/@netless/appliance-plugin/-/appliance-plugin-1.1.6.tgz#ffb23c2b647fd46201af45c71d1b9b505589ddd7"
+  integrity sha512-QCtPgHtDtlxpbwgQisXaO02IAsu817l6jAxPkX35Xxn6gO3YqxuybE91eTpRWhywsQmf9vD1OPYmAgmANOqrDg==
   dependencies:
     eventemitter2 "^6.4.9"
     lineclip "^1.1.5"
@@ -1253,7 +1253,7 @@
 
 "@netless/window-manager@^0.4.75":
   version "0.4.75"
-  resolved "https://registry.yarnpkg.com/@netless/window-manager/-/window-manager-0.4.75.tgz#ce316069d783f04799ab99b56e2e9b28cbc3ff20"
+  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-0.4.75.tgz"
   integrity sha512-ggKuY/ucnNaXMoNHWPAZSd0PKFn47uOGPmHK2zvfbAijRVYsLdB5dyUDaCsvJCqh0b9oe/mmkl0Jfj4dZHEwZw==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
