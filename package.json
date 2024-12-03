@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@netless/app-slide": "0.2.60",
-    "@netless/appliance-plugin": "^1.1.2",
+    "@netless/appliance-plugin": "^1.1.6",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
