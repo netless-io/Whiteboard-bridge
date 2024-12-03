@@ -1,6 +1,6 @@
 import { WindowManager } from '@netless/window-manager';
 import type { CombinePlayer } from "@netless/combine-player";
-import { WhiteWebSdk, Room, Player, WhiteWebSdkConfiguration, } from 'white-web-sdk';
+import { WhiteWebSdk, Room, Player } from 'white-web-sdk';
 import { AppRegisterParams, PluginContext, PluginParams } from '@netless/whiteboard-bridge-types';
 import { SyncedStore } from '@netless/synced-store';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
