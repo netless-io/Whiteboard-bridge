@@ -521,12 +521,22 @@ export class RoomAsyncBridge {
         if (window.manager) {
             window.manager.setReadonly(disable);
         }
+        if (window.appliancePlugin) {
+            window.appliancePlugin.disableDeviceInputs = disable
+        }
         this.room.disableDeviceInputs = disable;
         updateIframePluginState(this.room);
     }
 
+    // not used now
     disableOperations = (disableOperations: boolean) => {
         this.room.disableCameraTransform = disableOperations;
+        if (window.manager) {
+            window.manager.setReadonly(disableOperations);
+        }
+        if (window.appliancePlugin) {
+            window.appliancePlugin.disableDeviceInputs = disableOperations
+        }
         this.room.disableDeviceInputs = disableOperations;
         updateIframePluginState(this.room);
     }
