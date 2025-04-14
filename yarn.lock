@@ -1135,10 +1135,10 @@
     tess2 "^1.0.0"
     xtend "^4.0.2"
 
-"@netless/app-slide@0.2.65":
-  version "0.2.65"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.65.tgz#3244007a88b0c24cde660b486d9b4b0f47cfd5f8"
-  integrity sha512-tlV7s1Js0PofLTfqIpmds+gg8pfDOM0KIhpMmpEow8KPKgXMRrj6JMAOBI0CosYeQUo7zPsyCrYy6yjclroQdw==
+"@netless/app-slide@0.2.66":
+  version "0.2.66"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.66.tgz#804fc12f73e09b1fe9eb2ad541f3081d7f82c4e0"
+  integrity sha512-MKo4kKgMAGj2JFeeMPe7HKAwdq6g7TMSrXVS4OLYE9Ho6HJGrrVi1J44YM7ykBBIjN8N6zLaY986Kahxk/pyyQ==
 
 "@netless/appliance-plugin@^1.1.11":
   version "1.1.11"
