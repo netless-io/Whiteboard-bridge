@@ -1135,14 +1135,14 @@
     tess2 "^1.0.0"
     xtend "^4.0.2"
 
-"@netless/app-slide@0.2.66":
-  version "0.2.66"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.66.tgz#804fc12f73e09b1fe9eb2ad541f3081d7f82c4e0"
-  integrity sha512-MKo4kKgMAGj2JFeeMPe7HKAwdq6g7TMSrXVS4OLYE9Ho6HJGrrVi1J44YM7ykBBIjN8N6zLaY986Kahxk/pyyQ==
+"@netless/app-slide@0.2.72":
+  version "0.2.72"
+  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.72.tgz#94b7330d6f3643ded4408022c9cd03cbe73b9746"
+  integrity sha512-fdWJUdX6GShGlV8Z9e+4937h7G3TzUItDBcewEFpsXHB9jX+Cdkp2CJaTSsRzeYeRzY+L/XL25nCNGJKtjzh/A==
 
 "@netless/appliance-plugin@^1.1.11":
   version "1.1.11"
-  resolved "https://registry.yarnpkg.com/@netless/appliance-plugin/-/appliance-plugin-1.1.11.tgz#ae831a57ddfa469b2d0ef3ac289eedb30f8292e2"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.11.tgz"
   integrity sha512-/yQyJ1xO0hNY5zL58AwfP3ZL3kyK7Qv25Pbcv+ckZxUv+UC0qgg8m77R7pPgbqyA4WgcMAfejJpzBo5ibfm+HA==
   dependencies:
     eventemitter2 "^6.4.9"
@@ -1251,10 +1251,10 @@
   resolved "https://registry.npmjs.org/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.13.tgz"
   integrity sha512-ZfJt/fD824oqLFW6Jl09cpWB9t30G+lwSUzLiWI1PpakhdlxX3lC9XMH8FtWGghYbzzXFEDh6Ay2N02F87II7g==
 
-"@netless/window-manager@^0.4.75":
-  version "0.4.75"
-  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-0.4.75.tgz"
-  integrity sha512-ggKuY/ucnNaXMoNHWPAZSd0PKFn47uOGPmHK2zvfbAijRVYsLdB5dyUDaCsvJCqh0b9oe/mmkl0Jfj4dZHEwZw==
+"@netless/window-manager@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.2.tgz"
+  integrity sha512-A0XVnW/1mJuaSWI+PQNkQ6zq6nVnA6lYP/tcneJL3s38i3BuLKF9USbTg4u6HSnZ2Kkl/CNa9Ujhrfk83DzexQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.2.28"
@@ -2485,7 +2485,7 @@ color-space@^2.0.0:
 
 color-string@^1.9.0:
   version "1.9.1"
-  resolved "https://registry.yarnpkg.com/color-string/-/color-string-1.9.1.tgz#4467f9146f036f855b764dfb5bf8582bf342c7a4"
+  resolved "https://registry.npmjs.org/color-string/-/color-string-1.9.1.tgz"
   integrity sha512-shrVawQFojnZv6xM40anx4CkoDP+fZsw/ZerEMsW/pyzsRbElpsL/DBVW7q3ExxwusdNXI3lXpuhEZkzs8p5Eg==
   dependencies:
     color-name "^1.0.0"
@@ -2493,7 +2493,7 @@ color-string@^1.9.0:
 
 color@^4.2.3:
   version "4.2.3"
-  resolved "https://registry.yarnpkg.com/color/-/color-4.2.3.tgz#d781ecb5e57224ee43ea9627560107c0e0c6463a"
+  resolved "https://registry.npmjs.org/color/-/color-4.2.3.tgz"
   integrity sha512-1rXeuUUiGGrykh+CeBdu5Ie7OJwinCgQY0bc7GCRxy5xVHy+moaqkpL/jqQq0MtQOeYcrqEz4abc5f0KtU7W4A==
   dependencies:
     color-convert "^2.0.1"
@@ -7001,7 +7001,7 @@ which@^2.0.1:
 
 white-web-sdk@2.16.53:
   version "2.16.53"
-  resolved "https://registry.yarnpkg.com/white-web-sdk/-/white-web-sdk-2.16.53.tgz#25d7885f1d5d69243b428b426c72ef9664b0c4ac"
+  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.53.tgz"
   integrity sha512-ACYemnxcCyWu5TKgbIIwa2I4MMmmYOwbZVqAtBZDnV++eT1iTtRES8CBhwKqJSUPrVqR0elz7E5vre7EXl6rzA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
