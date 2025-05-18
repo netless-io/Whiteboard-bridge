@@ -4,6 +4,7 @@ import { WhiteWebSdk, Room, Player } from 'white-web-sdk';
 import { AppRegisterParams, PluginContext, PluginParams } from '@netless/whiteboard-bridge-types';
 import { SyncedStore } from '@netless/synced-store';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
+import { PCMProxy } from '../PCMProxy';
 
 declare global {
   interface PrepareParams {
@@ -26,6 +27,7 @@ declare global {
     __netlessUA?: string;
     __netlessMobXUseProxies?: string;
     __mediaPlayerAudioEffectClient?: RtcAudioEffectClient;
+    __pcmProxy?: PCMProxy;
     testRoom: () => void;
     testReplay: () => void;
     html2canvas: any;
