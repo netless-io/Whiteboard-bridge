@@ -6,9 +6,10 @@ import "./WebSocket";
 import * as React from "react";
 import * as ReactDOM from "react-dom";
 import App from "./App";
-import { addDebugFunctions } from "./Debug";
+import { addDebugFunctions } from "./debug/Debug";
 import { WindowManager } from '@netless/window-manager';
 import { registerSDKBridge } from "./bridge/SDK";
+import { addPcmDebugFunctions } from "./debug/PcmDebug";
 
 ReactDOM.render(
   <App />,
@@ -20,4 +21,7 @@ registerSDKBridge();
 window.registerApp = WindowManager.register;
 
 // Debug functions
-addDebugFunctions();
+if (process.env.NODE_ENV === 'development') {
+  addDebugFunctions();
+  addPcmDebugFunctions();
+}
