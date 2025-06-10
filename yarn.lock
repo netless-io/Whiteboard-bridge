@@ -1199,10 +1199,17 @@
     side-effect-manager "^1.1.1"
     value-enhancer "^1.3.0"
 
-"@netless/telebox-insider@0.2.31":
-  version "0.2.31"
-  resolved "https://registry.npmjs.org/@netless/telebox-insider/-/telebox-insider-0.2.31.tgz#8875a612bee04b4aea213dc88948a69bfbd3e588"
-  integrity sha512-ZVbNga6CA8b5Y0MLqOA9o+hVqNSu4x5Xpihi0BXZ4ZS/5V1tuFB0t/wgrlEf0fnYcQEMuAYqxjyoH9IA/0yvBQ==
+"@netless/telebox-insider@0.2.28":
+  version "0.2.28"
+  resolved "https://registry.npmjs.org/@netless/telebox-insider/-/telebox-insider-0.2.28.tgz"
+  integrity sha512-UJDCm/f7yjiIaWqbS20LDXfAG6RUxsXSktPDzmEr51MgsevpQ3u241hVlyOpKAXSeTR6B3ioRAKcgflOw5JvTQ==
+  dependencies:
+    "@types/shallowequal" "^1.1.1"
+    eventemitter3 "^4.0.7"
+    shallowequal "^1.1.0"
+    side-effect-manager "^0.1.5"
+    stylefire "^7.0.3"
+    value-enhancer "^0.0.8"
 
 "@netless/video-js-plugin@0.3.8":
   version "0.3.8"
@@ -1244,13 +1251,13 @@
   resolved "https://registry.npmjs.org/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.13.tgz"
   integrity sha512-ZfJt/fD824oqLFW6Jl09cpWB9t30G+lwSUzLiWI1PpakhdlxX3lC9XMH8FtWGghYbzzXFEDh6Ay2N02F87II7g==
 
-"@netless/window-manager@^1.0.4":
-  version "1.0.4"
-  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.4.tgz#e3d532b1038a0c44b412157b74d95e83ec1e2852"
-  integrity sha512-4z88glPbnNnIue9FazT9oTsntI1OtPqOYmBu0CcaduZg+CIpPOa1o7OpWXgVgS1qlbEyNAxLYedBI3SLqRhl+g==
+"@netless/window-manager@^1.0.2":
+  version "1.0.2"
+  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.2.tgz"
+  integrity sha512-A0XVnW/1mJuaSWI+PQNkQ6zq6nVnA6lYP/tcneJL3s38i3BuLKF9USbTg4u6HSnZ2Kkl/CNa9Ujhrfk83DzexQ==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
-    "@netless/telebox-insider" "0.2.31"
+    "@netless/telebox-insider" "0.2.28"
     emittery "^0.9.2"
     lodash "^4.17.21"
     p-retry "^4.6.1"
@@ -1282,6 +1289,22 @@
   dependencies:
     "@nodelib/fs.scandir" "2.1.5"
     fastq "^1.6.0"
+
+"@popmotion/easing@^1.0.1":
+  version "1.0.2"
+  resolved "https://registry.npmmirror.com/@popmotion/easing/-/easing-1.0.2.tgz"
+  integrity sha512-IkdW0TNmRnWTeWI7aGQIVDbKXPWHVEYdGgd5ZR4SH/Ty/61p63jCjrPxX1XrR7IGkl08bjhJROStD7j+RKgoIw==
+
+"@popmotion/popcorn@^0.4.4":
+  version "0.4.4"
+  resolved "https://registry.npmmirror.com/@popmotion/popcorn/-/popcorn-0.4.4.tgz"
+  integrity sha512-jYO/8319fKoNLMlY4ZJPiPu8Ea8occYwRZhxpaNn/kZsK4QG2E7XFlXZMJBsTWDw7I1i0uaqyC4zn1nwEezLzg==
+  dependencies:
+    "@popmotion/easing" "^1.0.1"
+    framesync "^4.0.1"
+    hey-listen "^1.0.8"
+    style-value-types "^3.1.7"
+    tslib "^1.10.0"
 
 "@protobufjs/aspromise@^1.1.1", "@protobufjs/aspromise@^1.1.2":
   version "1.1.2"
@@ -1538,6 +1561,11 @@
   dependencies:
     "@types/mime" "^1"
     "@types/node" "*"
+
+"@types/shallowequal@^1.1.1":
+  version "1.1.1"
+  resolved "https://registry.npmmirror.com/@types/shallowequal/-/shallowequal-1.1.1.tgz"
+  integrity sha512-Lhni3aX80zbpdxRuWhnuYPm8j8UQaa571lHP/xI4W+7BAFhSIhRReXnqjEgT/XzPoXZTJkCqstFMJ8CZTK6IlQ==
 
 "@types/sinonjs__fake-timers@8.1.1":
   version "8.1.1"
@@ -3615,6 +3643,13 @@ fraction.js@^4.2.0:
   resolved "https://registry.npmjs.org/fraction.js/-/fraction.js-4.2.0.tgz"
   integrity sha512-MhLuK+2gUcnZe8ZHlaaINnQLl0xRIGRfcGk2yl8xoQAfHrSsL3rYu6FCmBdkdbhc9EPlwyGHewaRsvwRMJtAlA==
 
+framesync@^4.0.0, framesync@^4.0.1:
+  version "4.1.0"
+  resolved "https://registry.npmmirror.com/framesync/-/framesync-4.1.0.tgz"
+  integrity sha512-MmgZ4wCoeVxNbx2xp5hN/zPDCbLSKiDt4BbbslK7j/pM2lg5S0vhTNv1v8BCVb99JPIo6hXBFdwzU7Q4qcAaoQ==
+  dependencies:
+    hey-listen "^1.0.5"
+
 fresh@0.5.2:
   version "0.5.2"
   resolved "https://registry.npmjs.org/fresh/-/fresh-0.5.2.tgz"
@@ -3836,6 +3871,11 @@ he@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/he/-/he-1.2.0.tgz"
   integrity sha512-F/1DnUGPopORZi0ni+CvrCgHQ5FyEAHRLSApuYWMmrbSwoN2Mn/7k+Gl38gJnR7yyDZk6WLXwiGod1JOWNDKGw==
+
+hey-listen@^1.0.5, hey-listen@^1.0.8:
+  version "1.0.8"
+  resolved "https://registry.npmmirror.com/hey-listen/-/hey-listen-1.0.8.tgz"
+  integrity sha512-COpmrF2NOg4TBWUJ5UVyaCU2A88wEMkUPK4hNqyCkqHbxT92BbvfjoSozkAIIm6XhicGlJHhFdullInrdhwU8Q==
 
 howler@^2.2.3:
   version "2.2.3"
@@ -6045,6 +6085,11 @@ shallow-clone@^3.0.0:
   dependencies:
     kind-of "^6.0.2"
 
+shallowequal@^1.1.0:
+  version "1.1.0"
+  resolved "https://registry.npmmirror.com/shallowequal/-/shallowequal-1.1.0.tgz"
+  integrity sha512-y0m1JoUZSlPAjXVtPPW70aZWfIL/dSP7AFkRnniLCrK/8MDKog3TySTBmckD+RObVxH0v4Tox67+F14PdED2oQ==
+
 shebang-command@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npmjs.org/shebang-command/-/shebang-command-2.0.0.tgz"
@@ -6064,6 +6109,11 @@ side-channel@^1.0.2:
   dependencies:
     es-abstract "^1.17.0-next.1"
     object-inspect "^1.7.0"
+
+side-effect-manager@^0.1.5:
+  version "0.1.5"
+  resolved "https://registry.npmjs.org/side-effect-manager/-/side-effect-manager-0.1.5.tgz"
+  integrity sha512-aAEXMS+9qW7rY2cwq4S6UjW3IBO/ZLWRI0sH1oGJ1eDE7YBFR1TW950qffnpx/0hByusAOVbu2zjThk9Vcjs+Q==
 
 side-effect-manager@^1.1.1:
   version "1.1.1"
@@ -6360,6 +6410,25 @@ style-loader@^1.0.0:
     loader-utils "^2.0.0"
     schema-utils "^2.6.6"
 
+style-value-types@^3.1.7:
+  version "3.2.0"
+  resolved "https://registry.npmmirror.com/style-value-types/-/style-value-types-3.2.0.tgz"
+  integrity sha512-ih0mGsrYYmVvdDi++/66O6BaQPRPRMQHoZevNNdMMcPlP/cH28Rnfsqf1UEba/Bwfuw9T8BmIMwbGdzsPwQKrQ==
+  dependencies:
+    hey-listen "^1.0.8"
+    tslib "^1.10.0"
+
+stylefire@^7.0.3:
+  version "7.0.3"
+  resolved "https://registry.npmmirror.com/stylefire/-/stylefire-7.0.3.tgz"
+  integrity sha512-Q0l7NSeFz/OkX+o6/7Zg3VZxSAZeQzQpYomWmIpOehFM/rJNMSLVX5fgg6Q48ut2ETNKwdhm97mPNU643EBCoQ==
+  dependencies:
+    "@popmotion/popcorn" "^0.4.4"
+    framesync "^4.0.0"
+    hey-listen "^1.0.8"
+    style-value-types "^3.1.7"
+    tslib "^1.10.0"
+
 stylehacks@^5.0.2:
   version "5.0.2"
   resolved "https://registry.npmjs.org/stylehacks/-/stylehacks-5.0.2.tgz"
@@ -6535,6 +6604,11 @@ tough-cookie@~2.5.0:
   dependencies:
     psl "^1.1.28"
     punycode "^2.1.1"
+
+tslib@^1.10.0:
+  version "1.14.1"
+  resolved "https://registry.npmmirror.com/tslib/-/tslib-1.14.1.tgz"
+  integrity sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==
 
 tslib@^1.8.0, tslib@^1.8.1:
   version "1.13.0"
@@ -6713,6 +6787,13 @@ uuid@^8.3.2:
   version "8.3.2"
   resolved "https://registry.npmjs.org/uuid/-/uuid-8.3.2.tgz"
   integrity sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==
+
+value-enhancer@^0.0.8:
+  version "0.0.8"
+  resolved "https://registry.npmmirror.com/value-enhancer/-/value-enhancer-0.0.8.tgz"
+  integrity sha512-ba8Rcyp9ItqlLWoyZVqHGaEdY1tqP1mcbRhlOrCnIrDxdl8rKNH1Rq45syo4IMYNSkwC2oV9xBWcV9dmL14aQg==
+  dependencies:
+    side-effect-manager "^0.1.5"
 
 value-enhancer@^1.3.0:
   version "1.3.2"
