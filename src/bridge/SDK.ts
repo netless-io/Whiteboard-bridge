@@ -15,7 +15,7 @@ import { SyncedStorePlugin } from "@netless/synced-store";
 import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
 import {logger, enableReport} from "../utils/Logger";
 import {convertBound} from "../utils/BoundConvert";
-import { addManagerListener } from "./Manager";
+import { addManagerListener, createAppState } from "./Manager";
 import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { lastSchedule, ReplayerCallbackHandler, ReplayerCallbackHandlerImp } from "../native/ReplayerCallbackHandler";
@@ -280,8 +280,8 @@ class SDKBridge {
                         `;
                     }
                     
-                    const manager = await mountWindowManager(room, roomCallbackHandler, windowParams );       
-                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState } };
+                    const manager = await mountWindowManager(room, roomCallbackHandler, windowParams );    
+                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState, appState: createAppState()} };
 
                     if (fullscreen) {
                         manager.setMaximized(true);

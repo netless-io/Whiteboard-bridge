@@ -14,6 +14,10 @@ import { logger } from "../utils/Logger";
 export type NativeDisplayerState = DisplayerState & {
     pageState: PageState;
     windowBoxState: TeleBoxState;
+    appState: {
+        focusedId: string | undefined;
+        appIds: string[];
+    };
 }
 
 const displayerNameSpace = "displayer";
