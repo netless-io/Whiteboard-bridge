@@ -35,7 +35,7 @@
     "@netless/white-prepare": "^1.0.2",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
-    "@netless/window-manager": "^1.0.4",
+    "@netless/window-manager": "^1.0.5",
     "buffer": "^6.0.3",
     "core-js": "^3",
     "html2canvas": "^1.3.3",
