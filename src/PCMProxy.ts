@@ -17,17 +17,6 @@ export class PCMProxy {
     }
 
     constructor() {
-//         window.testPcm = (number) => {
-//             function test() {
-// // const u2 = "https://solutions-apaas.agora.io/cloud-disk/dynamicConvert/2de616bbd0ce43ca8a204387ebb524ba/jsonOutput/8c65d2baccc671c4ff2c5144150d391c.mp3";
-//                 const u2 = "https://solutions-apaas.agora.io/cloud-disk/dynamicConvert/2de616bbd0ce43ca8a204387ebb524ba/jsonOutput/0d7dc2355a03f3cd995040f34eedd2f5.mp3";
-
-//                 const aAudio = new Audio(u2);aAudio.crossOrigin = "anonymous";window.__pcmProxy?.connect(aAudio);aAudio.play();
-//             }
-//             [...Array(number)].forEach(() => {
-//                 test();
-//             });
-//         }
         const sampleRate = 48000;
         const bufferSize = 4096;
         const channelCount = 1;
@@ -68,11 +57,13 @@ export class PCMProxy {
         const timePrint = () => {
             console.log(`[pcm] time: ${audioContext.currentTime}`);
         };
-        setInterval(timePrint, 5000);
+        setInterval(timePrint, 1);
     }
 
     elementsMap: Map<string, HTMLMediaElement[]> = new Map();
     connect(mediaElement: HTMLMediaElement): MediaElementAudioSourceNode {
+        console.log(`${Date.now()} [pcm] check state: ${this.audioContext.state}`);
+        console.log(`${Date.now()} [pcm] check time: ${this.audioContext.currentTime}`);
         let duplicateIndex = this.elementsMap.get(mediaElement.src)?.length || 0;
         if (!this.elementsMap.has(mediaElement.src)) {
             this.elementsMap.set(mediaElement.src, []);
@@ -88,12 +79,6 @@ export class PCMProxy {
             console.log(`${Date.now()} [pcm] disconnect media element tag: ${logTag}`);
             originalDisconnect();
         };
-
-        
-
-        
-        
-
         return source;
     }
 }
