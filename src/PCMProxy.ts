@@ -17,6 +17,17 @@ export class PCMProxy {
     }
 
     constructor() {
+//         window.testPcm = (number) => {
+//             function test() {
+// // const u2 = "https://solutions-apaas.agora.io/cloud-disk/dynamicConvert/2de616bbd0ce43ca8a204387ebb524ba/jsonOutput/8c65d2baccc671c4ff2c5144150d391c.mp3";
+//                 const u2 = "https://solutions-apaas.agora.io/cloud-disk/dynamicConvert/2de616bbd0ce43ca8a204387ebb524ba/jsonOutput/0d7dc2355a03f3cd995040f34eedd2f5.mp3";
+
+//                 const aAudio = new Audio(u2);aAudio.crossOrigin = "anonymous";window.__pcmProxy?.connect(aAudio);aAudio.play();
+//             }
+//             [...Array(number)].forEach(() => {
+//                 test();
+//             });
+//         }
         const sampleRate = 48000;
         const bufferSize = 4096;
         const channelCount = 1;
@@ -29,7 +40,7 @@ export class PCMProxy {
             if (isAllZero) {
                 if (this._updatingPcmData) {
                     this._updatingPcmData = false;
-                    console.log("[pcm] stream become empty");
+                    console.log(`${Date.now()} [pcm] stream become empty`);
                 }
                 return;
             }
@@ -38,18 +49,18 @@ export class PCMProxy {
             call("pcm.pcmDataUpdate", array);
             if (!this._updatingPcmData) {
                 this._updatingPcmData = true;
-                console.log("[pcm] stream become valid");
+                console.log(`${Date.now()} [pcm] stream become valid`);
             }
         };
         scriptProcessor.connect(audioContext.destination);
         this.audioContext = audioContext;
         this.scriptProcessor = scriptProcessor;
-        logger(`[pcm] proxy init sampleRate: ${sampleRate}, bufferSize: ${bufferSize}, channelCount: ${channelCount}, state: ${audioContext.state}`);
+        logger(`${Date.now()} [pcm] proxy init sampleRate: ${sampleRate}, bufferSize: ${bufferSize}, channelCount: ${channelCount}, state: ${audioContext.state}`);
 
         audioContext.onstatechange = (event) => {
-            console.log("[pcm] audioContext onstatechange", audioContext.state);
+            console.log(`${Date.now()} [pcm] audioContext onstatechange`, audioContext.state);
             if (audioContext.state !== 'running') {
-                console.log("[pcm] audioContext state is not running, resuming");
+                console.log(`${Date.now()} [pcm] audioContext state is not running, resuming`);
                 audioContext.resume();
             }
         };
@@ -60,25 +71,29 @@ export class PCMProxy {
         setInterval(timePrint, 5000);
     }
 
-    elementsNameMap: Map<string, number> = new Map();
+    elementsMap: Map<string, HTMLMediaElement[]> = new Map();
     connect(mediaElement: HTMLMediaElement): MediaElementAudioSourceNode {
-        let duplicateIndex = 0;
-        if (this.elementsNameMap.has(mediaElement.src)) {
-            duplicateIndex = this.elementsNameMap.get(mediaElement.src)! + 1;
-            this.elementsNameMap.set(mediaElement.src, duplicateIndex);
-        } else {
-            this.elementsNameMap.set(mediaElement.src, duplicateIndex);
+        let duplicateIndex = this.elementsMap.get(mediaElement.src)?.length || 0;
+        if (!this.elementsMap.has(mediaElement.src)) {
+            this.elementsMap.set(mediaElement.src, []);
         }
+        this.elementsMap.get(mediaElement.src)!.push(mediaElement);
         const logTag = `${mediaElement.src}__${duplicateIndex}`;
 
         const source = this.audioContext.createMediaElementSource(mediaElement);
         source.connect(this.scriptProcessor);
-        console.log(`[pcm] connect media element tag: ${logTag}`);
+        console.log(`${Date.now()} [pcm] connect media element tag: ${logTag}`);
         const originalDisconnect = source.disconnect.bind(source);
         source.disconnect = () => {
-            console.log(`[pcm] disconnect media element tag: ${logTag}`);
+            console.log(`${Date.now()} [pcm] disconnect media element tag: ${logTag}`);
             originalDisconnect();
         };
+
+        
+
+        
+        
+
         return source;
     }
 }
