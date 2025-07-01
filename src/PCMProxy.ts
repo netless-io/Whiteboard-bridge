@@ -6,7 +6,6 @@ export class PCMProxy {
     private scriptProcessor: ScriptProcessorNode;
 
     private _updatingPcmData = false;
-    private resumeTimer: NodeJS.Timeout | null = null;
 
     convertToInt16Array(float32Array: Float32Array): Int16Array {
         const int16Array = new Int16Array(float32Array.length);
@@ -47,33 +46,39 @@ export class PCMProxy {
         this.scriptProcessor = scriptProcessor;
         logger(`[pcm] proxy init sampleRate: ${sampleRate}, bufferSize: ${bufferSize}, channelCount: ${channelCount}, state: ${audioContext.state}`);
 
-        document.addEventListener("visibilitychange", () => {
-            if (document.visibilityState === "visible") {
-                if (this.resumeTimer) {
-                    return;
-                }
-                console.log("[pcm] visibility -> visible, resume audioContext and create resume timer");
-                this.audioContext.resume();
-                // create a looping timer.
-                this.resumeTimer =  setInterval(() => {
-                    if (this.audioContext.state === "suspended") {
-                        console.log("[pcm] resume timer: audioContext.state is suspended, resuming");
-                        this.audioContext.resume();
-                    }
-                }, 3000);
-            } else {
-                if (this.resumeTimer) {
-                    clearInterval(this.resumeTimer);
-                    this.resumeTimer = null;
-                }
+        audioContext.onstatechange = (event) => {
+            console.log("[pcm] audioContext onstatechange", audioContext.state);
+            if (audioContext.state !== 'running') {
+                console.log("[pcm] audioContext state is not running, resuming");
+                audioContext.resume();
             }
-        });
+        };
+
+        const timePrint = () => {
+            console.log(`[pcm] time: ${audioContext.currentTime}`);
+        };
+        setInterval(timePrint, 5000);
     }
 
+    elementsNameMap: Map<string, number> = new Map();
     connect(mediaElement: HTMLMediaElement): MediaElementAudioSourceNode {
+        let duplicateIndex = 0;
+        if (this.elementsNameMap.has(mediaElement.src)) {
+            duplicateIndex = this.elementsNameMap.get(mediaElement.src)! + 1;
+            this.elementsNameMap.set(mediaElement.src, duplicateIndex);
+        } else {
+            this.elementsNameMap.set(mediaElement.src, duplicateIndex);
+        }
+        const logTag = `${mediaElement.src}__${duplicateIndex}`;
+
         const source = this.audioContext.createMediaElementSource(mediaElement);
         source.connect(this.scriptProcessor);
-        console.log(`[pcm] connect media element tag: ${mediaElement.tagName}, src: ${mediaElement.src}, connectedSource: ${source}`);
+        console.log(`[pcm] connect media element tag: ${logTag}`);
+        const originalDisconnect = source.disconnect.bind(source);
+        source.disconnect = () => {
+            console.log(`[pcm] disconnect media element tag: ${logTag}`);
+            originalDisconnect();
+        };
         return source;
     }
 }
