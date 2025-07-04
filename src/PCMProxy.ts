@@ -57,7 +57,7 @@ export class PCMProxy {
         const timePrint = () => {
             console.log(`[pcm] time: ${audioContext.currentTime}`);
         };
-        setInterval(timePrint, 1);
+        setInterval(timePrint, 5000);
     }
 
     elementsMap: Map<string, HTMLMediaElement[]> = new Map();
