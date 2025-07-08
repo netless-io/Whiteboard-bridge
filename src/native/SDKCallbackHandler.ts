@@ -23,7 +23,7 @@ export class SDKCallbackHandler {
     }
 
     slideOpenUrl = (url: string) => {
-        return syncCall("sdk.slideOpenUrl", url) as string;
+        return call("sdk.slideOpenUrl", url);
     }
     
     onSetupFail = (e: Error) => {
