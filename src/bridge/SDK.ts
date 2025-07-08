@@ -192,6 +192,9 @@ class SDKBridge {
         WindowManager.register({
             kind: slideKind,
             appOptions: {
+                navigatorDelegate: {
+                    openUrl: (url: string) => sdkCallbackHandler.slideOpenUrl(url),
+                },
                 urlInterrupter: slideUrlInterrupter,
                 ...slideAppOptions,
             },
