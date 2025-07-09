@@ -120,7 +120,7 @@ export class PCMProxy {
   async connect(
     mediaElement: HTMLMediaElement
   ): Promise<MediaElementAudioSourceNode> {
-    return;
+    return undefined as any;
 
     console.log(
       `${getUTCTimeStamp()} [pcm] mediaElement: ${
