@@ -28,7 +28,7 @@ const MEDIA_ELEMENT_EVENTS_LIST = [
 
 export class PCMProxy {
   private audioContext: AudioContext;
-  private scriptProcessor: ScriptProcessorNode;
+//   private scriptProcessor: ScriptProcessorNode;
 
   private _updatingPcmData = false;
 
@@ -122,110 +122,110 @@ export class PCMProxy {
   ): Promise<MediaElementAudioSourceNode> {
     return undefined as any;
 
-    console.log(
-      `${getUTCTimeStamp()} [pcm] mediaElement: ${
-        mediaElement instanceof HTMLVideoElement ? "video" : "audio"
-      }`
-    );
+//     console.log(
+//       `${getUTCTimeStamp()} [pcm] mediaElement: ${
+//         mediaElement instanceof HTMLVideoElement ? "video" : "audio"
+//       }`
+//     );
 
-    const fetchSource = await fetch(mediaElement.src);
+//     const fetchSource = await fetch(mediaElement.src);
 
-    if (mediaElement.paused) {
-      try {
-        await mediaElement.play();
-      } catch (e) {
-        console.error("play mediaElement error", e);
-      }
-    }
+//     if (mediaElement.paused) {
+//       try {
+//         await mediaElement.play();
+//       } catch (e) {
+//         console.error("play mediaElement error", e);
+//       }
+//     }
 
-    console.log(
-      `${getUTCTimeStamp()} [pcm] fetch source, state: ${fetchSource.status}`
-    );
+//     console.log(
+//       `${getUTCTimeStamp()} [pcm] fetch source, state: ${fetchSource.status}`
+//     );
 
-    console.log(
-      `${getUTCTimeStamp()} [pcm] check state: ${this.audioContext.state}`
-    );
-    console.log(
-      `${getUTCTimeStamp()} [pcm] check time: ${this.audioContext.currentTime}`
-    );
-    let duplicateIndex = this.elementsMap.get(mediaElement.src)?.length || 0;
-    if (!this.elementsMap.has(mediaElement.src)) {
-      this.elementsMap.set(mediaElement.src, []);
-    }
-    this.elementsMap.get(mediaElement.src)!.push(mediaElement);
-    const logTag = `${mediaElement.src}__${duplicateIndex}`;
+//     console.log(
+//       `${getUTCTimeStamp()} [pcm] check state: ${this.audioContext.state}`
+//     );
+//     console.log(
+//       `${getUTCTimeStamp()} [pcm] check time: ${this.audioContext.currentTime}`
+//     );
+//     let duplicateIndex = this.elementsMap.get(mediaElement.src)?.length || 0;
+//     if (!this.elementsMap.has(mediaElement.src)) {
+//       this.elementsMap.set(mediaElement.src, []);
+//     }
+//     this.elementsMap.get(mediaElement.src)!.push(mediaElement);
+//     const logTag = `${mediaElement.src}__${duplicateIndex}`;
 
-    this.connectCollection.push(logTag);
-    this.resultCollection.push(logTag);
+//     this.connectCollection.push(logTag);
+//     this.resultCollection.push(logTag);
 
-    Object.defineProperty(mediaElement, "src", {
-      get: function () {
-        return this.getAttribute("src");
-      },
-      set: function (value) {
-        console.log(
-          `${getUTCTimeStamp()}   ${logTag}  [pcm] setting mediaElement.src to: ${value}`
-        );
-        this.setAttribute("src", value);
-      },
-    });
-    const originalLoad = mediaElement.load.bind(mediaElement);
+//     Object.defineProperty(mediaElement, "src", {
+//       get: function () {
+//         return this.getAttribute("src");
+//       },
+//       set: function (value) {
+//         console.log(
+//           `${getUTCTimeStamp()}   ${logTag}  [pcm] setting mediaElement.src to: ${value}`
+//         );
+//         this.setAttribute("src", value);
+//       },
+//     });
+//     const originalLoad = mediaElement.load.bind(mediaElement);
 
-    mediaElement.load = () => {
-      console.log(
-        `${getUTCTimeStamp()}   ${logTag}  [pcm] load mediaElement use load`
-      );
-      return originalLoad();
-    };
+//     mediaElement.load = () => {
+//       console.log(
+//         `${getUTCTimeStamp()}   ${logTag}  [pcm] load mediaElement use load`
+//       );
+//       return originalLoad();
+//     };
 
-    MEDIA_ELEMENT_EVENTS_LIST.forEach((event) => {
-      mediaElement.addEventListener(event, () => {
-        console.log(
-          `${getUTCTimeStamp()} [pcm] [index:  ${logTag}] mediaElement: ${event}`
-        );
-        this.mediaElementStateMap.set(logTag, event);
-        if (event === "emptied") {
-          console.log(
-            `${getUTCTimeStamp()} [pcm] [index:  ${logTag}] mediaElement: ${logTag} emptied, cur state: ${
-              this.audioContext.state
-            }, cur time: ${this.audioContext.currentTime}`
-          );
-          if (this.problemMediaElements.includes(mediaElement)) {
-            console.error("has already in problemMediaElements");
-          }
-          this.problemMediaElements.push(mediaElement);
-        }
-      });
-    });
+//     MEDIA_ELEMENT_EVENTS_LIST.forEach((event) => {
+//       mediaElement.addEventListener(event, () => {
+//         console.log(
+//           `${getUTCTimeStamp()} [pcm] [index:  ${logTag}] mediaElement: ${event}`
+//         );
+//         this.mediaElementStateMap.set(logTag, event);
+//         if (event === "emptied") {
+//           console.log(
+//             `${getUTCTimeStamp()} [pcm] [index:  ${logTag}] mediaElement: ${logTag} emptied, cur state: ${
+//               this.audioContext.state
+//             }, cur time: ${this.audioContext.currentTime}`
+//           );
+//           if (this.problemMediaElements.includes(mediaElement)) {
+//             console.error("has already in problemMediaElements");
+//           }
+//           this.problemMediaElements.push(mediaElement);
+//         }
+//       });
+//     });
 
-    if (!this.mediaElementMap.has(logTag)) {
-      this.mediaElementMap.set(logTag, mediaElement);
-    } else {
-      console.error(
-        `${getUTCTimeStamp()} [pcm] mediaElement: ${logTag} already exists`
-      );
-    }
+//     if (!this.mediaElementMap.has(logTag)) {
+//       this.mediaElementMap.set(logTag, mediaElement);
+//     } else {
+//       console.error(
+//         `${getUTCTimeStamp()} [pcm] mediaElement: ${logTag} already exists`
+//       );
+//     }
 
-    const source = this.audioContext.createMediaElementSource(mediaElement);
-    source.connect(this.scriptProcessor);
+//     const source = this.audioContext.createMediaElementSource(mediaElement);
+//     source.connect(this.scriptProcessor);
 
-    console.log(
-      `${getUTCTimeStamp()} [pcm] [index:  ${logTag}] connect media element tag: ${logTag}`
-    );
-    const originalDisconnect = source.disconnect.bind(source);
-    source.disconnect = () => {
-      console.log(
-        `${getUTCTimeStamp()} [pcm] [index:  ${logTag}] disconnect media element tag: ${logTag}, but without disconnect`
-      );
-      this.disconnectCollection.push(logTag);
-      if (this.resultCollection.includes(logTag)) {
-        this.resultCollection.splice(this.resultCollection.indexOf(logTag), 1);
-      }
-      originalDisconnect(this.scriptProcessor);
-    };
+//     console.log(
+//       `${getUTCTimeStamp()} [pcm] [index:  ${logTag}] connect media element tag: ${logTag}`
+//     );
+//     const originalDisconnect = source.disconnect.bind(source);
+//     source.disconnect = () => {
+//       console.log(
+//         `${getUTCTimeStamp()} [pcm] [index:  ${logTag}] disconnect media element tag: ${logTag}, but without disconnect`
+//       );
+//       this.disconnectCollection.push(logTag);
+//       if (this.resultCollection.includes(logTag)) {
+//         this.resultCollection.splice(this.resultCollection.indexOf(logTag), 1);
+//       }
+//       originalDisconnect(this.scriptProcessor);
+//     };
 
-    this.sources.push(source);
-    return source;
+//     this.sources.push(source);
+//     return source;
   }
 }
 // Array.from(__pcmProxy.mediaElementMap.values()).forEach(
