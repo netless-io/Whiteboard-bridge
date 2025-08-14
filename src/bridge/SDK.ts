@@ -38,6 +38,9 @@ const fullWorkerUrl = URL.createObjectURL(fullWorkerBlob);
 const subWorkerBlob = new Blob([subWorkerString], { type: 'text/javascript' });
 const subWorkerUrl = URL.createObjectURL(subWorkerBlob);
 
+interface ExtraNativeJoinRoomParams {
+  appliancePluginOptions?: Record<string, any>;
+}
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
@@ -242,13 +245,14 @@ class SDKBridge {
         }
     };
 
-    joinRoom = (nativeParams: NativeJoinRoomParams, responseCallback: any) => {
+    joinRoom = (nativeParams: NativeJoinRoomParams & ExtraNativeJoinRoomParams, responseCallback: any) => {
         if (!sdk) {
             responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
             return;
         }
         removeBind();
-        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, ...joinRoomParams} = nativeParams;
+        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, appliancePluginOptions, ...joinRoomParams} = nativeParams;
+
         const {useMultiViews, enableSyncedStore} = nativeConfig!;
         const invisiblePlugins = [
             ...useMultiViews ? [WindowManager as any] : [],
@@ -297,7 +301,8 @@ class SDKBridge {
                                     cdn: {
                                         fullWorkerUrl,
                                         subWorkerUrl,
-                                    }
+                                    },
+                                    ...appliancePluginOptions,
                                 }
                             }
                         );
