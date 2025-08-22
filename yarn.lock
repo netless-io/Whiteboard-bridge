@@ -1140,10 +1140,10 @@
   resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.80.tgz#cc95195ab49d262f0259a15fbef0288ee2820bc0"
   integrity sha512-nCjhYJBS7Z91oyYJAlTFZFgFWDOYNOHWJ92fc4g52hhDOkHRSiznYX9QXGJi+lW+DQZxwrOCHSWuCF+p3Nw2pg==
 
-"@netless/appliance-plugin@^1.1.19":
-  version "1.1.19"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.19.tgz#5fbb434f55c2bad41f6e91ef30741587b745d480"
-  integrity sha512-6caZ+avAxOv0hckS+j7+ZVCdqOsMbaJqYkqf0fQa4NXAO2G0Ps3IVYVNvfhIsrz+gsZjjcz0P7OgYPue+rMcYA==
+"@netless/appliance-plugin@^1.1.21":
+  version "1.1.21"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.21.tgz#273f3b37aaca27134364c2838777c422efcee765"
+  integrity sha512-XyKRA3DPFPU8ziSSvcaRRRfsFmfQHZUxrdy3uGDfUGvME891p9I2e0bNPGteHYapqbiGEg8eEQqT2tlTsEKzow==
   dependencies:
     clipper-lib "^6.4.2"
     eventemitter2 "^6.4.9"
