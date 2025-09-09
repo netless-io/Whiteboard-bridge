@@ -1135,14 +1135,14 @@
     tess2 "^1.0.0"
     xtend "^4.0.2"
 
-"@netless/app-slide@0.2.80":
-  version "0.2.80"
-  resolved "https://registry.yarnpkg.com/@netless/app-slide/-/app-slide-0.2.80.tgz#cc95195ab49d262f0259a15fbef0288ee2820bc0"
-  integrity sha512-nCjhYJBS7Z91oyYJAlTFZFgFWDOYNOHWJ92fc4g52hhDOkHRSiznYX9QXGJi+lW+DQZxwrOCHSWuCF+p3Nw2pg==
+"@netless/app-slide@0.2.81":
+  version "0.2.81"
+  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.81.tgz#dc170d687dab5d3c50240c1246a99d4571eabc00"
+  integrity sha512-5ib8P9XzhYa80/7hL4RJyMvNFrmJwtjIYxfdN2ZvXb07SXis0QR+UJctPoP9vSc+gPOgSi9BZXSNXr2a8x/vrQ==
 
 "@netless/appliance-plugin@^1.1.21":
   version "1.1.21"
-  resolved "https://registry.yarnpkg.com/@netless/appliance-plugin/-/appliance-plugin-1.1.21.tgz#273f3b37aaca27134364c2838777c422efcee765"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.21.tgz#273f3b37aaca27134364c2838777c422efcee765"
   integrity sha512-XyKRA3DPFPU8ziSSvcaRRRfsFmfQHZUxrdy3uGDfUGvME891p9I2e0bNPGteHYapqbiGEg8eEQqT2tlTsEKzow==
   dependencies:
     clipper-lib "^6.4.2"
