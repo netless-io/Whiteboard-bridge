@@ -18,10 +18,14 @@ export class PCMProxy {
     }
 
     constructor() {
+        const compatibleAudioContext = (window as any).AudioContext || (window as any).webkitAudioContext;
+        if (!compatibleAudioContext) {
+            throw new Error("AudioContext is not supported");
+        }
         const sampleRate = 48000;
         const bufferSize = 4096;
         const channelCount = 1;
-        const audioContext = new AudioContext({ sampleRate: sampleRate });
+        const audioContext = new compatibleAudioContext({ sampleRate: sampleRate });
         const scriptProcessor = audioContext.createScriptProcessor(bufferSize, channelCount, channelCount);
         scriptProcessor.onaudioprocess = (event) => {
             const inputBuffer = event.inputBuffer;
