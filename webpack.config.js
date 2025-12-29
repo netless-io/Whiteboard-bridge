@@ -5,6 +5,10 @@
 const path = require('path');
 const webpack = require('webpack');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
+const HtmlInlineScriptPlugin = require('html-inline-script-webpack-plugin');
+const HtmlInlineCssWebpackPlugin =
+  require('html-inline-css-webpack-plugin').default ||
+  require('html-inline-css-webpack-plugin');
 const {CleanWebpackPlugin} = require('clean-webpack-plugin');
 const TerserJSPlugin = require('terser-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -77,8 +81,13 @@ config = {
     }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
-      template: './src/index.html'
+      template: './src/index.html',
+      scriptLoading: 'blocking'
     }),
+    new HtmlInlineScriptPlugin({
+      scriptMatchPattern: [/.+/]
+    }),
+    new HtmlInlineCssWebpackPlugin(),
     new MiniCssExtractPlugin()
   ],
   module: {
