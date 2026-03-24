@@ -200,6 +200,9 @@ class SDKBridge {
                 },
                 urlInterrupter: slideUrlInterrupter,
                 ...slideAppOptions,
+                onResourceMaxRetries: (url: string, error: Error) => {
+                    sdkCallbackHandler.onSlideResourceMaxRetries(url, error);
+                },
             },
             addHooks: addHooksSlide,
             src: async () => {

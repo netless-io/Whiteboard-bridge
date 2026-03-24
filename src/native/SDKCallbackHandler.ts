@@ -30,6 +30,10 @@ export class SDKCallbackHandler {
         call("sdk.setupFail", {message: e.message, jsStack: e.stack});
     }
 
+    onSlideResourceMaxRetries = (url: string, error: Error) => {
+        call("sdk.slideResourceMaxRetries", {url, message: error.message, jsStack: error.stack});
+    }
+
     onPPTLoadProgress = (uuid: string, progress: number) => {
         // 不推荐用户使用这种预加载，native 端使用 zip 包的形式
     }
