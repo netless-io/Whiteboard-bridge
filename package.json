@@ -35,7 +35,7 @@
     "@netless/white-prepare": "^1.0.2",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
-    "@netless/window-manager": "^1.0.13-test.3",
+    "@netless/window-manager": "^1.0.13-test.19",
     "buffer": "^6.0.3",
     "core-js": "^3",
     "html2canvas": "^1.3.3",
@@ -44,7 +44,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.16.53"
+    "white-web-sdk": "2.16.54"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",
