@@ -45,6 +45,12 @@ type DocsEventOptions = {
     page?: number;
 }
 
+type SlidePageState = {
+    appId: string;
+    page: number;
+    pageCount: number;
+};
+
 function makeSlideParams(scenes: SceneDefinition[]): {
     scenesWithoutPPT: SceneDefinition[];
     taskId: string;
@@ -213,6 +219,23 @@ function dispatchDocsEventOuter(
     }
 }
 
+function querySlidePageState(manager: WindowManager, appId?: unknown): SlidePageState | undefined {
+    const targetAppId = typeof appId === "string" && appId ? appId : manager.focused;
+    if (!targetAppId || !targetAppId.startsWith("Slide-")) {
+        return undefined;
+    }
+    const app = manager.queryOne(targetAppId)?.appResult as AppResult | undefined;
+    const position = app?.position?.();
+    if (!position) {
+        return undefined;
+    }
+    return {
+        appId: targetAppId,
+        page: position[0],
+        pageCount: position[1],
+    };
+}
+
 export class RoomBridge {
     setWindowManagerAttributes = (attributes: any) => {
         window.manager?.safeSetAttributes(attributes);
@@ -225,6 +248,10 @@ export class RoomBridge {
 
     setPrefersColorScheme = (scheme: TeleBoxColorScheme) => {
         window.manager?.setPrefersColorScheme(scheme);
+    }
+
+    setWindowBoxState = (state: "normal" | "minimized" | "maximized") => {
+        window.manager?.setBoxState(state);
     }
 }
 
@@ -702,6 +729,17 @@ export class RoomAsyncBridge {
         if (window.manager) {
             responseCallback(dispatchDocsEventOuter(window.manager, event, options || {}));
         };
+    }
+
+    querySlidePageState = (appId: string | undefined, responseCallback: any) => {
+        if (!window.manager) {
+            return responseCallback(JSON.stringify({ __error: { message: "window manager not existed" } }));
+        }
+        const state = querySlidePageState(window.manager, appId);
+        if (!state) {
+            return responseCallback(JSON.stringify({ __error: { message: "slide page state not existed" } }));
+        }
+        responseCallback(JSON.stringify(state));
     }
 
     syncMode = (useSyncMode: boolean) => {

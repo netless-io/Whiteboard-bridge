@@ -64,6 +64,20 @@ function addRoomListener(manager: WindowManager, logger: (funName: string, ...pa
         logger("appsChange", JSON.stringify(apps));
         handler.onRoomStateChanged({ appState: createAppState()});
     });
+
+    manager.onAppEvent("Slide", event => {
+        if (event.type !== "pageStateChange") {
+            return;
+        }
+        const value = event.value as { index?: number; length?: number } | undefined;
+        if (typeof value?.index === "number" && typeof value?.length === "number") {
+            call("sdk.slidePageStateChanged", {
+                appId: event.appId,
+                page: value.index + 1,
+                pageCount: value.length,
+            });
+        }
+    });
 }
 
 function addReplayListener(manager: WindowManager, logger: (funName: string, ...param: any[]) => void, handler: ReplayerCallbackHandler) {
