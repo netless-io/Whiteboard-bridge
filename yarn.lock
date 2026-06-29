@@ -1140,12 +1140,13 @@
   resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.99.tgz#0d9067ed426ee35ed942188b62740ba249d2333c"
   integrity sha512-GFzjoWh/Jp/bh5dXO+coszQmPioRvp/vK+Ac8N/OCry7AS2Oh8RTscNRnVg9j08+7L7m9GjK1JZA8NqcORXFBQ==
 
-"@netless/appliance-plugin@^1.1.28":
-  version "1.1.28"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.28.tgz#a1b28ee36483f9f720c648d352240cac8fc5af97"
-  integrity sha512-dDSzV9negqLqgNe3BNVNDTCo8AXXrQU0TKw27wFBISbWTqprxYblR/7OrYqJVTFsa6LDwtVjjC6Xc30PMza6uA==
+"@netless/appliance-plugin@^1.1.37":
+  version "1.1.37"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.37.tgz#9cb79a2682a5f6784fc16c26d0938a7fccab2b7f"
+  integrity sha512-LjrNIhW/p/xrKEBd9ZiHwLhB93Tdn1ewNdkjevT7AWc7YvzZgYvKorUbQ9objHOqfbD1skok2aSVZzsvuLP8gg==
   dependencies:
     clipper-lib "^6.4.2"
+    dom-to-image "^2.6.0"
     eventemitter2 "^6.4.9"
     lineclip "^1.1.5"
     lodash "^4.17.21"
@@ -1153,7 +1154,7 @@
     re-resizable "^6.9.11"
     react "^16.8.0"
     react-dom "^16.8.0"
-    react-draggable "^4.4.6"
+    react-draggable "4.5.0"
     spritejs "^3.8.3"
     xss "^1.0.15"
 
@@ -2413,10 +2414,10 @@ clone-deep@^4.0.1:
     kind-of "^6.0.2"
     shallow-clone "^3.0.0"
 
-clsx@^1.1.1:
-  version "1.2.1"
-  resolved "https://registry.npmjs.org/clsx/-/clsx-1.2.1.tgz"
-  integrity sha512-EcR6r5a8bj6pu3ycsa/E/cKVGuTgZJZdsyUYHOksG/UHIiKfjxzRxYJpyVBwYaQeOvghal9fcc4PidlgzugAQg==
+clsx@^2.1.1:
+  version "2.1.1"
+  resolved "https://registry.npmjs.org/clsx/-/clsx-2.1.1.tgz#eed397c9fd8bd882bfb18deab7102049a2f32999"
+  integrity sha512-eYm0QWBtUrBWZWG0d386OGAw16Z995PiOVo2B7bjWSbHedGl5e0ZWaq65kOGgUSNesEIDkB9ISbTg/JK9dhCZA==
 
 color-convert@^1.9.0:
   version "1.9.3"
@@ -3086,6 +3087,11 @@ dom-serializer@^1.0.1:
     domelementtype "^2.0.1"
     domhandler "^4.2.0"
     entities "^2.0.0"
+
+dom-to-image@^2.6.0:
+  version "2.6.0"
+  resolved "https://registry.npmjs.org/dom-to-image/-/dom-to-image-2.6.0.tgz#8a503608088c87b1c22f9034ae032e1898955867"
+  integrity sha512-Dt0QdaHmLpjURjU7Tnu3AgYSF2LuOmksSGsUcE6ItvJoCWTBEmiMXcqBdNSAm9+QbbwD7JMoVsuuKX6ZVQv1qA==
 
 dom-walk@^0.1.0:
   version "0.1.2"
@@ -5636,12 +5642,12 @@ react-dom@^16.12.0, react-dom@^16.8.0:
     prop-types "^15.6.2"
     scheduler "^0.19.1"
 
-react-draggable@^4.4.6:
-  version "4.4.6"
-  resolved "https://registry.npmjs.org/react-draggable/-/react-draggable-4.4.6.tgz"
-  integrity sha512-LtY5Xw1zTPqHkVmtM3X8MUOxNDOUhv/khTgBgrUvwaS064bwVvxT+q5El0uUFNx5IEPKXuRejr7UqLwBIg5pdw==
+react-draggable@4.5.0:
+  version "4.5.0"
+  resolved "https://registry.npmjs.org/react-draggable/-/react-draggable-4.5.0.tgz#0b274ccb6965fcf97ed38fcf7e3cc223bc48cdf5"
+  integrity sha512-VC+HBLEZ0XJxnOxVAZsdRi8rD04Iz3SiiKOoYzamjylUcju/hP9np/aZdLHf/7WOD268WMoNJMvYfB5yAK45cw==
   dependencies:
-    clsx "^1.1.1"
+    clsx "^2.1.1"
     prop-types "^15.8.1"
 
 react-is@^16.13.1, react-is@^16.8.1:
