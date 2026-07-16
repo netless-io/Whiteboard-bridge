@@ -166,13 +166,13 @@ function getApplianceWorkerUrls(): { fullWorkerUrl: string; subWorkerUrl: string
 
 function mergeLocalLogOptions(restConfig: any): any {
     const nativeLocalLog = pickNativeLocalLogOptions(restConfig.loggerOptions?.localLog);
-    const localLog = nativeLocalLog?.enabled === false ?
-        { enabled: false } :
+    const localLog = nativeLocalLog?.enabled === true ?
         {
             enabled: true,
             ...nativeLocalLog,
             createWorker: createFoundationLogWorker,
-        };
+        } :
+        { enabled: false };
 
     return {
         ...restConfig,
