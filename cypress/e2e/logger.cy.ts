@@ -72,10 +72,12 @@ describe('Test hook logger', () => {
 
 
         function loopObj(obj: Object, spy: any) {
+            const excludedMethodNames = ['registerApp'];
             for (const name of Object.getOwnPropertyNames(obj)) {
                 if (!names.includes(name)) { continue; }
                 const namespace = obj[name];
                 for (const funName of Object.getOwnPropertyNames(namespace)) {
+                    if (excludedMethodNames.includes(funName)) { continue; }
                     const type = typeof obj[name][funName];
                     if (type !== 'function') { continue; }
                     try {
@@ -90,4 +92,3 @@ describe('Test hook logger', () => {
         }
     })
 });
-

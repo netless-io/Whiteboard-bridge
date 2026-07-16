@@ -43,7 +43,15 @@ type DocsEventOptions = {
     appId?: string;
     /** Used by `jumpToPage` event, range from 1 to total pages count. */
     page?: number;
+    /** Used by `scalePage` event. Range from 1 to 4, decimals allowed. `1` means default fitted size. */
+    scale?: number;
 }
+
+type DocsEvent = "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage" | "scalePage";
+
+type DocsEventManager = WindowManager & {
+    dispatchDocsEvent?: (event: DocsEvent, options?: DocsEventOptions) => boolean;
+};
 
 type SlidePageState = {
     appId: string;
@@ -132,91 +140,15 @@ function updateIframePluginState(room: Room) {
 // 避免命名冲突，添加 Outer 后缀
 function dispatchDocsEventOuter(
     manager: WindowManager,
-    event: "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage",
+    event: DocsEvent,
     options: DocsEventOptions = {}
 ): boolean {
-    const appId = options.appId || manager.focused;
-    if (!appId) {
-        console.warn("not found " + (options.appId || "focused app"));
+    const dispatchDocsEvent = (manager as DocsEventManager).dispatchDocsEvent;
+    if (!dispatchDocsEvent) {
+        console.warn("window manager does not support dispatchDocsEvent");
         return false;
     }
-
-    let page: number | undefined, input: HTMLInputElement | null;
-
-    // Click the DOM elements for static docs
-    if (appId.startsWith("DocsViewer-")) {
-        const dom = manager.queryOne(appId)?.box?.$footer;
-        if (!dom) {
-            console.warn("not found app with id " + appId);
-            return false;
-        }
-
-        const click = (el: Element | null) => {
-            el && el.dispatchEvent(new MouseEvent("click"));
-        };
-
-        switch (event) {
-            case "prevPage":
-            case "prevStep":
-                click(dom.querySelector('button[class$="btn-page-back"]'));
-                break;
-            case "nextPage":
-            case "nextStep":
-                click(dom.querySelector('button[class$="btn-page-next"]'));
-                break;
-            case "jumpToPage":
-                page = options.page;
-                input = dom.querySelector('input[class$="page-number-input"]');
-                if (!input || typeof page !== "number") {
-                    console.warn("failed to jump" + (page ? " to page " + page : ""));
-                    return false;
-                }
-                input.value = "" + page;
-                input.dispatchEvent(new InputEvent("change"));
-                break;
-            default:
-                console.warn("unknown event " + event);
-                return false;
-        }
-
-        return true;
-    }
-
-    // Check controller for slide docs
-    else if (appId.startsWith("Slide-")) {
-        const app = manager.queryOne(appId)?.appResult as AppResult | undefined;
-        if (!app) {
-            console.warn("not found app with id " + appId);
-            return false;
-        }
-
-        switch (event) {
-            case "prevPage":
-                return app.prevPage();
-            case "nextPage":
-                return app.nextPage();
-            case "prevStep":
-                return app.prevStep();
-            case "nextStep":
-                return app.nextStep();
-            case "jumpToPage":
-                page = options.page;
-                if (typeof page !== "number") {
-                    console.warn("failed to jump" + (page ? " to page " + page : ""));
-                    return false;
-                }
-                return app.jumpToPage(page);
-            default:
-                console.warn("unknown event " + event);
-                return false;
-        }
-    }
-
-    // No support for any other kind
-    else {
-        console.warn("not supported app " + appId);
-        return false;
-    }
+    return dispatchDocsEvent.call(manager, event, options);
 }
 
 function querySlidePageState(manager: WindowManager, appId?: unknown): SlidePageState | undefined {
@@ -722,7 +654,7 @@ export class RoomAsyncBridge {
     }
 
     dispatchDocsEvent = (
-        event: "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage",
+        event: DocsEvent,
         options: DocsEventOptions = {},
         responseCallback: any
     ) => {

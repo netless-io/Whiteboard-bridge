@@ -14,6 +14,10 @@ export class SDKCallbackHandler {
         call("sdk.logger", args);
     }
 
+    onLocalLogStateChange = (state: any) => {
+        call("sdk.localLogStateChange", state);
+    }
+
     onUrlInterrupter = (url: string): string => {
         return syncCall("sdk.urlInterrupter", url) as string;
     }

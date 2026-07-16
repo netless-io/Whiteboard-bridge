@@ -75,6 +75,11 @@ config = {
     new webpack.ProvidePlugin({
       Buffer: ['buffer', 'Buffer'],
     }),
+    new webpack.NormalModuleReplacementPlugin(/^\.\/worker-factory(?:\.js)?$/, resource => {
+      if (/[\\/]agora-foundation[\\/](?:lib|lib-es)[\\/]worker$/.test(resource.context)) {
+        resource.request = path.resolve(__dirname, 'src/FoundationWorkerFactory.ts');
+      }
+    }),
     new CleanWebpackPlugin(),
     new HtmlWebpackPlugin({
       template: './src/index.html'
@@ -110,7 +115,16 @@ config = {
     type: "filesystem",
     // 手动修改 node_modules 缓存不会失效。可以通过手动修改 config 或者删除 .cache 文件来触发，同时观察文件名是否有变化。
     buildDependencies: {
-      config: [__filename],
+      config: [
+        __filename,
+        path.join(__dirname, '.generated/foundation-worker.js'),
+        path.join(__dirname, '.generated/foundation-worker.manifest.json'),
+      ],
+    },
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'build'),
     },
   }
 };

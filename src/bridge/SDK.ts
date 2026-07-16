@@ -32,21 +32,60 @@ import { prepare } from '@netless/white-prepare';
 import { ApplianceMultiPlugin } from '@netless/appliance-plugin';
 import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
 import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
+import { createWorkerInstance as createFoundationWorkerInstance } from '../FoundationWorkerFactory';
 import { PCMProxy } from '../PCMProxy';
-const fullWorkerBlob = new Blob([fullWorkerString], { type: 'text/javascript' });
-const fullWorkerUrl = URL.createObjectURL(fullWorkerBlob);
-const subWorkerBlob = new Blob([subWorkerString], { type: 'text/javascript' });
-const subWorkerUrl = URL.createObjectURL(subWorkerBlob);
 
 interface ExtraNativeJoinRoomParams {
   appliancePluginOptions?: Record<string, any>;
+  windowParams?: NativeWindowParams;
 }
+
+type NativePresentationViewport = {
+    x: number;
+    y: number;
+    width: number;
+    height: number;
+};
+
+type NativePresentationAppOptions = {
+    disableCameraTransform?: boolean;
+    maxCameraScale?: number;
+    viewport?: NativePresentationViewport;
+    justDocsViewReadonly?: boolean;
+    useScrollbar?: boolean;
+    debounceSync?: boolean;
+    goToPageByClick?: boolean;
+    useClipView?: boolean;
+};
+
+type NativeBuiltinAppOptions = {
+    presentation?: NativePresentationAppOptions;
+};
+
+type NativeSDKConfigWithPresentation = NativeSDKConfig & {
+    presentationAppOptions?: NativePresentationAppOptions;
+};
+
+type NativeWindowParams = Omit<MountParams, "room" | "container"> & {
+    /** Use per-window boxesStatus state management. Applies to joinRoom and replayRoom. */
+    useBoxesStatus?: boolean;
+    builtinAppOptions?: NativeBuiltinAppOptions;
+};
+
+type ExtraNativeReplayParams = Omit<NativeReplayParams, "windowParams"> & {
+    windowParams?: NativeWindowParams;
+};
+
+type NativeLocalLogOptions = {
+    enabled?: boolean;
+    enabledUpload?: boolean;
+};
 
 let sdk: WhiteWebSdk | undefined = undefined;
 let room: Room | undefined = undefined;
 let player: Player | undefined = undefined;
 
-let nativeConfig: NativeSDKConfig | undefined = undefined;
+let nativeConfig: NativeSDKConfigWithPresentation | undefined = undefined;
 let cursorAdapter: CursorTool | undefined = undefined;
 
 export const sdkCallbackHandler = new SDKCallbackHandler();
@@ -55,7 +94,6 @@ let divRef: ()=>(HTMLElement | undefined);
 
 const textareaCSSId = "whiteboard-native-css"
 const nativeFontFaceCSS = "whiteboard-native-font-face";
-
 setAsyncModuleLoadMode(AsyncModuleLoadMode.StoreAsBase64);
 
 export function setWhiteboardDivGetter(aGetter: ()=>(HTMLElement)) {
@@ -63,6 +101,11 @@ export function setWhiteboardDivGetter(aGetter: ()=>(HTMLElement)) {
 }
 
 const sdkNameSpace = "sdk";
+const maxRegisterAppJavascriptStringLength = 500;
+const logTruncatedSuffix = "...";
+let disposeLocalLogStateChange: (() => void) | undefined;
+let applianceFullWorkerBlobUrl: string | undefined;
+let applianceSubWorkerBlobUrl: string | undefined;
 
 export function registerSDKBridge() {
     const sdk = new SDKBridge();
@@ -70,7 +113,175 @@ export function registerSDKBridge() {
     (window as any).newWhiteSdk = sdk.newWhiteSdk;
     (window as any).joinRoom = sdk.joinRoom;
     (window as any).replayRoom = sdk.replayRoom;
-    addBridgeLogHook([sdkNameSpace], logger);
+    addBridgeLogHook([sdkNameSpace], logger, { excludedFunNames: ["registerApp"] });
+}
+
+function getRegisterAppLogParams(para: AppRegisterParams): AppRegisterParams {
+    if (typeof para.javascriptString !== "string" || para.javascriptString.length <= maxRegisterAppJavascriptStringLength) {
+        return para;
+    }
+
+    return {
+        ...para,
+        javascriptString: `${para.javascriptString.slice(0, maxRegisterAppJavascriptStringLength)}${logTruncatedSuffix}`,
+    };
+}
+
+function pickNativeLocalLogOptions(localLog: any): NativeLocalLogOptions | undefined {
+    if (!localLog || typeof localLog !== "object") {
+        return undefined;
+    }
+
+    const picked: NativeLocalLogOptions = {};
+
+    if (typeof localLog.enabled === "boolean") {
+        picked.enabled = localLog.enabled;
+    }
+    if (typeof localLog.enabledUpload === "boolean") {
+        picked.enabledUpload = localLog.enabledUpload;
+    }
+
+    return Object.keys(picked).length > 0 ? picked : undefined;
+}
+
+function createFoundationLogWorker(): Worker {
+    logger("localLog worker blob url");
+    return createFoundationWorkerInstance();
+}
+
+function createWorkerBlobUrl(workerString: string): string {
+    const blob = new Blob([workerString], { type: "text/javascript" });
+    return URL.createObjectURL(blob);
+}
+
+function getApplianceWorkerUrls(): { fullWorkerUrl: string; subWorkerUrl: string } {
+    const fullWorkerUrl = applianceFullWorkerBlobUrl || (applianceFullWorkerBlobUrl = createWorkerBlobUrl(fullWorkerString));
+    const subWorkerUrl = applianceSubWorkerBlobUrl || (applianceSubWorkerBlobUrl = createWorkerBlobUrl(subWorkerString));
+
+    return {
+        fullWorkerUrl,
+        subWorkerUrl,
+    };
+}
+
+function mergeLocalLogOptions(restConfig: any): any {
+    const nativeLocalLog = pickNativeLocalLogOptions(restConfig.loggerOptions?.localLog);
+    const localLog = nativeLocalLog?.enabled === false ?
+        { enabled: false } :
+        {
+            enabled: true,
+            ...nativeLocalLog,
+            createWorker: createFoundationLogWorker,
+        };
+
+    return {
+        ...restConfig,
+        loggerOptions: {
+            ...restConfig.loggerOptions,
+            localLog,
+        },
+    };
+}
+
+function toNativeError(error: any) {
+    if (!error) {
+        return undefined;
+    }
+    if (error instanceof Error) {
+        const stack = typeof error.stack === "string" ? error.stack : undefined;
+        return {
+            name: error.name,
+            message: error.message,
+            stack,
+            jsStack: stack,
+        };
+    }
+    return { name: "Error", message: String(error) };
+}
+
+function toNativeFile(file: any) {
+    if (!file || typeof file !== "object") {
+        return undefined;
+    }
+    const converted: any = {};
+
+    if (file.name !== undefined) converted.name = file.name;
+    if (file.size !== undefined) converted.size = file.size;
+    if (file.type !== undefined) converted.type = file.type;
+    if (file.lastModified !== undefined) converted.lastModified = file.lastModified;
+
+    return converted;
+}
+
+function toNativeLocalLogResult(result: any): any {
+    if (!result || typeof result !== "object") {
+        return { status: "skipped", reason: "unsupported" };
+    }
+
+    const converted: any = {
+        status: result.status || "skipped",
+    };
+
+    if (result.reason !== undefined) converted.reason = result.reason;
+    if (result.stage !== undefined) converted.stage = result.stage;
+    if (result.fileSize != null) converted.fileSize = result.fileSize;
+    if (result.fileName != null) converted.fileName = result.fileName;
+    if (result.taskId != null) converted.taskId = result.taskId;
+    if (result.lastId != null) converted.lastId = result.lastId;
+    if (result.serialNumber != null) converted.serialNumber = result.serialNumber;
+    if (result.error) converted.error = toNativeError(result.error);
+
+    return converted;
+}
+
+function toNativeLocalLogState(state: any): any {
+    if (!state || typeof state !== "object") {
+        return {};
+    }
+
+    const converted: any = {};
+    const keys = [
+        "enabled",
+        "enabledUpload",
+        "isUploading",
+        "lastUploadStatus",
+        "unavailableReason",
+        "foundationVersion",
+        "policyHostSource",
+        "effectiveWhiteboardPolicyHost",
+    ];
+
+    for (const key of keys) {
+        if (state[key] !== undefined) {
+            converted[key] = state[key];
+        }
+    }
+    return converted;
+}
+
+function toNativeLocalLogExportResult(result: any): any {
+    if (!result || typeof result !== "object") {
+        return {};
+    }
+
+    const converted: any = {};
+
+    if (result.file) converted.file = toNativeFile(result.file);
+    if (result.labels !== undefined) converted.labels = result.labels;
+    if (result.byteLength !== undefined) converted.byteLength = result.byteLength;
+
+    return converted;
+}
+
+function bindLocalLogStateChange(nextSdk: any) {
+    disposeLocalLogStateChange?.();
+    if (typeof nextSdk?.onLocalLogStateChange === "function") {
+        disposeLocalLogStateChange = nextSdk.onLocalLogStateChange((state: any) => {
+            sdkCallbackHandler.onLocalLogStateChange(toNativeLocalLogState(state));
+        });
+    } else {
+        disposeLocalLogStateChange = undefined;
+    }
 }
 
 function removeBind() {
@@ -92,23 +303,47 @@ function removeBind() {
     }
 }
 
-async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: Omit<Omit<MountParams, "room">, "container"> | undefined) {
+function toBuiltinAppOptions(options?: NativeBuiltinAppOptions) {
+    const presentation = options?.presentation;
+    if (!presentation) {
+        return undefined;
+    }
+    return {
+        Presentation: {
+            disableCameraTransform: presentation.disableCameraTransform,
+            maxCameraScale: presentation.maxCameraScale,
+            viewport: presentation.viewport,
+            justDocsViewReadonly: presentation.justDocsViewReadonly,
+            useScrollbar: presentation.useScrollbar,
+            debounceSync: presentation.debounceSync,
+            goToPageByClick: presentation.goToPageByClick,
+            useClipView: presentation.useClipView,
+        },
+    };
+}
+
+async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: NativeWindowParams) {
+    const { builtinAppOptions, ...restWindowParams } = windowParams || {};
+    const presentation = builtinAppOptions?.presentation ?? nativeConfig?.presentationAppOptions;
     const manager = await WindowManager.mount({
         // 高比宽
         containerSizeRatio: 9/16,
         chessboard: true,
         cursor: !!cursorAdapter,
         supportAppliancePlugin: nativeConfig?.enableAppliancePlugin,
-        ...windowParams,
+        ...restWindowParams,
+        builtinAppOptions: toBuiltinAppOptions(
+            presentation ? { presentation } : undefined
+        ),
         container: divRef(),
         room,
-    });
+    } as MountParams);
     addManagerListener(manager, logger, handler);
     return manager;
 }
 
 class SDKBridge {
-    newWhiteSdk = (config: NativeSDKConfig) => {
+    newWhiteSdk = (config: NativeSDKConfigWithPresentation) => {
         const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
             const modifyUrl: string = sdkCallbackHandler.onUrlInterrupter(url);
             if (modifyUrl.length > 0) {
@@ -126,7 +361,8 @@ class SDKBridge {
             return url;
         };
 
-        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, ...restConfig } = config;
+        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, presentationAppOptions, ...restConfig } = config;
+        const whiteSdkConfig = mergeLocalLogOptions(restConfig);
         const enablePcmDataCallback = (config as any).enablePcmDataCallback || false;
 
         enableReport(!!log);
@@ -186,11 +422,13 @@ class SDKBridge {
         });
         plugins.setPluginContext("video.js", {enable: false, verbose: true});
         for (const v of window.pluginContext || []) {
-            plugins.setPluginContext(v.name, v.params);
+            (plugins as any).setPluginContext(v.name, v.params);
         }
         window.plugins = plugins;
 
-        const slideAppOptions = config.slideAppOptions || {} ;
+        const slideAppOptions = (config.slideAppOptions || {}) as NativeSlideAppOptions & {
+            enableScale?: boolean;
+        };
         const slideKind = "Slide";
         WindowManager.register({
             kind: slideKind,
@@ -231,7 +469,7 @@ class SDKBridge {
 
         try {
             sdk = new WhiteWebSdk({
-                ...restConfig,
+                ...whiteSdkConfig,
                 invisiblePlugins: invisiblePlugins,
                 wrappedComponents: wrappedComponents,
                 plugins: plugins,
@@ -243,6 +481,7 @@ class SDKBridge {
                 useMobXState,
             });
             window.sdk = sdk;
+            bindLocalLogStateChange(sdk);
         } catch (e) {
             sdkCallbackHandler.onSetupFail(e);
         }
@@ -298,12 +537,13 @@ class SDKBridge {
                     }
 
                     if (nativeConfig?.enableAppliancePlugin) {
+                        const applianceWorkerUrls = getApplianceWorkerUrls();
                         const plugin = await ApplianceMultiPlugin.getInstance(manager,
                             {
                                 options: {
                                     cdn: {
-                                        fullWorkerUrl,
-                                        subWorkerUrl,
+                                        fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl,
+                                        subWorkerUrl: applianceWorkerUrls.subWorkerUrl,
                                     },
                                     ...appliancePluginOptions,
                                 }
@@ -336,7 +576,7 @@ class SDKBridge {
         });
     }
 
-    replayRoom = (nativeParams: NativeReplayParams, responseCallback: any) => {
+    replayRoom = (nativeParams: ExtraNativeReplayParams, responseCallback: any) => {
         // nativeReplayParams = nativeParams;
         if (!sdk) {
             responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
@@ -488,6 +728,92 @@ class SDKBridge {
         responseCallback();
     }
 
+    getLocalLogState = (responseCallback: any) => {
+        const currentSdk = (window.sdk || sdk) as any;
+        const getState = currentSdk?.getLocalLogState;
+
+        if (typeof getState !== "function") {
+            responseCallback(JSON.stringify({
+                enabled: false,
+                enabledUpload: false,
+                isUploading: false,
+                unavailableReason: "unsupported",
+            }));
+            return;
+        }
+
+        Promise.resolve(getState.call(currentSdk)).then(state => {
+            responseCallback(JSON.stringify(toNativeLocalLogState(state)));
+        }).catch((error: Error) => {
+            responseCallback(JSON.stringify({ __error: toNativeError(error) }));
+        });
+    }
+
+    collectLocalLogs = (responseCallback: any) => {
+        const currentSdk = (window.sdk || sdk) as any;
+
+        if (typeof currentSdk?.collectLocalLogs !== "function") {
+            responseCallback(JSON.stringify({ __error: { message: "local log is unsupported" } }));
+            return;
+        }
+
+        currentSdk.collectLocalLogs().then((result: any) => {
+            responseCallback(JSON.stringify(toNativeLocalLogExportResult(result)));
+        }).catch((error: Error) => {
+            responseCallback(JSON.stringify({ __error: toNativeError(error) }));
+        });
+    }
+
+    flushLocalLogs = (responseCallback: any) => {
+        const currentSdk = (window.sdk || sdk) as any;
+
+        if (typeof currentSdk?.flushLocalLogs !== "function") {
+            responseCallback(JSON.stringify({ __error: { message: "local log is unsupported" } }));
+            return;
+        }
+
+        currentSdk.flushLocalLogs().then(() => {
+            responseCallback(JSON.stringify({ success: true }));
+        }).catch((error: Error) => {
+            responseCallback(JSON.stringify({ __error: toNativeError(error) }));
+        });
+    }
+
+    uploadLocalLogs = (params: { roomUuid?: string; userUuid?: string; trigger?: string } | any, responseCallback?: any) => {
+        if (typeof params === "function") {
+            responseCallback = params;
+            params = {};
+        }
+
+        const callback = responseCallback || (() => undefined);
+        const { roomUuid, userUuid, trigger = "manual" } = params || {};
+        const currentRoom = (window.room || room) as any;
+        const currentSdk = (window.sdk || sdk) as any;
+
+        let upload: Promise<any> | undefined;
+
+        if (typeof currentRoom?.uploadLocalLogs === "function") {
+            upload = currentRoom.uploadLocalLogs();
+        } else if (typeof currentSdk?.uploadLocalLogs === "function") {
+            upload = currentSdk.uploadLocalLogs({ roomUuid, userUuid, trigger });
+        }
+
+        if (!upload) {
+            callback(JSON.stringify({ status: "skipped", reason: "unsupported" }));
+            return;
+        }
+
+        upload.then((result: any) => {
+            callback(JSON.stringify(toNativeLocalLogResult(result)));
+        }).catch((error: Error) => {
+            callback(JSON.stringify({
+                status: "failure",
+                stage: "callback",
+                error: toNativeError(error),
+            }));
+        });
+    }
+
     setParameters = (params: any) => {
         if (Boolean(params.effectMixingForMediaPlayer)) {
             window.__mediaPlayerAudioEffectClient = new RtcAudioEffectClient("mediaPlayer");
@@ -495,6 +821,8 @@ class SDKBridge {
     }
 
     registerApp = (para: AppRegisterParams, responseCallback: any) => {
+        logger("registerApp", getRegisterAppLogParams(para));
+
         if (para.javascriptString) {
             let variable = para.variable!;
             let src = Function(`
