@@ -2,13 +2,20 @@ import { useEffect, useRef } from 'react';
 import {Displayer, Room, Player, SceneState} from "white-web-sdk";
 import { sdkCallbackHandler } from "../bridge/SDK";
 
+interface BridgeLogHookOptions {
+    excludedFunNames?: string[];
+}
+
 // TODO: 考虑避免多次 hook
-export function addBridgeLogHook(names: string[], logger: (funName: string, ...params: any[]) => void) {
+export function addBridgeLogHook(names: string[], logger: (funName: string, ...params: any[]) => void, options?: BridgeLogHookOptions) {
     function getBridgeObjectKeys(obj: any): any {
         return obj.keys && obj.keys() || Object.getOwnPropertyNames(obj);
     }
     function getBridgeObjectValue(obj: any, key: string): any {
         return obj.get && obj.get(key) || obj[key];
+    }
+    function shouldLog(funName: string): boolean {
+        return !options || !options.excludedFunNames || options.excludedFunNames.indexOf(funName) === -1;
     }
 
     const isReactNative = window.ReactNativeWebView !== undefined;
@@ -28,7 +35,9 @@ export function addBridgeLogHook(names: string[], logger: (funName: string, ...p
                         return fun(...args);
                     } finally {
                         // async 下， dsbridge 在调用时，会添加一个回调 function
-                        logger(funName, ...args.slice(0, -1));
+                        if (shouldLog(funName)) {
+                            logger(funName, ...args.slice(0, -1));
+                        }
                     }
                 };
             }
@@ -49,7 +58,9 @@ export function addBridgeLogHook(names: string[], logger: (funName: string, ...p
                     try {
                         return fun(...args);
                     } finally {
-                        logger(funName, ...args);
+                        if (shouldLog(funName)) {
+                            logger(funName, ...args);
+                        }
                     }
                 };
             }

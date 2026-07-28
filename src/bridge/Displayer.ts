@@ -153,7 +153,7 @@ export class DisplayerBridge {
         return this.aDisplayer.entireScenes();
     }
 
-    getScene = (scenePath: string) => {
+    getScene = (scenePath: string): any => {
         return this.aDisplayer.getScene(scenePath);
     }
 
