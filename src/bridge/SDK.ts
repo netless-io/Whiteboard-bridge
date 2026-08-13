@@ -323,21 +323,30 @@ function toBuiltinAppOptions(options?: NativeBuiltinAppOptions) {
 }
 
 async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: NativeWindowParams) {
+    const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
     const { builtinAppOptions, ...restWindowParams } = windowParams || {};
     const presentation = builtinAppOptions?.presentation ?? nativeConfig?.presentationAppOptions;
-    const manager = await WindowManager.mount({
-        // 高比宽
-        containerSizeRatio: 9/16,
-        chessboard: true,
-        cursor: !!cursorAdapter,
-        supportAppliancePlugin: nativeConfig?.enableAppliancePlugin,
-        ...restWindowParams,
-        builtinAppOptions: toBuiltinAppOptions(
-            presentation ? { presentation } : undefined
-        ),
-        container: divRef(),
-        room,
-    } as MountParams);
+    roomLogger?.info("[Bridge] WindowManager.mount start");
+    let manager: WindowManager;
+    try {
+        manager = await WindowManager.mount({
+            // 高比宽
+            containerSizeRatio: 9/16,
+            chessboard: true,
+            cursor: !!cursorAdapter,
+            supportAppliancePlugin: nativeConfig?.enableAppliancePlugin,
+            ...restWindowParams,
+            builtinAppOptions: toBuiltinAppOptions(
+                presentation ? { presentation } : undefined
+            ),
+            container: divRef(),
+            room,
+        } as MountParams);
+        roomLogger?.info("[Bridge] WindowManager.mount success");
+    } catch (error) {
+        roomLogger?.error(`[Bridge] WindowManager.mount failed: ${error?.message || error}`);
+        throw error;
+    }
     addManagerListener(manager, logger, handler);
     return manager;
 }
@@ -538,18 +547,26 @@ class SDKBridge {
 
                     if (nativeConfig?.enableAppliancePlugin) {
                         const applianceWorkerUrls = getApplianceWorkerUrls();
-                        const plugin = await ApplianceMultiPlugin.getInstance(manager,
-                            {
-                                options: {
-                                    cdn: {
-                                        fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl,
-                                        subWorkerUrl: applianceWorkerUrls.subWorkerUrl,
-                                    },
-                                    ...appliancePluginOptions,
+                        const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
+                        roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
+                        try {
+                            const plugin = await ApplianceMultiPlugin.getInstance(manager,
+                                {
+                                    options: {
+                                        cdn: {
+                                            fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl,
+                                            subWorkerUrl: applianceWorkerUrls.subWorkerUrl,
+                                        },
+                                        ...appliancePluginOptions,
+                                    }
                                 }
-                            }
-                        );
-                        window.appliancePlugin = plugin;
+                            );
+                            window.appliancePlugin = plugin;
+                            roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance success");
+                        } catch (error) {
+                            roomLogger?.error(`[Bridge] ApplianceMultiPlugin.getInstance failed: ${error?.message || error}`);
+                            throw error;
+                        }
                     }
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
