@@ -20,6 +20,9 @@ config = {
   target: ["web", "es5"],
   resolve: {
     alias: {
+      // rbush v4 ships an ESM entry that the legacy Babel pipeline rewrites to
+      // bare CommonJS globals. Use its official browser bundle in WebView builds.
+      "rbush$": path.join(path.dirname(require.resolve("rbush")), "rbush.min.js"),
       "@netless/window-manager/dist/style.css": require.resolve("@netless/window-manager").replace("index.js", "style.css"),
       "@netless/window-manager": require.resolve("@netless/window-manager"),
 
@@ -89,6 +92,10 @@ config = {
   module: {
     rules: [
       {
+        test: /node_modules[\\/]rbush[\\/]rbush\.min\.js$/,
+        type: "javascript/auto",
+      },
+      {
         test: /\.(ts|js|cjs)x?$/,
         resourceQuery: { not: [/raw/] },
         use: [
@@ -117,6 +124,7 @@ config = {
     buildDependencies: {
       config: [
         __filename,
+        path.join(__dirname, 'babel.config.js'),
         path.join(__dirname, '.generated/foundation-worker.js'),
         path.join(__dirname, '.generated/foundation-worker.manifest.json'),
       ],

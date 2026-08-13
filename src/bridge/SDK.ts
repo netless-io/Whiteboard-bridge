@@ -29,7 +29,11 @@ import { SlideLoggerPlugin } from '../utils/SlideLogger';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 import { prepare } from '@netless/white-prepare';
 
-import { ApplianceMultiPlugin } from '@netless/appliance-plugin';
+import {
+    ApplianceMultiPlugin,
+    WorkerCanvasContextBlacklistLevel,
+    WorkerRenderModeBlacklistLevel,
+} from '@netless/appliance-plugin';
 import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
 import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
 import { createWorkerInstance as createFoundationWorkerInstance } from '../FoundationWorkerFactory';
@@ -106,6 +110,51 @@ const logTruncatedSuffix = "...";
 let disposeLocalLogStateChange: (() => void) | undefined;
 let applianceFullWorkerBlobUrl: string | undefined;
 let applianceSubWorkerBlobUrl: string | undefined;
+
+const defaultAppliancePluginOptions = {
+    workerRenderModeBlacklist: {
+        androidWebView: {
+            "89": WorkerRenderModeBlacklistLevel.OffscreenTransfer,
+        },
+        harmonyArkWeb: {
+            "99": WorkerRenderModeBlacklistLevel.OffscreenTransfer,
+        },
+        iosWebView: {
+            "12": WorkerRenderModeBlacklistLevel.ImageBitmap,
+            "16": WorkerRenderModeBlacklistLevel.OffscreenTransfer,
+        },
+    },
+    workerCanvasContextBlacklist: {
+        androidWebView: {
+            "89": WorkerCanvasContextBlacklistLevel.WebGL,
+        },
+        harmonyArkWeb: {
+            "99": WorkerCanvasContextBlacklistLevel.WebGL,
+        },
+        iosWebView: {
+            "16": WorkerCanvasContextBlacklistLevel.WebGL,
+        },
+    },
+};
+
+function mergeAppliancePluginOptions(appliancePluginOptions?: Record<string, any>): Record<string, any> {
+    const appliancePluginExtras = appliancePluginOptions?.extras;
+
+    return {
+        ...appliancePluginOptions,
+        extras: {
+            ...appliancePluginExtras,
+            workerRenderModeBlacklist: {
+                ...defaultAppliancePluginOptions.workerRenderModeBlacklist,
+                ...appliancePluginExtras?.workerRenderModeBlacklist,
+            },
+            workerCanvasContextBlacklist: {
+                ...defaultAppliancePluginOptions.workerCanvasContextBlacklist,
+                ...appliancePluginExtras?.workerCanvasContextBlacklist,
+            },
+        },
+    };
+}
 
 export function registerSDKBridge() {
     const sdk = new SDKBridge();
@@ -323,21 +372,30 @@ function toBuiltinAppOptions(options?: NativeBuiltinAppOptions) {
 }
 
 async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: NativeWindowParams) {
+    const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
     const { builtinAppOptions, ...restWindowParams } = windowParams || {};
     const presentation = builtinAppOptions?.presentation ?? nativeConfig?.presentationAppOptions;
-    const manager = await WindowManager.mount({
-        // 高比宽
-        containerSizeRatio: 9/16,
-        chessboard: true,
-        cursor: !!cursorAdapter,
-        supportAppliancePlugin: nativeConfig?.enableAppliancePlugin,
-        ...restWindowParams,
-        builtinAppOptions: toBuiltinAppOptions(
-            presentation ? { presentation } : undefined
-        ),
-        container: divRef(),
-        room,
-    } as MountParams);
+    roomLogger?.info("[Bridge] WindowManager.mount start");
+    let manager: WindowManager;
+    try {
+        manager = await WindowManager.mount({
+            // 高比宽
+            containerSizeRatio: 9/16,
+            chessboard: true,
+            cursor: !!cursorAdapter,
+            supportAppliancePlugin: nativeConfig?.enableAppliancePlugin,
+            ...restWindowParams,
+            builtinAppOptions: toBuiltinAppOptions(
+                presentation ? { presentation } : undefined
+            ),
+            container: divRef(),
+            room,
+        } as MountParams);
+        roomLogger?.info("[Bridge] WindowManager.mount success");
+    } catch (error) {
+        roomLogger?.error(`[Bridge] WindowManager.mount failed: ${error?.message || error}`);
+        throw error;
+    }
     addManagerListener(manager, logger, handler);
     return manager;
 }
@@ -538,18 +596,32 @@ class SDKBridge {
 
                     if (nativeConfig?.enableAppliancePlugin) {
                         const applianceWorkerUrls = getApplianceWorkerUrls();
-                        const plugin = await ApplianceMultiPlugin.getInstance(manager,
-                            {
-                                options: {
-                                    cdn: {
-                                        fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl,
-                                        subWorkerUrl: applianceWorkerUrls.subWorkerUrl,
-                                    },
-                                    ...appliancePluginOptions,
+                        const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
+                        const mergedAppliancePluginOptions = mergeAppliancePluginOptions(appliancePluginOptions);
+                        const mergedAppliancePluginExtras = mergedAppliancePluginOptions.extras;
+                        roomLogger?.info(`[Bridge] ApplianceMultiPlugin blacklists: ${JSON.stringify({
+                            workerRenderModeBlacklist: mergedAppliancePluginExtras.workerRenderModeBlacklist,
+                            workerCanvasContextBlacklist: mergedAppliancePluginExtras.workerCanvasContextBlacklist,
+                        })}`);
+                        roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
+                        try {
+                            const plugin = await ApplianceMultiPlugin.getInstance(manager,
+                                {
+                                    options: {
+                                        cdn: {
+                                            fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl,
+                                            subWorkerUrl: applianceWorkerUrls.subWorkerUrl,
+                                        },
+                                        ...mergedAppliancePluginOptions,
+                                    }
                                 }
-                            }
-                        );
-                        window.appliancePlugin = plugin;
+                            );
+                            window.appliancePlugin = plugin;
+                            roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance success");
+                        } catch (error) {
+                            roomLogger?.error(`[Bridge] ApplianceMultiPlugin.getInstance failed: ${error?.message || error}`);
+                            throw error;
+                        }
                     }
                 } catch (error) {
                     return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
