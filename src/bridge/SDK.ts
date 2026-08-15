@@ -29,11 +29,7 @@ import { SlideLoggerPlugin } from '../utils/SlideLogger';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 import { prepare } from '@netless/white-prepare';
 
-import {
-    ApplianceMultiPlugin,
-    WorkerCanvasContextBlacklistLevel,
-    WorkerRenderModeBlacklistLevel,
-} from '@netless/appliance-plugin';
+import { ApplianceMultiPlugin } from '@netless/appliance-plugin';
 import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
 import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
 import { createWorkerInstance as createFoundationWorkerInstance } from '../FoundationWorkerFactory';
@@ -110,51 +106,6 @@ const logTruncatedSuffix = "...";
 let disposeLocalLogStateChange: (() => void) | undefined;
 let applianceFullWorkerBlobUrl: string | undefined;
 let applianceSubWorkerBlobUrl: string | undefined;
-
-const defaultAppliancePluginOptions = {
-    workerRenderModeBlacklist: {
-        androidWebView: {
-            "89": WorkerRenderModeBlacklistLevel.OffscreenTransfer,
-        },
-        harmonyArkWeb: {
-            "99": WorkerRenderModeBlacklistLevel.OffscreenTransfer,
-        },
-        iosWebView: {
-            "12": WorkerRenderModeBlacklistLevel.ImageBitmap,
-            "16": WorkerRenderModeBlacklistLevel.OffscreenTransfer,
-        },
-    },
-    workerCanvasContextBlacklist: {
-        androidWebView: {
-            "89": WorkerCanvasContextBlacklistLevel.WebGL,
-        },
-        harmonyArkWeb: {
-            "99": WorkerCanvasContextBlacklistLevel.WebGL,
-        },
-        iosWebView: {
-            "16": WorkerCanvasContextBlacklistLevel.WebGL,
-        },
-    },
-};
-
-function mergeAppliancePluginOptions(appliancePluginOptions?: Record<string, any>): Record<string, any> {
-    const appliancePluginExtras = appliancePluginOptions?.extras;
-
-    return {
-        ...appliancePluginOptions,
-        extras: {
-            ...appliancePluginExtras,
-            workerRenderModeBlacklist: {
-                ...defaultAppliancePluginOptions.workerRenderModeBlacklist,
-                ...appliancePluginExtras?.workerRenderModeBlacklist,
-            },
-            workerCanvasContextBlacklist: {
-                ...defaultAppliancePluginOptions.workerCanvasContextBlacklist,
-                ...appliancePluginExtras?.workerCanvasContextBlacklist,
-            },
-        },
-    };
-}
 
 export function registerSDKBridge() {
     const sdk = new SDKBridge();
@@ -597,12 +548,6 @@ class SDKBridge {
                     if (nativeConfig?.enableAppliancePlugin) {
                         const applianceWorkerUrls = getApplianceWorkerUrls();
                         const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
-                        const mergedAppliancePluginOptions = mergeAppliancePluginOptions(appliancePluginOptions);
-                        const mergedAppliancePluginExtras = mergedAppliancePluginOptions.extras;
-                        roomLogger?.info(`[Bridge] ApplianceMultiPlugin blacklists: ${JSON.stringify({
-                            workerRenderModeBlacklist: mergedAppliancePluginExtras.workerRenderModeBlacklist,
-                            workerCanvasContextBlacklist: mergedAppliancePluginExtras.workerCanvasContextBlacklist,
-                        })}`);
                         roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
                         try {
                             const plugin = await ApplianceMultiPlugin.getInstance(manager,
@@ -612,7 +557,7 @@ class SDKBridge {
                                             fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl,
                                             subWorkerUrl: applianceWorkerUrls.subWorkerUrl,
                                         },
-                                        ...mergedAppliancePluginOptions,
+                                        ...appliancePluginOptions,
                                     }
                                 }
                             );
