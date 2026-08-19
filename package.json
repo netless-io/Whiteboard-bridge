@@ -8,11 +8,13 @@
     "iOS 9"
   ],
   "scripts": {
-    "bundle": "webpack",
-    "prebundle": "yarn sync-foundation-worker",
-    "prebuild": "yarn sync-foundation-worker",
-    "prebuildDev": "yarn sync-foundation-worker",
-    "precheck": "yarn sync-foundation-worker",
+  "bundle": "webpack",
+  "prebundle": "yarn sync-foundation-worker && yarn patch-appliance-plugin-types",
+  "prebuild": "yarn sync-foundation-worker && yarn patch-appliance-plugin-types",
+  "prebuildDev": "yarn sync-foundation-worker && yarn patch-appliance-plugin-types",
+  "precheck": "yarn sync-foundation-worker && yarn patch-appliance-plugin-types",
+  "postinstall": "node scripts/patch-appliance-plugin-types.js",
+  "patch-appliance-plugin-types": "node scripts/patch-appliance-plugin-types.js",
     "start": "webpack-dev-server --mode development --host local-ip --hot",
     "sync-foundation-worker:generate": "white-web-sdk-sync-foundation-worker --out .generated/foundation-worker.js --manifest .generated/foundation-worker.manifest.json --required --target es5",
     "patch-foundation-worker": "node scripts/patch-foundation-worker.js",
