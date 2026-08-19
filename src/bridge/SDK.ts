@@ -78,8 +78,15 @@ type NativeSDKConfigWithPresentation = NativeSDKConfig & {
     backgroundImageLoadOptions?: BackgroundImageLoadOptions;
 };
 
+/** 背景图片加载重试次数：`-1`（无限重试）或 `0`~`10` 的整数。 */
+type BackgroundImageMaxRetries = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
 type BackgroundImageLoadOptions = {
-    maxRetries?: number;
+    /** 背景图片加载重试次数。
+     *  - `-1`：无限重试，对外统一使用该值（内部归一为 `Infinity` 后传给插件）；
+     *  - `0`~`10`：有限重试次数。
+     */
+    maxRetries?: BackgroundImageMaxRetries;
     timeoutMs?: number;
     retryIntervalMs?: number;
 };
@@ -91,7 +98,7 @@ function validateBackgroundImageLoadOptions(options?: BackgroundImageLoadOptions
     const { maxRetries, timeoutMs, retryIntervalMs } = options;
     if (maxRetries !== undefined && maxRetries !== Number.POSITIVE_INFINITY && maxRetries !== -1 &&
         (!Number.isInteger(maxRetries) || maxRetries < 0 || maxRetries > 10)) {
-        throw new RangeError("backgroundImageLoadOptions.maxRetries must be -1, Infinity, or an integer from 0 to 10");
+        throw new RangeError("backgroundImageLoadOptions.maxRetries must be -1 (infinite retry) or an integer from 0 to 10");
     }
     if (timeoutMs !== undefined &&
         (!Number.isFinite(timeoutMs) || timeoutMs < 1000 || timeoutMs > 120000)) {
@@ -644,6 +651,14 @@ class SDKBridge {
 
         try {
             validateBackgroundImageLoadOptions(backgroundImageLoadOptions);
+            if (backgroundImageLoadOptions?.maxRetries === -1) {
+                // 对外统一使用 -1 表示无限重试，内部归一为 Infinity。
+                config.backgroundImageLoadOptions = {
+                    ...backgroundImageLoadOptions,
+                    // 内部表示 Infinity，不在外部类型约束范围内，故显式转换。
+                    maxRetries: Number.POSITIVE_INFINITY as unknown as BackgroundImageMaxRetries,
+                };
+            }
             sdk = new WhiteWebSdk({
                 ...whiteSdkConfig,
                 invisiblePlugins: invisiblePlugins,
