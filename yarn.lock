@@ -1114,10 +1114,10 @@
   resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.99.tgz#0d9067ed426ee35ed942188b62740ba249d2333c"
   integrity sha512-GFzjoWh/Jp/bh5dXO+coszQmPioRvp/vK+Ac8N/OCry7AS2Oh8RTscNRnVg9j08+7L7m9GjK1JZA8NqcORXFBQ==
 
-"@netless/appliance-plugin@^1.1.40":
-  version "1.1.40"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.40.tgz#601452f62c6021bd25af27feb8e3ccfb66ca5906"
-  integrity sha512-GgcIY3aU0ReR/mGntSlxx+bZYOiqb75rjnRUC6pW0dRph1xaYopIwT9nezMasNWP5g4zJHCje60F0uVl9mjCgA==
+"@netless/appliance-plugin@1.1.42-beta.0":
+  version "1.1.42-beta.0"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.42-beta.0.tgz#81969de5c784fac86097404c81e2a5f0bd4a6def"
+  integrity sha512-61jmFc5K7TDFh21h7OrzN+PwC0e0GA9Ql0XfAWDUpkz4DdZj6/IgquLRveuLpOFDwBZsYaPBhjwvSCmh5aqTtg==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"
@@ -1221,10 +1221,10 @@
   resolved "https://registry.npmjs.org/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.13.tgz"
   integrity sha512-ZfJt/fD824oqLFW6Jl09cpWB9t30G+lwSUzLiWI1PpakhdlxX3lC9XMH8FtWGghYbzzXFEDh6Ay2N02F87II7g==
 
-"@netless/window-manager@1.0.18":
-  version "1.0.18"
-  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.18.tgz#463ad2f2115b7b90f985b0b1e79f61856ea65915"
-  integrity sha512-tCxJMVJtVGjXE1dnhcb2EIFDhEk9Izam+TuW3P8UWHpamFEsCLFA7XpGOjWw6iw3EPxk7RWYI55mACrEX6ZZ8w==
+"@netless/window-manager@1.0.19":
+  version "1.0.19"
+  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.19.tgz#0cccf6870e87a88c5e628a7ddb69ccc137eb9ad4"
+  integrity sha512-f1fHarb89sXTJZKYOfuTD71HrvVyQAAHthRzrqkVsQUi5aC8QKBYZTKiZoJzQ6vTppja/JK5coznzMMBRJwxog==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.3.0"
@@ -6821,10 +6821,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.56:
-  version "2.16.56"
-  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.56.tgz#32a50a263fb52b3ed950433fceb67744d54327af"
-  integrity sha512-hPBO72XkDWO/JXUXb85gU0A8I+pkmA/CyqmRcsxjxmFaN1ZQowIZZacJ5UOsn7Vwxpr4VQHf2rRHm+wJd00YCA==
+white-web-sdk@2.16.57:
+  version "2.16.57"
+  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.57.tgz#a24e8e245db65cf8341363b9f246a47a0fc496b2"
+  integrity sha512-z3dtl63Vz33RE9CHayTXkIm7sJoj1cddJX5k54uGqM/r46eO+Dwiin1u9zuREItWAJFFiz1keZKkEIfEyaUrxA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
