@@ -1109,15 +1109,15 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@^0.2.99":
-  version "0.2.99"
-  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.99.tgz#0d9067ed426ee35ed942188b62740ba249d2333c"
-  integrity sha512-GFzjoWh/Jp/bh5dXO+coszQmPioRvp/vK+Ac8N/OCry7AS2Oh8RTscNRnVg9j08+7L7m9GjK1JZA8NqcORXFBQ==
+"@netless/app-slide@^0.2.100-alpha.0":
+  version "0.2.100-alpha.0"
+  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.100-alpha.0.tgz#5c9592862bbcad94fa37125398c754e9d257ae4b"
+  integrity sha512-VpP2Ju2Lq3F9fdMvqbG5+oS+1CA4b44bMfCV50U4auQvqheDcYLFUuRQzyKMOCMF74Jg4ExZ375PwA6Q2MiC0w==
 
-"@netless/appliance-plugin@1.1.42-beta.0":
-  version "1.1.42-beta.0"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.42-beta.0.tgz#81969de5c784fac86097404c81e2a5f0bd4a6def"
-  integrity sha512-61jmFc5K7TDFh21h7OrzN+PwC0e0GA9Ql0XfAWDUpkz4DdZj6/IgquLRveuLpOFDwBZsYaPBhjwvSCmh5aqTtg==
+"@netless/appliance-plugin@1.1.42-beta.2":
+  version "1.1.42-beta.2"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.42-beta.2.tgz#df3381d7f4c626505d2909b8a4f9f4a54c027f17"
+  integrity sha512-xM+FXew24zqUysdE2AaxikWygX5V5OUbXXPDvsPtN6RZ1mai5RwOOIvdbsSwJgxi5gcWU0wNTUAzlE8nPNBuAw==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"

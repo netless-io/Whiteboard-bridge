@@ -9,12 +9,10 @@
   ],
   "scripts": {
   "bundle": "webpack",
-  "prebundle": "yarn sync-foundation-worker && yarn patch-appliance-plugin-types",
-  "prebuild": "yarn sync-foundation-worker && yarn patch-appliance-plugin-types",
-  "prebuildDev": "yarn sync-foundation-worker && yarn patch-appliance-plugin-types",
-  "precheck": "yarn sync-foundation-worker && yarn patch-appliance-plugin-types",
-  "postinstall": "node scripts/patch-appliance-plugin-types.js",
-  "patch-appliance-plugin-types": "node scripts/patch-appliance-plugin-types.js",
+  "prebundle": "yarn sync-foundation-worker",
+  "prebuild": "yarn sync-foundation-worker",
+  "prebuildDev": "yarn sync-foundation-worker",
+  "precheck": "yarn sync-foundation-worker",
     "start": "webpack-dev-server --mode development --host local-ip --hot",
     "sync-foundation-worker:generate": "white-web-sdk-sync-foundation-worker --out .generated/foundation-worker.js --manifest .generated/foundation-worker.manifest.json --required --target es5",
     "patch-foundation-worker": "node scripts/patch-foundation-worker.js",
@@ -32,8 +30,8 @@
     "**/video.js": "7.10.0"
   },
   "dependencies": {
-    "@netless/app-slide": "^0.2.99",
-    "@netless/appliance-plugin": "1.1.42-beta.0",
+    "@netless/app-slide": "^0.2.100-alpha.0",
+    "@netless/appliance-plugin": "1.1.42-beta.2",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
