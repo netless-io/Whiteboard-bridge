@@ -9,6 +9,7 @@ import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
 import SlideApp, { addHooks as addHooksSlide, usePlugin}  from "@netless/app-slide";
+import type { AppOptions as AppSlideOptions } from "@netless/app-slide";
 import { EffectPlugin, MixingPlugin } from '@netless/slide-rtc-plugin';
 import { MountParams, WindowManager } from "@netless/window-manager";
 import { SyncedStorePlugin } from "@netless/synced-store";
@@ -16,6 +17,22 @@ import {IframeBridge, IframeWrapper} from "@netless/iframe-bridge";
 import {logger, enableReport} from "../utils/Logger";
 import {convertBound} from "../utils/BoundConvert";
 import { addManagerListener, createAppState } from "./Manager";
+import {
+    aggregateBackgroundImageQueryResults,
+    aggregateBackgroundImageReloadResults,
+    assertBackgroundImageCapability,
+    backgroundImageProviderParams,
+    BackgroundImageSource,
+    HasBackgroundImageParams,
+    resolveBackgroundImageEventViewId,
+    shouldQueryApplianceBackgroundImage,
+    validateHasBackgroundImageParams,
+} from "./BackgroundImageViewId";
+import { mergeDefaultAppliancePluginExtras } from "./AppliancePluginDefaults";
+import type {
+    NativeSlidePerformanceOptions,
+} from "./SlidePerformanceDefaults";
+import { resolveSlidePerformanceOptions } from "./SlidePerformanceDefaults";
 import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { lastSchedule, ReplayerCallbackHandler, ReplayerCallbackHandlerImp } from "../native/ReplayerCallbackHandler";
@@ -64,6 +81,62 @@ type NativeBuiltinAppOptions = {
 
 type NativeSDKConfigWithPresentation = NativeSDKConfig & {
     presentationAppOptions?: NativePresentationAppOptions;
+    backgroundImageLoadOptions?: BackgroundImageLoadOptions;
+};
+
+/** 背景图片加载重试次数：`-1`（无限重试）或 `0`~`10` 的整数。 */
+type BackgroundImageMaxRetries = -1 | 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+
+type BackgroundImageLoadOptions = {
+    /** 背景图片加载重试次数。
+     *  - `-1`：无限重试，对外统一使用该值（由 appliance-plugin 内部归一为 `Infinity`）；
+     *  - `0`~`10`：有限重试次数。
+     */
+    maxRetries?: BackgroundImageMaxRetries;
+    timeoutMs?: number;
+    retryIntervalMs?: number;
+};
+
+function validateBackgroundImageLoadOptions(options?: BackgroundImageLoadOptions): void {
+    if (!options) {
+        return;
+    }
+    const { maxRetries, timeoutMs, retryIntervalMs } = options;
+    if (maxRetries !== undefined && maxRetries !== -1 &&
+        (!Number.isInteger(maxRetries) || maxRetries < 0 || maxRetries > 10)) {
+        throw new RangeError("backgroundImageLoadOptions.maxRetries must be -1 (infinite retry) or an integer from 0 to 10");
+    }
+    if (timeoutMs !== undefined &&
+        (!Number.isFinite(timeoutMs) || timeoutMs < 1000 || timeoutMs > 120000)) {
+        throw new RangeError("backgroundImageLoadOptions.timeoutMs must be from 1000 to 120000");
+    }
+    if (retryIntervalMs !== undefined &&
+        (!Number.isFinite(retryIntervalMs) || retryIntervalMs < 0 || retryIntervalMs > 30000)) {
+        throw new RangeError("backgroundImageLoadOptions.retryIntervalMs must be from 0 to 30000");
+    }
+}
+
+type BackgroundImageLoadEvent = {
+    name: "backgroundImageLoad";
+    state: "success" | "failed" | "cancelled";
+    source: BackgroundImageSource;
+    resourceId: string;
+    resourceUrl: string;
+    viewId: string;
+    scenePath: string;
+};
+
+type ReloadBackgroundImageParams = {
+    source: BackgroundImageSource;
+    viewId: string;
+    scenePath?: string;
+    url?: string;
+};
+
+type ReloadBackgroundImageResult = {
+    accepted: boolean;
+    reloadedCount: number;
+    reason?: "viewNotFound" | "sceneNotFocused" | "resourceNotFound" | "alreadyLoading";
 };
 
 type NativeWindowParams = Omit<MountParams, "room" | "container"> & {
@@ -87,6 +160,49 @@ let player: Player | undefined = undefined;
 
 let nativeConfig: NativeSDKConfigWithPresentation | undefined = undefined;
 let cursorAdapter: CursorTool | undefined = undefined;
+function postBackgroundImageLoadEvent(event: BackgroundImageLoadEvent): void {
+    if ((event as { source?: string }).source !== "appliance") {
+        return;
+    }
+    const normalized: BackgroundImageLoadEvent = {
+        name: "backgroundImageLoad",
+        state: event.state,
+        source: event.source,
+        resourceId: String(event.resourceId),
+        resourceUrl: event.resourceUrl,
+        viewId: resolveBackgroundImageViewId(event),
+        scenePath: event.scenePath,
+    };
+    sdkCallbackHandler.onPostMessage(JSON.stringify(normalized));
+}
+
+type ApplianceInitLoadingChangeInfo = {
+    loading: boolean;
+    phase: string;
+    status: string;
+};
+
+function postApplianceInitLoadingChange(info: ApplianceInitLoadingChangeInfo): void {
+    sdkCallbackHandler.onPostMessage(JSON.stringify({
+        name: "applianceInitLoadingChange",
+        loading: info.loading,
+        phase: info.phase,
+        status: info.status,
+    }));
+}
+
+function resolveBackgroundImageViewId(event: BackgroundImageLoadEvent): string {
+    const originalViewId = String(event.viewId);
+    try {
+        return resolveBackgroundImageEventViewId(
+            originalViewId,
+            !!nativeConfig?.useMultiViews,
+        );
+    } catch {
+        // WindowManager may exist before AppManager finishes initialization.
+        return originalViewId;
+    }
+}
 
 export const sdkCallbackHandler = new SDKCallbackHandler();
 
@@ -352,6 +468,69 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
 }
 
 class SDKBridge {
+    hasBackgroundImage = async (
+        params: HasBackgroundImageParams,
+        responseCallback: any,
+    ) => {
+        try {
+            validateHasBackgroundImageParams(params);
+            if (!shouldQueryApplianceBackgroundImage(params.sources)) {
+                responseCallback(false);
+                return;
+            }
+
+            const plugin = window.appliancePlugin as any;
+            assertBackgroundImageCapability(
+                !!nativeConfig?.useMultiViews,
+                !!nativeConfig?.enableAppliancePlugin,
+                plugin?.hasBackgroundImage,
+            );
+            responseCallback(aggregateBackgroundImageQueryResults([Boolean(
+                await plugin.hasBackgroundImage.call(
+                    plugin,
+                    backgroundImageProviderParams(params),
+                ),
+            )]));
+        } catch (error) {
+            const e = error as Error;
+            responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
+        }
+    };
+
+    reloadBackgroundImage = async (
+        params: ReloadBackgroundImageParams,
+        responseCallback: any,
+    ) => {
+        try {
+            if (params.source !== "appliance" && params.source !== "whiteSdk") {
+                throw new RangeError("source must be appliance or whiteSdk");
+            }
+            if (params.source === "whiteSdk") {
+                const result: ReloadBackgroundImageResult = {
+                    accepted: false,
+                    reloadedCount: 0,
+                    reason: "resourceNotFound",
+                };
+                responseCallback(JSON.stringify(result));
+                return;
+            }
+            const plugin = window.appliancePlugin as any;
+            assertBackgroundImageCapability(
+                !!nativeConfig?.useMultiViews,
+                !!nativeConfig?.enableAppliancePlugin,
+                plugin?.reloadBackgroundImage,
+            );
+            const results: ReloadBackgroundImageResult[] = [
+                await plugin.reloadBackgroundImage(params),
+            ];
+            const result = aggregateBackgroundImageReloadResults(results);
+            responseCallback(JSON.stringify(result));
+        } catch (error) {
+            const e = error as Error;
+            responseCallback(JSON.stringify({ __error: { message: e.message, jsStack: e.stack } }));
+        }
+    };
+
     newWhiteSdk = (config: NativeSDKConfigWithPresentation) => {
         const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
             const modifyUrl: string = sdkCallbackHandler.onUrlInterrupter(url);
@@ -370,7 +549,7 @@ class SDKBridge {
             return url;
         };
 
-        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, presentationAppOptions, ...restConfig } = config;
+        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, presentationAppOptions, backgroundImageLoadOptions, ...restConfig } = config;
         const whiteSdkConfig = mergeLocalLogOptions(restConfig);
         const enablePcmDataCallback = (config as any).enablePcmDataCallback || false;
 
@@ -435,9 +614,13 @@ class SDKBridge {
         }
         window.plugins = plugins;
 
-        const slideAppOptions = (config.slideAppOptions || {}) as NativeSlideAppOptions & {
-            enableScale?: boolean;
-        };
+        const slideAppOptions = (config.slideAppOptions || {}) as NativeSlideAppOptions &
+            NativeSlidePerformanceOptions &
+            Pick<AppSlideOptions, "enableScale" | "syncEventQueuePolicy">;
+        const slidePerformanceOptions = resolveSlidePerformanceOptions(
+            navigator.userAgent,
+            slideAppOptions,
+        );
         const slideKind = "Slide";
         WindowManager.register({
             kind: slideKind,
@@ -447,6 +630,10 @@ class SDKBridge {
                 },
                 urlInterrupter: slideUrlInterrupter,
                 ...slideAppOptions,
+                minFPS: slidePerformanceOptions.minFPS,
+                maxFPS: slidePerformanceOptions.maxFPS,
+                resolution: slidePerformanceOptions.resolution,
+                maxResolutionLevel: slidePerformanceOptions.maxResolutionLevel,
                 onResourceMaxRetries: (url: string, error: Error) => {
                     sdkCallbackHandler.onSlideResourceMaxRetries(url, error);
                 },
@@ -477,6 +664,7 @@ class SDKBridge {
         ]
 
         try {
+            validateBackgroundImageLoadOptions(backgroundImageLoadOptions);
             sdk = new WhiteWebSdk({
                 ...whiteSdkConfig,
                 invisiblePlugins: invisiblePlugins,
@@ -548,6 +736,9 @@ class SDKBridge {
                     if (nativeConfig?.enableAppliancePlugin) {
                         const applianceWorkerUrls = getApplianceWorkerUrls();
                         const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
+                        const appliancePluginExtras = mergeDefaultAppliancePluginExtras(
+                            (appliancePluginOptions as any)?.extras,
+                        );
                         roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
                         try {
                             const plugin = await ApplianceMultiPlugin.getInstance(manager,
@@ -558,7 +749,15 @@ class SDKBridge {
                                             subWorkerUrl: applianceWorkerUrls.subWorkerUrl,
                                         },
                                         ...appliancePluginOptions,
-                                    }
+                                        extras: {
+                                            ...appliancePluginExtras,
+                                            backgroundImageLoadOptions: nativeConfig?.backgroundImageLoadOptions,
+                                        },
+                                    },
+                                    callbacks: {
+                                        onBackgroundImageLoadEvent: postBackgroundImageLoadEvent,
+                                        onInitLoadingChange: postApplianceInitLoadingChange,
+                                    },
                                 }
                             );
                             window.appliancePlugin = plugin;

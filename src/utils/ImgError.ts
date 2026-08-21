@@ -43,6 +43,9 @@ function startImgSrcObserver(img: HTMLImageElement) {
             }
             const prevSrc = imgSrcMap.get(img) || "";
             const currentSrc = img.src;
+            if (img.dataset.netlessBackgroundImageManaged === "true") {
+                continue;
+            }
             if (currentSrc && currentSrc !== prevSrc) {
                 imgSrcMap.set(img, currentSrc);
                 const payload = {src: currentSrc, customMessage: true, name: "imageLoadStart"};
@@ -97,6 +100,9 @@ function stopImgRemovalObserver(img: HTMLImageElement) {
 
 function imageError(this: HTMLElement, error: ErrorEvent) {
     const img: HTMLImageElement = this as HTMLImageElement;
+    if (img.dataset.netlessBackgroundImageManaged === "true") {
+        return;
+    }
     const payload = {error, message: error.message, src: img.currentSrc, customMessage: true, name: "imageLoadError"};
     postCustomMessage({data: payload});
 
