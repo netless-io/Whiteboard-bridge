@@ -19,19 +19,20 @@
     "sync-foundation-worker": "yarn sync-foundation-worker:generate && yarn patch-foundation-worker",
     "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
-    "check": "tsc && yarn test:background-image-view-id",
+    "check": "tsc && yarn test:background-image-view-id && yarn test:slide-performance-defaults",
     "precy:server": "yarn sync-foundation-worker",
     "cy:server": "webpack-dev-server --mode development --host localhost --port 8760",
     "cy:run": "cypress run",
     "cy:test": "start-server-and-test cy:server http-get://localhost:8760 cy:run",
-    "test:background-image-view-id": "node scripts/test-background-image-view-id.js"
+    "test:background-image-view-id": "node scripts/test-background-image-view-id.js",
+    "test:slide-performance-defaults": "node scripts/test-slide-performance-defaults.js"
   },
   "resolutions": {
     "**/video.js": "7.10.0"
   },
   "dependencies": {
-    "@netless/app-slide": "^0.2.100-alpha.0",
-    "@netless/appliance-plugin": "1.1.42-beta.2",
+    "@netless/app-slide": "0.2.100",
+    "@netless/appliance-plugin": "1.1.42",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.1",
     "@netless/iframe-bridge": "2.1.9",
@@ -54,7 +55,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "whatwg-fetch": "^3.0.0",
-    "white-web-sdk": "2.16.57"
+    "white-web-sdk": "2.16.58"
   },
   "devDependencies": {
     "@babel/core": "^7.7.4",

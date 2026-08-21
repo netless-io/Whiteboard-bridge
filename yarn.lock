@@ -1109,15 +1109,15 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@^0.2.100-alpha.0":
-  version "0.2.100-alpha.0"
-  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.100-alpha.0.tgz#5c9592862bbcad94fa37125398c754e9d257ae4b"
-  integrity sha512-VpP2Ju2Lq3F9fdMvqbG5+oS+1CA4b44bMfCV50U4auQvqheDcYLFUuRQzyKMOCMF74Jg4ExZ375PwA6Q2MiC0w==
+"@netless/app-slide@0.2.100":
+  version "0.2.100"
+  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.100.tgz#bd1f3682b4c8412be2fa463153068d4074610ba3"
+  integrity sha512-Z9aKMvMBxhe1vZg5MpSveAf1OckvsZCj2sxkOQ42xki2txSZj7+g1rzp8ZHolaEshXwpsgjZ+iyzqYuf+2bgTA==
 
-"@netless/appliance-plugin@1.1.42-beta.2":
-  version "1.1.42-beta.2"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.42-beta.2.tgz#df3381d7f4c626505d2909b8a4f9f4a54c027f17"
-  integrity sha512-xM+FXew24zqUysdE2AaxikWygX5V5OUbXXPDvsPtN6RZ1mai5RwOOIvdbsSwJgxi5gcWU0wNTUAzlE8nPNBuAw==
+"@netless/appliance-plugin@1.1.42":
+  version "1.1.42"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.42.tgz#1223c6ee9e7b8f19096c3cf629a8384f7e920abe"
+  integrity sha512-F0RJfWempSDFAuxYleVkTIf6t/+3eKX0QUS84ixNYD5SC39VcbSZa1UU5sO0EK3Yyx/AdMjncJrR5GJsdbF9eg==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"
@@ -6821,10 +6821,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.57:
-  version "2.16.57"
-  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.57.tgz#a24e8e245db65cf8341363b9f246a47a0fc496b2"
-  integrity sha512-z3dtl63Vz33RE9CHayTXkIm7sJoj1cddJX5k54uGqM/r46eO+Dwiin1u9zuREItWAJFFiz1keZKkEIfEyaUrxA==
+white-web-sdk@2.16.58:
+  version "2.16.58"
+  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.58.tgz#68eb4aecafe1c0c119a26ccfc3d6d2ac437852d2"
+  integrity sha512-RzwajnBuJrxrJnOKyP6jPxy+9xtDX1CZgfh1YokftEjQh2kIvDBDhx/S/QDXEBhw9F9Z898oxKlIUKXVKQOHcw==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"

@@ -9,6 +9,7 @@ import {videoPlugin2} from "@netless/white-video-plugin2";
 import {audioPlugin2} from "@netless/white-audio-plugin2";
 import {videoJsPlugin} from "@netless/video-js-plugin";
 import SlideApp, { addHooks as addHooksSlide, usePlugin}  from "@netless/app-slide";
+import type { AppOptions as AppSlideOptions } from "@netless/app-slide";
 import { EffectPlugin, MixingPlugin } from '@netless/slide-rtc-plugin';
 import { MountParams, WindowManager } from "@netless/window-manager";
 import { SyncedStorePlugin } from "@netless/synced-store";
@@ -27,6 +28,11 @@ import {
     shouldQueryApplianceBackgroundImage,
     validateHasBackgroundImageParams,
 } from "./BackgroundImageViewId";
+import { mergeDefaultAppliancePluginExtras } from "./AppliancePluginDefaults";
+import type {
+    NativeSlidePerformanceOptions,
+} from "./SlidePerformanceDefaults";
+import { resolveSlidePerformanceOptions } from "./SlidePerformanceDefaults";
 import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
 import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { lastSchedule, ReplayerCallbackHandler, ReplayerCallbackHandlerImp } from "../native/ReplayerCallbackHandler";
@@ -608,9 +614,13 @@ class SDKBridge {
         }
         window.plugins = plugins;
 
-        const slideAppOptions = (config.slideAppOptions || {}) as NativeSlideAppOptions & {
-            enableScale?: boolean;
-        };
+        const slideAppOptions = (config.slideAppOptions || {}) as NativeSlideAppOptions &
+            NativeSlidePerformanceOptions &
+            Pick<AppSlideOptions, "enableScale" | "syncEventQueuePolicy">;
+        const slidePerformanceOptions = resolveSlidePerformanceOptions(
+            navigator.userAgent,
+            slideAppOptions,
+        );
         const slideKind = "Slide";
         WindowManager.register({
             kind: slideKind,
@@ -620,6 +630,10 @@ class SDKBridge {
                 },
                 urlInterrupter: slideUrlInterrupter,
                 ...slideAppOptions,
+                minFPS: slidePerformanceOptions.minFPS,
+                maxFPS: slidePerformanceOptions.maxFPS,
+                resolution: slidePerformanceOptions.resolution,
+                maxResolutionLevel: slidePerformanceOptions.maxResolutionLevel,
                 onResourceMaxRetries: (url: string, error: Error) => {
                     sdkCallbackHandler.onSlideResourceMaxRetries(url, error);
                 },
@@ -722,6 +736,9 @@ class SDKBridge {
                     if (nativeConfig?.enableAppliancePlugin) {
                         const applianceWorkerUrls = getApplianceWorkerUrls();
                         const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
+                        const appliancePluginExtras = mergeDefaultAppliancePluginExtras(
+                            (appliancePluginOptions as any)?.extras,
+                        );
                         roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
                         try {
                             const plugin = await ApplianceMultiPlugin.getInstance(manager,
@@ -733,7 +750,7 @@ class SDKBridge {
                                         },
                                         ...appliancePluginOptions,
                                         extras: {
-                                            ...(appliancePluginOptions as any)?.extras,
+                                            ...appliancePluginExtras,
                                             backgroundImageLoadOptions: nativeConfig?.backgroundImageLoadOptions,
                                         },
                                     },
