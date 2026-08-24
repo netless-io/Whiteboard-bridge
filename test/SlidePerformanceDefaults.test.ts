@@ -8,8 +8,8 @@ import {
 } from "../src/bridge/SlidePerformanceDefaults";
 
 const defaultOptions = {
-    minFPS: 25,
-    maxFPS: 40,
+    minFPS: 15,
+    maxFPS: 30,
     resolution: 1,
     maxResolutionLevel: 2,
 };
