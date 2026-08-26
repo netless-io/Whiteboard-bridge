@@ -2,6 +2,7 @@ import { WindowManager } from "@netless/window-manager";
 import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
 import { ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
 import { call } from ".";
+import { forwardUnifiedPageStateChange, UnifiedPageStateChange } from "./UnifiedPageControl";
 
 function isRoomCallbackHandler(handler: RoomCallbackHandler | ReplayerCallbackHandler): handler is RoomCallbackHandler {
     return (handler as RoomCallbackHandler).onRoomStateChanged !== undefined;
@@ -41,6 +42,10 @@ function addRoomListener(manager: WindowManager, logger: (funName: string, ...pa
 
     manager.emitter.on("pageStateChange", pageState => {
         handler.onRoomStateChanged({pageState});
+    });
+
+    (manager.emitter as any).on("unifiedPageStateChange", (state: UnifiedPageStateChange) => {
+        forwardUnifiedPageStateChange(call, state);
     });
     
     manager.emitter.on("canRedoStepsChange",canRedoSteps => {

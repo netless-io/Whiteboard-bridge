@@ -6,6 +6,13 @@ import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
 import { registerDisplayerBridge } from "./Displayer";
 import { call, register, registerAsyn } from ".";
+import {
+    dispatchPageEventOuter,
+    getPageStateOuter,
+    PageEvent,
+    PageEventOptions,
+    PageStateOptions,
+} from "./UnifiedPageControl";
 import { pptNamespace, RemovePageParams, roomNamespace, roomStateNamespace, roomSyncNamespace } from "@netless/whiteboard-bridge-types";
 
 export function registerBridgeRoom(aRoom: Room) {
@@ -661,6 +668,25 @@ export class RoomAsyncBridge {
         if (window.manager) {
             responseCallback(dispatchDocsEventOuter(window.manager, event, options || {}));
         };
+    }
+
+    dispatchPageEvent = (
+        event: PageEvent,
+        options: PageEventOptions = {},
+        responseCallback: any
+    ) => {
+        if (!window.manager) {
+            return responseCallback(false);
+        }
+        dispatchPageEventOuter(window.manager, event, options || {})
+            .then(value => responseCallback(value))
+            .catch(() => responseCallback(false));
+    }
+
+    getPageState = (options: PageStateOptions = {}, responseCallback: any) => {
+        getPageStateOuter(window.manager, options || {})
+            .then(value => responseCallback(JSON.stringify(value)))
+            .catch(error => responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } })));
     }
 
     querySlidePageState = (appId: string | undefined, responseCallback: any) => {

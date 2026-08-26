@@ -19,13 +19,14 @@
     "sync-foundation-worker": "yarn sync-foundation-worker:generate && yarn patch-foundation-worker",
     "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
     "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
-    "check": "tsc && yarn test:background-image-view-id && yarn test:slide-performance-defaults",
+    "check": "tsc && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control",
     "precy:server": "yarn sync-foundation-worker",
     "cy:server": "webpack-dev-server --mode development --host localhost --port 8760",
     "cy:run": "cypress run",
     "cy:test": "start-server-and-test cy:server http-get://localhost:8760 cy:run",
     "test:background-image-view-id": "node scripts/test-background-image-view-id.js",
-    "test:slide-performance-defaults": "node scripts/test-slide-performance-defaults.js"
+    "test:slide-performance-defaults": "node scripts/test-slide-performance-defaults.js",
+    "test:unified-page-control": "node scripts/test-unified-page-control.js"
   },
   "resolutions": {
     "**/video.js": "7.10.0"
