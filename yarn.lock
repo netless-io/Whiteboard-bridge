@@ -1109,10 +1109,10 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.100":
-  version "0.2.100"
-  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.100.tgz#bd1f3682b4c8412be2fa463153068d4074610ba3"
-  integrity sha512-Z9aKMvMBxhe1vZg5MpSveAf1OckvsZCj2sxkOQ42xki2txSZj7+g1rzp8ZHolaEshXwpsgjZ+iyzqYuf+2bgTA==
+"@netless/app-slide@0.2.102":
+  version "0.2.102"
+  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.102.tgz#c0f1c76fce4eaac8e7a6ab7f594a19f651eead50"
+  integrity sha512-8yPXHysjt0CsmOlha6ltHWhquWALdoLDw8lzlwaVz63eM05kR76GPm5ALwAPCEVtycTv/Apebn2F49k+O0sBSQ==
 
 "@netless/appliance-plugin@1.1.42":
   version "1.1.42"
