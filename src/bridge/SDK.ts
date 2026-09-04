@@ -139,9 +139,26 @@ type ReloadBackgroundImageResult = {
     reason?: "viewNotFound" | "sceneNotFocused" | "resourceNotFound" | "alreadyLoading";
 };
 
-type NativeWindowParams = Omit<MountParams, "room" | "container"> & {
+type NativeOriginSize = {
+    width: number;
+    height: number;
+};
+
+type NativePageScaleRange = {
+    minScale?: number;
+    maxScale?: number;
+};
+
+type NativeWindowParams = Omit<
+    MountParams,
+    "room" | "container" | "originSize" | "pageScaleRange"
+> & {
     /** Use per-window boxesStatus state management. Applies to joinRoom and replayRoom. */
     useBoxesStatus?: boolean;
+    /** MainView reference size. Slide/Presentation receive originSize through addApp attributes. */
+    originSize?: NativeOriginSize;
+    /** Optional relative scale bounds. Omitted bounds mean no business limit. */
+    pageScaleRange?: NativePageScaleRange;
     builtinAppOptions?: NativeBuiltinAppOptions;
 };
 

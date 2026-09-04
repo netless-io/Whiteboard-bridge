@@ -1,7 +1,7 @@
 import assert from "assert";
 
 import {
-    dispatchPageEventOuter,
+    dispatchDocsEventOuter,
     forwardUnifiedPageStateChange,
     getPageStateOuter,
     UnifiedPageStateChange,
@@ -10,9 +10,9 @@ import {
 async function main() {
     const calls: unknown[][] = [];
     const manager = {
-        dispatchPageEvent(event: string, options: object) {
+        dispatchDocsEvent(event: string, options: object) {
             calls.push([this, event, options]);
-            return Promise.resolve(true);
+            return Promise.resolve({ accepted: true as const });
         },
         getPageState(options: object) {
             calls.push([this, options]);
@@ -20,20 +20,47 @@ async function main() {
         },
     };
 
-    assert.equal(
-        await dispatchPageEventOuter(manager, "jumpToPage", { target: "mainView", page: 2 }),
-        true
+    assert.deepEqual(
+        await dispatchDocsEventOuter(manager, "jumpToPage", { target: "mainView", page: 2 }),
+        { accepted: true }
     );
     assert.deepEqual(calls[0], [manager, "jumpToPage", { target: "mainView", page: 2 }]);
+    assert.deepEqual(
+        await dispatchDocsEventOuter(manager, "scalePage", {
+            target: "mainView",
+            scale: 1.5,
+        }),
+        { accepted: true }
+    );
+    assert.deepEqual(calls[1], [manager, "scalePage", { target: "mainView", scale: 1.5 }]);
     assert.deepEqual(await getPageStateOuter(manager, { target: "mainView" }), {
         target: "mainView",
         page: 2,
         pageCount: 3,
     });
-    assert.deepEqual(calls[1], [manager, { target: "mainView" }]);
+    assert.deepEqual(calls[2], [manager, { target: "mainView" }]);
 
-    assert.equal(await dispatchPageEventOuter(undefined, "nextPage"), false);
-    assert.equal(await dispatchPageEventOuter({}, "nextPage"), false);
+    assert.deepEqual(await dispatchDocsEventOuter(undefined, "nextPage"), {
+        accepted: false,
+        reason: "targetNotSupported",
+        message: "window manager does not support dispatchDocsEvent",
+    });
+    assert.deepEqual(await dispatchDocsEventOuter({}, "nextPage"), {
+        accepted: false,
+        reason: "targetNotSupported",
+        message: "window manager does not support dispatchDocsEvent",
+    });
+
+    const unsupportedScale = {
+        accepted: false as const,
+        reason: "eventNotSupported" as const,
+        message: "DocsViewer does not support scalePage",
+    };
+    manager.dispatchDocsEvent = () => Promise.resolve(unsupportedScale);
+    assert.deepEqual(
+        await dispatchDocsEventOuter(manager, "scalePage", { target: "DocsViewer-1", scale: 2 }),
+        unsupportedScale
+    );
     await assert.rejects(getPageStateOuter(undefined), /window manager not existed/);
     await assert.rejects(getPageStateOuter({}), /does not support getPageState/);
 
@@ -49,6 +76,16 @@ async function main() {
     };
     forwardUnifiedPageStateChange((...args) => notifications.push(args), state);
     assert.deepEqual(notifications, [["sdk.unifiedPageStateChange", state]]);
+
+    const docsViewerState: UnifiedPageStateChange = {
+        target: "DocsViewer",
+        appId: "docs-1",
+        page: 1,
+        pageCount: 2,
+        status: "success",
+    };
+    forwardUnifiedPageStateChange((...args) => notifications.push(args), docsViewerState);
+    assert.deepEqual(notifications[1], ["sdk.unifiedPageStateChange", docsViewerState]);
 
     console.log("unified page control bridge tests passed");
 }

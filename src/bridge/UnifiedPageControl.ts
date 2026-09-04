@@ -1,39 +1,75 @@
-export type PageEvent = "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage";
+export type DocsEvent =
+    | "prevPage"
+    | "nextPage"
+    | "prevStep"
+    | "nextStep"
+    | "jumpToPage"
+    | "scalePage";
 
-export type PageEventOptions = { target?: string; page?: number };
+export type DocsEventOptions = { target?: string; appId?: string; page?: number; scale?: number };
 export type PageStateOptions = { target?: string };
 
+export type DispatchDocsEventFailureReason =
+    | "invalidEvent"
+    | "invalidOptions"
+    | "targetNotFound"
+    | "targetNotSupported"
+    | "eventNotSupported"
+    | "notWritable"
+    | "stateUnavailable"
+    | "outOfRange"
+    | "commandFailed";
+
+export type DispatchDocsEventResult =
+    | { accepted: true }
+    | {
+          accepted: false;
+          reason: DispatchDocsEventFailureReason;
+          message: string;
+      };
+
 export type UnifiedPageState = {
-    target: "mainView" | "Slide" | "Presentation";
+    target: "mainView" | "DocsViewer" | "Slide" | "Presentation";
     appId?: string;
     page: number;
     pageCount: number;
+    scale?: number;
 };
 
 export type UnifiedPageStateChange = UnifiedPageState & {
     status: "pending" | "success" | "failure";
+    changeType?: "page" | "scale";
     mainView?: number;
     presentation?: number;
     view?: number;
     slide?: number;
-    event?: PageEvent;
+    event?: DocsEvent;
     reason?: "commandFailed";
     message?: string;
 };
 
 export type UnifiedPageStateManager = {
-    dispatchPageEvent?: (event: PageEvent, options?: PageEventOptions) => Promise<boolean>;
+    dispatchDocsEvent?: (
+        event: DocsEvent,
+        options?: DocsEventOptions
+    ) => Promise<DispatchDocsEventResult>;
     getPageState?: (options?: PageStateOptions) => Promise<UnifiedPageState>;
 };
 
-export function dispatchPageEventOuter(
+export function dispatchDocsEventOuter(
     manager: unknown,
-    event: PageEvent,
-    options: PageEventOptions = {}
-): Promise<boolean> {
+    event: DocsEvent,
+    options: DocsEventOptions = {}
+): Promise<DispatchDocsEventResult> {
     const target = manager as UnifiedPageStateManager | undefined;
-    if (!target?.dispatchPageEvent) return Promise.resolve(false);
-    return target.dispatchPageEvent.call(manager, event, options);
+    if (!target?.dispatchDocsEvent) {
+        return Promise.resolve({
+            accepted: false,
+            reason: "targetNotSupported",
+            message: "window manager does not support dispatchDocsEvent",
+        });
+    }
+    return target.dispatchDocsEvent.call(manager, event, options);
 }
 
 export function getPageStateOuter(

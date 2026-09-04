@@ -7,10 +7,10 @@ import { logger } from "../utils/Logger";
 import { registerDisplayerBridge } from "./Displayer";
 import { call, register, registerAsyn } from ".";
 import {
-    dispatchPageEventOuter,
+    dispatchDocsEventOuter,
     getPageStateOuter,
-    PageEvent,
-    PageEventOptions,
+    DocsEvent,
+    DocsEventOptions,
     PageStateOptions,
 } from "./UnifiedPageControl";
 import { pptNamespace, RemovePageParams, roomNamespace, roomStateNamespace, roomSyncNamespace } from "@netless/whiteboard-bridge-types";
@@ -43,21 +43,6 @@ type VideoPluginInfo = {
 type EventEntry = {
     eventName: string;
     payload: any;
-};
-
-type DocsEventOptions = {
-    /** If provided, will dispatch to the specific app. Default to the focused app. */
-    appId?: string;
-    /** Used by `jumpToPage` event, range from 1 to total pages count. */
-    page?: number;
-    /** Used by `scalePage` event. Range from 1 to 4, decimals allowed. `1` means default fitted size. */
-    scale?: number;
-}
-
-type DocsEvent = "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage" | "scalePage";
-
-type DocsEventManager = WindowManager & {
-    dispatchDocsEvent?: (event: DocsEvent, options?: DocsEventOptions) => boolean;
 };
 
 type SlidePageState = {
@@ -142,20 +127,6 @@ function updateIframePluginState(room: Room) {
     room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).computedZindex();
     // tslint:disable-next-line:no-unused-expression
     room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
-}
-
-// 避免命名冲突，添加 Outer 后缀
-function dispatchDocsEventOuter(
-    manager: WindowManager,
-    event: DocsEvent,
-    options: DocsEventOptions = {}
-): boolean {
-    const dispatchDocsEvent = (manager as DocsEventManager).dispatchDocsEvent;
-    if (!dispatchDocsEvent) {
-        console.warn("window manager does not support dispatchDocsEvent");
-        return false;
-    }
-    return dispatchDocsEvent.call(manager, event, options);
 }
 
 function querySlidePageState(manager: WindowManager, appId?: unknown): SlidePageState | undefined {
@@ -665,22 +636,20 @@ export class RoomAsyncBridge {
         options: DocsEventOptions = {},
         responseCallback: any
     ) => {
-        if (window.manager) {
-            responseCallback(dispatchDocsEventOuter(window.manager, event, options || {}));
-        };
-    }
-
-    dispatchPageEvent = (
-        event: PageEvent,
-        options: PageEventOptions = {},
-        responseCallback: any
-    ) => {
         if (!window.manager) {
-            return responseCallback(false);
+            return responseCallback(JSON.stringify({
+                accepted: false,
+                reason: "stateUnavailable",
+                message: "window manager not existed",
+            }));
         }
-        dispatchPageEventOuter(window.manager, event, options || {})
-            .then(value => responseCallback(value))
-            .catch(() => responseCallback(false));
+        dispatchDocsEventOuter(window.manager, event, options || {})
+            .then(value => responseCallback(JSON.stringify(value)))
+            .catch(error => responseCallback(JSON.stringify({
+                accepted: false,
+                reason: "commandFailed",
+                message: error instanceof Error ? error.message : String(error),
+            })));
     }
 
     getPageState = (options: PageStateOptions = {}, responseCallback: any) => {
