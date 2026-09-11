@@ -8,6 +8,7 @@ import { registerDisplayerBridge } from "./Displayer";
 import { call, register, registerAsyn } from ".";
 import {
     dispatchDocsEventOuter,
+    fitOriginSizeAndCameraOuter,
     getPageStateOuter,
     DocsEvent,
     DocsEventOptions,
@@ -78,11 +79,26 @@ function makeSlideParams(scenes: SceneDefinition[]): {
     return { scenesWithoutPPT, taskId, url };
 }
 
-function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]): Promise<string | undefined> {
+function addWindowApp(
+    params: Parameters<WindowManager["addApp"]>[0],
+    waitForSetup: boolean
+): Promise<string | undefined> {
+    if (waitForSetup) {
+        return window.manager!.addAppAndWaitForSetup(params);
+    }
+    return window.manager!.addApp(params);
+}
+
+function addSlideApp(
+    scenePath: string,
+    title: string,
+    scenes: SceneDefinition[],
+    waitForSetup = false
+): Promise<string | undefined> {
     const { scenesWithoutPPT, taskId, url } = makeSlideParams(scenes);
     try {
         if (taskId && url) {
-            return window.manager!.addApp({
+            return addWindowApp({
                 // TODO: extract to a constant
                 kind: "Slide",
                 options: {
@@ -94,21 +110,21 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
                     taskId,
                     url,
                 } as SlideAttributes,
-            }).then((id)=> {
+            }, waitForSetup).then((id)=> {
                 if (window.fullScreen || false) {
                     window.manager!.setMaximized(true);
                 }
                 return id;
             })
         } else {
-            return window.manager!.addApp({
+            return addWindowApp({
                 kind: BuiltinApps.DocsViewer,
                 options: {
                     scenePath,
                     title,
                     scenes,
                 },
-            }).then((id)=> {
+            }, waitForSetup).then((id)=> {
                 if (window.fullScreen || false) {
                     window.manager!.setMaximized(true);
                 }
@@ -589,6 +605,43 @@ export class RoomAsyncBridge {
                 window.manager.setMaximized(true);
             }
         }
+    }
+
+    addAppAndWaitForSetup = (kind: string, options: any, attributes: any, responseCallback: any) => {
+        if (!window.manager) {
+            responseCallback(JSON.stringify({__error: {message: "window manager not existed"}}));
+            return;
+        }
+        let result: Promise<string | undefined>;
+        if (kind === "Slide") {
+            const { taskId, url } = attributes || {};
+            if (taskId && url) {
+                result = addWindowApp({
+                    kind,
+                    options: options as AddAppOptions,
+                    attributes: attributes as SlideAttributes,
+                }, true);
+            } else {
+                const opts = options as AddAppOptions;
+                result = addSlideApp(opts.scenePath!, opts.title!, opts.scenes!, true);
+            }
+        } else {
+            result = addWindowApp({kind, options, attributes}, true);
+        }
+        result.then(appId => {
+            if (!appId) throw new Error("app was not created");
+            if (window.fullScreen || false) window.manager!.setMaximized(true);
+            responseCallback(appId);
+        }).catch(error => {
+            responseCallback(JSON.stringify({__error: {
+                message: error instanceof Error ? error.message : String(error),
+                jsStack: error instanceof Error ? error.stack : undefined,
+            }}));
+        });
+    }
+
+    fitOriginSizeAndCamera = () => {
+        fitOriginSizeAndCameraOuter(window.manager);
     }
 
     closeApp = (appId: string, responseCallback: any) => {

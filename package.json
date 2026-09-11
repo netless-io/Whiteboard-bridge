@@ -32,7 +32,7 @@
     "**/video.js": "7.10.0"
   },
   "dependencies": {
-    "@netless/app-slide": "0.2.103",
+    "@netless/app-slide": "0.2.104",
     "@netless/appliance-plugin": "1.1.42",
     "@netless/combine-player": "^1.1.1",
     "@netless/cursor-tool": "^0.1.1",
@@ -46,7 +46,7 @@
     "@netless/white-prepare": "^1.0.2",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
-    "@netless/window-manager": "1.0.19",
+    "@netless/window-manager": "1.0.21",
     "agora-foundation": "3.11.1-rc.1 || 3.11.1",
     "buffer": "^6.0.3",
     "core-js": "^3.33.3",

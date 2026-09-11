@@ -54,6 +54,7 @@ export type UnifiedPageStateManager = {
         options?: DocsEventOptions
     ) => Promise<DispatchDocsEventResult>;
     getPageState?: (options?: PageStateOptions) => Promise<UnifiedPageState>;
+    fitOriginSizeAndCamera?: () => void;
 };
 
 export function dispatchDocsEventOuter(
@@ -82,6 +83,15 @@ export function getPageStateOuter(
         return Promise.reject(new Error("window manager does not support getPageState"));
     }
     return target.getPageState.call(manager, options);
+}
+
+export function fitOriginSizeAndCameraOuter(manager: unknown): void {
+    if (!manager) throw new Error("window manager not existed");
+    const target = manager as UnifiedPageStateManager;
+    if (!target.fitOriginSizeAndCamera) {
+        throw new Error("window manager does not support fitOriginSizeAndCamera");
+    }
+    target.fitOriginSizeAndCamera.call(manager);
 }
 
 export function forwardUnifiedPageStateChange(
