@@ -80,21 +80,16 @@ function makeSlideParams(scenes: SceneDefinition[]): {
 }
 
 function addWindowApp(
-    params: Parameters<WindowManager["addApp"]>[0],
-    waitForSetup: boolean
-): Promise<string | undefined> {
-    if (waitForSetup) {
-        return window.manager!.addAppAndWaitForSetup(params);
-    }
-    return window.manager!.addApp(params);
+    params: Parameters<WindowManager["addApp"]>[0]
+): Promise<string> {
+    return window.manager!.addAppAndWaitForSetup(params);
 }
 
 function addSlideApp(
     scenePath: string,
     title: string,
-    scenes: SceneDefinition[],
-    waitForSetup = false
-): Promise<string | undefined> {
+    scenes: SceneDefinition[]
+): Promise<string> {
     const { scenesWithoutPPT, taskId, url } = makeSlideParams(scenes);
     try {
         if (taskId && url) {
@@ -110,12 +105,7 @@ function addSlideApp(
                     taskId,
                     url,
                 } as SlideAttributes,
-            }, waitForSetup).then((id)=> {
-                if (window.fullScreen || false) {
-                    window.manager!.setMaximized(true);
-                }
-                return id;
-            })
+            });
         } else {
             return addWindowApp({
                 kind: BuiltinApps.DocsViewer,
@@ -124,17 +114,49 @@ function addSlideApp(
                     title,
                     scenes,
                 },
-            }, waitForSetup).then((id)=> {
-                if (window.fullScreen || false) {
-                    window.manager!.setMaximized(true);
-                }
-                return id;
             });
         }
     } catch (err) {
         logger("addSlideApp error", err);
-        return Promise.reject()
+        return Promise.reject(err);
     }
+}
+
+function addAppAndRespond(
+    kind: string,
+    options: any,
+    attributes: any,
+    responseCallback: (result: string) => void
+): void {
+    if (!window.manager) {
+        responseCallback(JSON.stringify({__error: {message: "window manager not existed"}}));
+        return;
+    }
+    let result: Promise<string>;
+    if (kind === "Slide") {
+        const { taskId, url } = attributes || {};
+        if (taskId && url) {
+            result = addWindowApp({
+                kind,
+                options: options as AddAppOptions,
+                attributes: attributes as SlideAttributes,
+            });
+        } else {
+            const opts = options as AddAppOptions;
+            result = addSlideApp(opts.scenePath!, opts.title!, opts.scenes!);
+        }
+    } else {
+        result = addWindowApp({kind, options, attributes});
+    }
+    result.then(appId => {
+        if (window.fullScreen || false) window.manager!.setMaximized(true);
+        responseCallback(appId);
+    }).catch(error => {
+        responseCallback(JSON.stringify({__error: {
+            message: error instanceof Error ? error.message : String(error),
+            jsStack: error instanceof Error ? error.stack : undefined,
+        }}));
+    });
 }
 
 function updateIframePluginState(room: Room) {
@@ -572,72 +594,11 @@ export class RoomAsyncBridge {
     }
 
     addApp = (kind: string, options: any, attributes: any, responseCallback: any) => {
-        if (window.manager) {
-            if (kind === "Slide") {
-                // 检查是否使用由 projector 转换服务
-                const { taskId, url } = attributes || {}
-                if (taskId && url) {
-                    window.manager.addApp({
-                        kind: kind,
-                        options: options as AddAppOptions,
-                        attributes: attributes as SlideAttributes
-                    }).then(appId => {
-                        responseCallback(appId)
-                    });
-                } else {
-                    // 兼容Canvas版本转换服务
-                    const opts = options as AddAppOptions
-                    addSlideApp(opts.scenePath!, opts.title!, opts.scenes!)
-                        .then(appId => {
-                            responseCallback(appId)
-                        })
-                }
-            } else {
-                window.manager.addApp({
-                    kind: kind,
-                    options: options,
-                    attributes: attributes
-                }).then(appId => {
-                    responseCallback(appId)
-                });
-            }
-            if (window.fullScreen || false) {
-                window.manager.setMaximized(true);
-            }
-        }
+        addAppAndRespond(kind, options, attributes, responseCallback);
     }
 
     addAppAndWaitForSetup = (kind: string, options: any, attributes: any, responseCallback: any) => {
-        if (!window.manager) {
-            responseCallback(JSON.stringify({__error: {message: "window manager not existed"}}));
-            return;
-        }
-        let result: Promise<string | undefined>;
-        if (kind === "Slide") {
-            const { taskId, url } = attributes || {};
-            if (taskId && url) {
-                result = addWindowApp({
-                    kind,
-                    options: options as AddAppOptions,
-                    attributes: attributes as SlideAttributes,
-                }, true);
-            } else {
-                const opts = options as AddAppOptions;
-                result = addSlideApp(opts.scenePath!, opts.title!, opts.scenes!, true);
-            }
-        } else {
-            result = addWindowApp({kind, options, attributes}, true);
-        }
-        result.then(appId => {
-            if (!appId) throw new Error("app was not created");
-            if (window.fullScreen || false) window.manager!.setMaximized(true);
-            responseCallback(appId);
-        }).catch(error => {
-            responseCallback(JSON.stringify({__error: {
-                message: error instanceof Error ? error.message : String(error),
-                jsStack: error instanceof Error ? error.stack : undefined,
-            }}));
-        });
+        addAppAndRespond(kind, options, attributes, responseCallback);
     }
 
     fitOriginSizeAndCamera = () => {
