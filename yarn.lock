@@ -1114,10 +1114,10 @@
   resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.104.tgz#fbcddf84b6aeddee37d0f7238f5ed15b85fc2601"
   integrity sha512-hf+13ZYw4BEq/MExLJHshm+YTJ4xvr/USxnmj1iXSbHoF90cU5AOIhEkK0G2R2yNfaUWEpoINVpJ4RMZSpOqHg==
 
-"@netless/appliance-plugin@1.1.42":
-  version "1.1.42"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.42.tgz#1223c6ee9e7b8f19096c3cf629a8384f7e920abe"
-  integrity sha512-F0RJfWempSDFAuxYleVkTIf6t/+3eKX0QUS84ixNYD5SC39VcbSZa1UU5sO0EK3Yyx/AdMjncJrR5GJsdbF9eg==
+"@netless/appliance-plugin@1.1.43-beta.0":
+  version "1.1.43-beta.0"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.43-beta.0.tgz#33850aad44d13554d105ae57ae2ad03edd90a200"
+  integrity sha512-4C5Rekrqrc4Sfw06mqPJdPDjHThuq6XwMg3c3c2q+SVCCG60lgK/Rggc3gUw+u8GIQvFNt0ABhsIIQs+GikFcg==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"
@@ -1130,6 +1130,7 @@
     react "^16.8.0"
     react-dom "^16.8.0"
     react-draggable "4.5.0"
+    spark-md5 "3.0.2"
     xss "^1.0.15"
 
 "@netless/canvas-polyfill@^0.0.4":
@@ -6083,6 +6084,11 @@ source-map@~0.7.2:
   version "0.7.3"
   resolved "https://registry.npmjs.org/source-map/-/source-map-0.7.3.tgz"
   integrity sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==
+
+spark-md5@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/spark-md5/-/spark-md5-3.0.2.tgz#7952c4a30784347abcee73268e473b9c0167e3fc"
+  integrity sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==
 
 spark-md5@^3.0.0:
   version "3.0.1"
