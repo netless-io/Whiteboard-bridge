@@ -46,7 +46,7 @@
     "@netless/white-prepare": "^1.0.2",
     "@netless/white-video-plugin": "^1.2.4",
     "@netless/white-video-plugin2": "^2.0.4",
-    "@netless/window-manager": "1.0.21",
+    "@netless/window-manager": "1.0.22-beta.0",
     "agora-foundation": "3.11.1-rc.1 || 3.11.1",
     "buffer": "^6.0.3",
     "core-js": "^3.33.3",
