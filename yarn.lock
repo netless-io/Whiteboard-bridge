@@ -1114,10 +1114,10 @@
   resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.104.tgz#fbcddf84b6aeddee37d0f7238f5ed15b85fc2601"
   integrity sha512-hf+13ZYw4BEq/MExLJHshm+YTJ4xvr/USxnmj1iXSbHoF90cU5AOIhEkK0G2R2yNfaUWEpoINVpJ4RMZSpOqHg==
 
-"@netless/appliance-plugin@1.1.43-beta.3":
-  version "1.1.43-beta.3"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.43-beta.3.tgz#58904fce99dc09cb86db06ea28270cdfa12c49df"
-  integrity sha512-ejBrhDX8B4pvueeBOsd3ZMJR4O7DRU4jo4VhGy8tctWBOhpRQtY/ID+nT+4tetLy/BY2zYr/LxoD/fzwJ2qEsw==
+"@netless/appliance-plugin@1.1.43-beta.4":
+  version "1.1.43-beta.4"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.43-beta.4.tgz#44e742d05bf25e1fcf0cb854dffe05f3d79cb852"
+  integrity sha512-C9oGRcQ6PYskfwP0X7KFYY6xIa7L1ly3KerNspZkqo7oMK/RSXi1eEheCUu3T6P3fsCe5F0bp1PUz6z6JBtrQQ==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"
