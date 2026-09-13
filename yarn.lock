@@ -1222,10 +1222,10 @@
   resolved "https://registry.npmjs.org/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.13.tgz"
   integrity sha512-ZfJt/fD824oqLFW6Jl09cpWB9t30G+lwSUzLiWI1PpakhdlxX3lC9XMH8FtWGghYbzzXFEDh6Ay2N02F87II7g==
 
-"@netless/window-manager@1.0.22-beta.2":
-  version "1.0.22-beta.2"
-  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.22-beta.2.tgz#500d82850b29f665c06c77d7d5da47369f55f269"
-  integrity sha512-x/vAUEgsetJsD45XbSA7R5cx5mNq+y8dBw9BPMIm14T4u9r20GhcDaAmthg9s1RiZ72vxFc36EU+7jNDsLcRVQ==
+"@netless/window-manager@1.0.22":
+  version "1.0.22"
+  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.22.tgz#a1e9208b06a51a09b2626ea246a2dbec7adb21ca"
+  integrity sha512-KRRRmNzCUvw/S8CbKetHeOhHy77J30NkTKvne7GcUjjkem2obi3/ilknp4NP07CM5nnOF4uV6erXiL4266/SxA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.3.0"
