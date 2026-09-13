@@ -64,13 +64,11 @@ assert.deepEqual(resolveSlidePerformanceOptions(iosUserAgent("12_5_8"), {
 });
 
 assert.deepEqual(mergeDefaultAppliancePluginExtras(), {
-    workerRenderModeBlacklist: {
-        androidWebView: { "80": WorkerRenderModeBlacklistLevel.ImageBitmap },
-        iosWebView: { "12": WorkerRenderModeBlacklistLevel.ImageBitmap },
-    },
+    allowImageBitmapFallback: false,
 });
 assert.deepEqual(mergeDefaultAppliancePluginExtras({
     useSimple: false,
+    allowImageBitmapFallback: false,
     workerRenderModeBlacklist: {
         androidWebView: {
             "90": WorkerRenderModeBlacklistLevel.ImageBitmap,
@@ -79,13 +77,18 @@ assert.deepEqual(mergeDefaultAppliancePluginExtras({
     },
 }), {
     useSimple: false,
+    allowImageBitmapFallback: false,
     workerRenderModeBlacklist: {
         androidWebView: {
             "90": WorkerRenderModeBlacklistLevel.ImageBitmap,
         },
-        iosWebView: { "12": WorkerRenderModeBlacklistLevel.ImageBitmap },
         harmonyArkWeb: { "99": WorkerRenderModeBlacklistLevel.OffscreenTransfer },
     },
 });
+assert.equal(
+    mergeDefaultAppliancePluginExtras({ allowImageBitmapFallback: true })
+        .allowImageBitmapFallback,
+    true,
+);
 
 console.log("slide performance defaults tests passed");
