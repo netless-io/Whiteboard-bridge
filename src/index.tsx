@@ -1,4 +1,8 @@
 import "core-js/stable";
+// The appliance lifecycle calls Promise.allSettled during force-Done. Keep
+// this feature import explicit because the legacy Babel/core-js compatibility
+// data used by this bridge can omit this stable API from the broad entry.
+import "core-js/features/promise/all-settled";
 import "regenerator-runtime/runtime";
 import "./Polyfill";
 import "./Global";
