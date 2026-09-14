@@ -6,6 +6,14 @@ import { addBridgeLogHook, createPageState } from "../utils/Funs";
 import { logger } from "../utils/Logger";
 import { registerDisplayerBridge } from "./Displayer";
 import { call, register, registerAsyn } from ".";
+import {
+    dispatchDocsEventOuter,
+    fitOriginSizeAndCameraOuter,
+    getPageStateOuter,
+    DocsEvent,
+    DocsEventOptions,
+    PageStateOptions,
+} from "./UnifiedPageControl";
 import { pptNamespace, RemovePageParams, roomNamespace, roomStateNamespace, roomSyncNamespace } from "@netless/whiteboard-bridge-types";
 
 export function registerBridgeRoom(aRoom: Room) {
@@ -36,21 +44,6 @@ type VideoPluginInfo = {
 type EventEntry = {
     eventName: string;
     payload: any;
-};
-
-type DocsEventOptions = {
-    /** If provided, will dispatch to the specific app. Default to the focused app. */
-    appId?: string;
-    /** Used by `jumpToPage` event, range from 1 to total pages count. */
-    page?: number;
-    /** Used by `scalePage` event. Range from 1 to 4, decimals allowed. `1` means default fitted size. */
-    scale?: number;
-}
-
-type DocsEvent = "prevPage" | "nextPage" | "prevStep" | "nextStep" | "jumpToPage" | "scalePage";
-
-type DocsEventManager = WindowManager & {
-    dispatchDocsEvent?: (event: DocsEvent, options?: DocsEventOptions) => boolean;
 };
 
 type SlidePageState = {
@@ -86,11 +79,21 @@ function makeSlideParams(scenes: SceneDefinition[]): {
     return { scenesWithoutPPT, taskId, url };
 }
 
-function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]): Promise<string | undefined> {
+function addWindowApp(
+    params: Parameters<WindowManager["addApp"]>[0]
+): Promise<string> {
+    return window.manager!.addAppAndWaitForSetup(params);
+}
+
+function addSlideApp(
+    scenePath: string,
+    title: string,
+    scenes: SceneDefinition[]
+): Promise<string> {
     const { scenesWithoutPPT, taskId, url } = makeSlideParams(scenes);
     try {
         if (taskId && url) {
-            return window.manager!.addApp({
+            return addWindowApp({
                 // TODO: extract to a constant
                 kind: "Slide",
                 options: {
@@ -102,31 +105,58 @@ function addSlideApp(scenePath: string, title: string, scenes: SceneDefinition[]
                     taskId,
                     url,
                 } as SlideAttributes,
-            }).then((id)=> {
-                if (window.fullScreen || false) {
-                    window.manager!.setMaximized(true);
-                }
-                return id;
-            })
+            });
         } else {
-            return window.manager!.addApp({
+            return addWindowApp({
                 kind: BuiltinApps.DocsViewer,
                 options: {
                     scenePath,
                     title,
                     scenes,
                 },
-            }).then((id)=> {
-                if (window.fullScreen || false) {
-                    window.manager!.setMaximized(true);
-                }
-                return id;
             });
         }
     } catch (err) {
         logger("addSlideApp error", err);
-        return Promise.reject()
+        return Promise.reject(err);
     }
+}
+
+function addAppAndRespond(
+    kind: string,
+    options: any,
+    attributes: any,
+    responseCallback: (result: string) => void
+): void {
+    if (!window.manager) {
+        responseCallback(JSON.stringify({__error: {message: "window manager not existed"}}));
+        return;
+    }
+    let result: Promise<string>;
+    if (kind === "Slide") {
+        const { taskId, url } = attributes || {};
+        if (taskId && url) {
+            result = addWindowApp({
+                kind,
+                options: options as AddAppOptions,
+                attributes: attributes as SlideAttributes,
+            });
+        } else {
+            const opts = options as AddAppOptions;
+            result = addSlideApp(opts.scenePath!, opts.title!, opts.scenes!);
+        }
+    } else {
+        result = addWindowApp({kind, options, attributes});
+    }
+    result.then(appId => {
+        if (window.fullScreen || false) window.manager!.setMaximized(true);
+        responseCallback(appId);
+    }).catch(error => {
+        responseCallback(JSON.stringify({__error: {
+            message: error instanceof Error ? error.message : String(error),
+            jsStack: error instanceof Error ? error.stack : undefined,
+        }}));
+    });
 }
 
 function updateIframePluginState(room: Room) {
@@ -135,20 +165,6 @@ function updateIframePluginState(room: Room) {
     room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).computedZindex();
     // tslint:disable-next-line:no-unused-expression
     room.getInvisiblePlugin("IframeBridge") && (room.getInvisiblePlugin("IframeBridge")! as any).updateStyle();
-}
-
-// 避免命名冲突，添加 Outer 后缀
-function dispatchDocsEventOuter(
-    manager: WindowManager,
-    event: DocsEvent,
-    options: DocsEventOptions = {}
-): boolean {
-    const dispatchDocsEvent = (manager as DocsEventManager).dispatchDocsEvent;
-    if (!dispatchDocsEvent) {
-        console.warn("window manager does not support dispatchDocsEvent");
-        return false;
-    }
-    return dispatchDocsEvent.call(manager, event, options);
 }
 
 function querySlidePageState(manager: WindowManager, appId?: unknown): SlidePageState | undefined {
@@ -578,39 +594,15 @@ export class RoomAsyncBridge {
     }
 
     addApp = (kind: string, options: any, attributes: any, responseCallback: any) => {
-        if (window.manager) {
-            if (kind === "Slide") {
-                // 检查是否使用由 projector 转换服务
-                const { taskId, url } = attributes || {}
-                if (taskId && url) {
-                    window.manager.addApp({
-                        kind: kind,
-                        options: options as AddAppOptions,
-                        attributes: attributes as SlideAttributes
-                    }).then(appId => {
-                        responseCallback(appId)
-                    });
-                } else {
-                    // 兼容Canvas版本转换服务
-                    const opts = options as AddAppOptions
-                    addSlideApp(opts.scenePath!, opts.title!, opts.scenes!)
-                        .then(appId => {
-                            responseCallback(appId)
-                        })
-                }
-            } else {
-                window.manager.addApp({
-                    kind: kind,
-                    options: options,
-                    attributes: attributes
-                }).then(appId => {
-                    responseCallback(appId)
-                });
-            }
-            if (window.fullScreen || false) {
-                window.manager.setMaximized(true);
-            }
-        }
+        addAppAndRespond(kind, options, attributes, responseCallback);
+    }
+
+    addAppAndWaitForSetup = (kind: string, options: any, attributes: any, responseCallback: any) => {
+        addAppAndRespond(kind, options, attributes, responseCallback);
+    }
+
+    fitOriginSizeAndCamera = () => {
+        fitOriginSizeAndCameraOuter(window.manager);
     }
 
     closeApp = (appId: string, responseCallback: any) => {
@@ -658,9 +650,26 @@ export class RoomAsyncBridge {
         options: DocsEventOptions = {},
         responseCallback: any
     ) => {
-        if (window.manager) {
-            responseCallback(dispatchDocsEventOuter(window.manager, event, options || {}));
-        };
+        if (!window.manager) {
+            return responseCallback(JSON.stringify({
+                accepted: false,
+                reason: "stateUnavailable",
+                message: "window manager not existed",
+            }));
+        }
+        dispatchDocsEventOuter(window.manager, event, options || {})
+            .then(value => responseCallback(JSON.stringify(value)))
+            .catch(error => responseCallback(JSON.stringify({
+                accepted: false,
+                reason: "commandFailed",
+                message: error instanceof Error ? error.message : String(error),
+            })));
+    }
+
+    getPageState = (options: PageStateOptions = {}, responseCallback: any) => {
+        getPageStateOuter(window.manager, options || {})
+            .then(value => responseCallback(JSON.stringify(value)))
+            .catch(error => responseCallback(JSON.stringify({ __error: { message: error.message, jsStack: error.stack } })));
     }
 
     querySlidePageState = (appId: string | undefined, responseCallback: any) => {

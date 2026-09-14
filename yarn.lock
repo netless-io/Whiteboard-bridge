@@ -1109,15 +1109,15 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.100":
-  version "0.2.100"
-  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.100.tgz#bd1f3682b4c8412be2fa463153068d4074610ba3"
-  integrity sha512-Z9aKMvMBxhe1vZg5MpSveAf1OckvsZCj2sxkOQ42xki2txSZj7+g1rzp8ZHolaEshXwpsgjZ+iyzqYuf+2bgTA==
+"@netless/app-slide@0.2.104":
+  version "0.2.104"
+  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.104.tgz#fbcddf84b6aeddee37d0f7238f5ed15b85fc2601"
+  integrity sha512-hf+13ZYw4BEq/MExLJHshm+YTJ4xvr/USxnmj1iXSbHoF90cU5AOIhEkK0G2R2yNfaUWEpoINVpJ4RMZSpOqHg==
 
-"@netless/appliance-plugin@1.1.42":
-  version "1.1.42"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.42.tgz#1223c6ee9e7b8f19096c3cf629a8384f7e920abe"
-  integrity sha512-F0RJfWempSDFAuxYleVkTIf6t/+3eKX0QUS84ixNYD5SC39VcbSZa1UU5sO0EK3Yyx/AdMjncJrR5GJsdbF9eg==
+"@netless/appliance-plugin@1.1.43":
+  version "1.1.43"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.43.tgz#652645a2c5711986c5f1aae2d54232bf30eab93f"
+  integrity sha512-8Fmk09Uo0M/vkliyow15KDTGwjFdOEmjyCBAlGTu12qPfM4bS3XtxZ4dOQ210eCU/gAlpQTvaF7iI6fhgxbOug==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"
@@ -1130,6 +1130,7 @@
     react "^16.8.0"
     react-dom "^16.8.0"
     react-draggable "4.5.0"
+    spark-md5 "3.0.2"
     xss "^1.0.15"
 
 "@netless/canvas-polyfill@^0.0.4":
@@ -1221,10 +1222,10 @@
   resolved "https://registry.npmjs.org/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.13.tgz"
   integrity sha512-ZfJt/fD824oqLFW6Jl09cpWB9t30G+lwSUzLiWI1PpakhdlxX3lC9XMH8FtWGghYbzzXFEDh6Ay2N02F87II7g==
 
-"@netless/window-manager@1.0.19":
-  version "1.0.19"
-  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.19.tgz#0cccf6870e87a88c5e628a7ddb69ccc137eb9ad4"
-  integrity sha512-f1fHarb89sXTJZKYOfuTD71HrvVyQAAHthRzrqkVsQUi5aC8QKBYZTKiZoJzQ6vTppja/JK5coznzMMBRJwxog==
+"@netless/window-manager@1.0.22":
+  version "1.0.22"
+  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.22.tgz#a1e9208b06a51a09b2626ea246a2dbec7adb21ca"
+  integrity sha512-KRRRmNzCUvw/S8CbKetHeOhHy77J30NkTKvne7GcUjjkem2obi3/ilknp4NP07CM5nnOF4uV6erXiL4266/SxA==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.3.0"
@@ -6083,6 +6084,11 @@ source-map@~0.7.2:
   version "0.7.3"
   resolved "https://registry.npmjs.org/source-map/-/source-map-0.7.3.tgz"
   integrity sha512-CkCj6giN3S+n9qrYiBTX5gystlENnRW5jZeNLHpe6aue+SrHcG5VYwujhW9s4dY31mEGsxBDrHR6oI69fTXsaQ==
+
+spark-md5@3.0.2:
+  version "3.0.2"
+  resolved "https://registry.npmjs.org/spark-md5/-/spark-md5-3.0.2.tgz#7952c4a30784347abcee73268e473b9c0167e3fc"
+  integrity sha512-wcFzz9cDfbuqe0FZzfi2or1sgyIrsDwmPwfZC4hiNidPdPINjeUwNfv5kldczoEAcjl9Y1L3SM7Uz2PUEQzxQw==
 
 spark-md5@^3.0.0:
   version "3.0.1"

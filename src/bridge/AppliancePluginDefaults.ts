@@ -1,5 +1,3 @@
-import { WorkerRenderModeBlacklistLevel } from "@netless/appliance-plugin";
-
 type VersionWorkerBlacklist = Record<string, number>;
 
 type WorkerRenderModeBlacklist = {
@@ -10,27 +8,15 @@ type WorkerRenderModeBlacklist = {
 };
 
 type AppliancePluginExtras = Record<string, any> & {
+    allowImageBitmapFallback?: boolean;
     workerRenderModeBlacklist?: WorkerRenderModeBlacklist;
-};
-
-const defaultWorkerRenderModeBlacklist: WorkerRenderModeBlacklist = {
-    androidWebView: {
-        "80": WorkerRenderModeBlacklistLevel.ImageBitmap,
-    },
-    iosWebView: {
-        "12": WorkerRenderModeBlacklistLevel.ImageBitmap,
-    },
 };
 
 export function mergeDefaultAppliancePluginExtras(
     nativeExtras?: AppliancePluginExtras,
 ): AppliancePluginExtras {
-    const nativeBlacklist = nativeExtras?.workerRenderModeBlacklist;
     return {
+        allowImageBitmapFallback: false,
         ...nativeExtras,
-        workerRenderModeBlacklist: {
-            ...defaultWorkerRenderModeBlacklist,
-            ...nativeBlacklist,
-        },
     };
 }
