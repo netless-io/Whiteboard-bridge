@@ -155,6 +155,12 @@ type NativeWindowParams = Omit<
 > & {
     /** Use per-window boxesStatus state management. Applies to joinRoom and replayRoom. */
     useBoxesStatus?: boolean;
+    /** Force the shared room window state to maximized. Ignored when useBoxesStatus is true. */
+    forceMaximized?: boolean;
+    /** Lazily set up the focused App runtime while force-maximized mode is active. */
+    lazySetupInMaximizedMode?: boolean;
+    /** Maximum number of App runtimes retained by the local lazy LRU cache. */
+    maxCachedAppsInMaximizedMode?: number;
     /** MainView reference size. Slide/Presentation receive originSize through addApp attributes. */
     originSize?: NativeOriginSize;
     /** Optional relative scale bounds. Omitted bounds mean no business limit. */
