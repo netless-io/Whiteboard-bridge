@@ -23,6 +23,10 @@ config = {
       // rbush v4 ships an ESM entry that the legacy Babel pipeline rewrites to
       // bare CommonJS globals. Use its official browser bundle in WebView builds.
       "rbush$": path.join(path.dirname(require.resolve("rbush")), "rbush.min.js"),
+      // Keep white-web-sdk as one physical module. A local window-manager
+      // file dependency otherwise causes webpack to bundle its pnpm copy too,
+      // which initializes the global JavaScript loader a second time.
+      "white-web-sdk$": require.resolve("white-web-sdk"),
       "@netless/window-manager/dist/style.css": require.resolve("@netless/window-manager").replace("index.js", "style.css"),
       "@netless/window-manager": require.resolve("@netless/window-manager"),
 
@@ -30,10 +34,16 @@ config = {
       "@netless/appliance-plugin/dist/subWorker.js": require.resolve("@netless/appliance-plugin").replace("appliance-plugin.js", "subWorker.js"),
       "@netless/appliance-plugin/dist/fullWorker.js": require.resolve("@netless/appliance-plugin").replace("appliance-plugin.js", "fullWorker.js"),
       "@netless/appliance-plugin": require.resolve("@netless/appliance-plugin"),
+      // white-web-sdk resolves these optional modules dynamically. The local
+      // pnpm dependency tree used by window-manager does not expose the peer
+      // package from the SDK's nested issuer, so resolve them from Bridge.
+      "agora-foundation/lib/logger$": require.resolve("agora-foundation/lib/logger"),
+      "agora-foundation/lib/logger/common$": require.resolve("agora-foundation/lib/logger/common"),
+      "agora-foundation/package.json$": require.resolve("agora-foundation/package.json"),
     },
     extensions: ['.ts', '.tsx', '.js', "cjs"],
     fallback: {
-      buffer: "buffer",
+      buffer: require.resolve("buffer/"),
     }
   },
   optimization: {

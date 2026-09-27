@@ -639,7 +639,7 @@ class SDKBridge {
 
         const slideAppOptions = (config.slideAppOptions || {}) as NativeSlideAppOptions &
             NativeSlidePerformanceOptions &
-            Pick<AppSlideOptions, "enableScale" | "syncEventQueuePolicy">;
+            Pick<AppSlideOptions, "enableScale" | "syncEventQueuePolicy" | "navigationButtonMode">;
         const slidePerformanceOptions = resolveSlidePerformanceOptions(
             navigator.userAgent,
             slideAppOptions,
