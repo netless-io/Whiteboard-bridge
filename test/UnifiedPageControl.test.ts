@@ -3,6 +3,7 @@ import assert from "assert";
 import {
     dispatchDocsEventOuter,
     fitOriginSizeAndCameraOuter,
+    focusAppOuter,
     forwardUnifiedPageStateChange,
     getPageStateOuter,
     UnifiedPageStateChange,
@@ -46,6 +47,33 @@ async function main() {
     assert.deepEqual(calls[2], [manager, { target: "mainView" }]);
     fitOriginSizeAndCameraOuter(manager);
     assert.equal(manager.fitCount, 1);
+
+    assert.equal(
+        await focusAppOuter({ focusApp: () => Promise.resolve(true) }, "app-1"),
+        true
+    );
+    assert.equal(
+        await focusAppOuter({ focusApp: () => Promise.resolve(false) }, "app-1"),
+        false
+    );
+    assert.equal(await focusAppOuter({ focusApp: () => undefined }, "app-1"), true);
+    assert.equal(await focusAppOuter(undefined, "app-1"), false);
+    assert.equal(await focusAppOuter({}, "app-1"), false);
+    assert.equal(
+        await focusAppOuter({ focusApp: () => Promise.reject(new Error("setup failed")) }, "app-1"),
+        false
+    );
+    assert.equal(
+        await focusAppOuter(
+            {
+                focusApp: () => {
+                    throw new Error("focus failed");
+                },
+            },
+            "app-1"
+        ),
+        false
+    );
 
     assert.deepEqual(await dispatchDocsEventOuter(undefined, "nextPage"), {
         accepted: false,

@@ -57,6 +57,23 @@ export type UnifiedPageStateManager = {
     fitOriginSizeAndCamera?: () => void;
 };
 
+type FocusAppManager = {
+    focusApp?: (appId: string) => boolean | void | Promise<boolean | void>;
+};
+
+export function focusAppOuter(manager: unknown, appId: string): Promise<boolean> {
+    const target = manager as FocusAppManager | undefined;
+    if (!target?.focusApp) return Promise.resolve(false);
+    try {
+        const result = target.focusApp.call(manager, appId);
+        return Promise.resolve(result)
+            .then(value => value === undefined || value === true)
+            .catch(() => false);
+    } catch {
+        return Promise.resolve(false);
+    }
+}
+
 export function dispatchDocsEventOuter(
     manager: unknown,
     event: DocsEvent,

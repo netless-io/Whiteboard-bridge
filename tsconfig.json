@@ -11,6 +11,11 @@
 		"strictNullChecks": true,
 		// Search under node_modules for non-relative imports.
 		"moduleResolution": "node",
+		"baseUrl": ".",
+		"paths": {
+			"@netless/window-manager": ["node_modules/@netless/window-manager"],
+			"@netless/window-manager/*": ["node_modules/@netless/window-manager/*"]
+		},
 		// Process & infer types from .js files.
 		"allowJs": true,
 		// Enable strictest settings like strictNullChecks & noImplicitAny.

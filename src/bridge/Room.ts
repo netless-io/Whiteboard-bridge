@@ -9,6 +9,7 @@ import { call, register, registerAsyn } from ".";
 import {
     dispatchDocsEventOuter,
     fitOriginSizeAndCameraOuter,
+    focusAppOuter,
     getPageStateOuter,
     DocsEvent,
     DocsEventOptions,
@@ -81,15 +82,15 @@ function makeSlideParams(scenes: SceneDefinition[]): {
 
 function addWindowApp(
     params: Parameters<WindowManager["addApp"]>[0]
-): Promise<string> {
-    return window.manager!.addAppAndWaitForSetup(params);
+): Promise<string | undefined> {
+    return window.manager!.addApp(params);
 }
 
 function addSlideApp(
     scenePath: string,
     title: string,
     scenes: SceneDefinition[]
-): Promise<string> {
+): Promise<string | undefined> {
     const { scenesWithoutPPT, taskId, url } = makeSlideParams(scenes);
     try {
         if (taskId && url) {
@@ -132,7 +133,7 @@ function addAppAndRespond(
         responseCallback(JSON.stringify({__error: {message: "window manager not existed"}}));
         return;
     }
-    let result: Promise<string>;
+    let result: Promise<string | undefined>;
     if (kind === "Slide") {
         const { taskId, url } = attributes || {};
         if (taskId && url) {
@@ -149,6 +150,10 @@ function addAppAndRespond(
         result = addWindowApp({kind, options, attributes});
     }
     result.then(appId => {
+        if (!appId) {
+            responseCallback(JSON.stringify({__error: {message: "app was not created or focus was not committed"}}));
+            return;
+        }
         if (window.fullScreen || false) window.manager!.setMaximized(true);
         responseCallback(appId);
     }).catch(error => {
@@ -597,10 +602,6 @@ export class RoomAsyncBridge {
         addAppAndRespond(kind, options, attributes, responseCallback);
     }
 
-    addAppAndWaitForSetup = (kind: string, options: any, attributes: any, responseCallback: any) => {
-        addAppAndRespond(kind, options, attributes, responseCallback);
-    }
-
     fitOriginSizeAndCamera = () => {
         fitOriginSizeAndCameraOuter(window.manager);
     }
@@ -613,10 +614,10 @@ export class RoomAsyncBridge {
         }
     }
 
-    focusApp = (appId: string) => {
-        if (window.manager) {
-            window.manager.focusApp(appId);
-        }
+    focusApp = (appId: string, responseCallback?: (committed: boolean) => void) => {
+        focusAppOuter(window.manager, appId).then(committed => {
+            responseCallback?.(committed);
+        });
     }
 
     queryAllApps = (responseCallback: any) => {
