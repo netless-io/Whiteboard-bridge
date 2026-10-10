@@ -1,3 +1,5 @@
+import { withDynamicConfigDefaults } from "./DynamicConfigParameters";
+
 type VersionWorkerBlacklist = Record<string, number>;
 
 type WorkerRenderModeBlacklist = {
@@ -14,9 +16,8 @@ type AppliancePluginExtras = Record<string, any> & {
 
 export function mergeDefaultAppliancePluginExtras(
     nativeExtras?: AppliancePluginExtras,
+    sdkExtras?: AppliancePluginExtras,
 ): AppliancePluginExtras {
-    return {
-        allowImageBitmapFallback: false,
-        ...nativeExtras,
-    };
+    const explicit = withDynamicConfigDefaults(sdkExtras || {}, nativeExtras || {});
+    return withDynamicConfigDefaults({ allowImageBitmapFallback: false }, explicit);
 }

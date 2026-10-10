@@ -26,14 +26,15 @@
         "cy:test": "start-server-and-test cy:server http-get://localhost:8760 cy:run",
         "test:background-image-view-id": "node scripts/test-background-image-view-id.js",
         "test:slide-performance-defaults": "node scripts/test-slide-performance-defaults.js",
-        "test:unified-page-control": "node scripts/test-unified-page-control.js"
+        "test:unified-page-control": "node scripts/test-unified-page-control.js",
+        "test:dynamic-config-runtime": "node scripts/test-dynamic-config-runtime.js"
     },
     "resolutions": {
         "**/video.js": "7.10.0"
     },
     "dependencies": {
-        "@netless/app-slide": "0.2.106",
-        "@netless/appliance-plugin": "1.1.44",
+        "@netless/app-slide": "0.2.107",
+        "@netless/appliance-plugin": "1.1.45",
         "@netless/combine-player": "^1.1.1",
         "@netless/cursor-tool": "^0.1.1",
         "@netless/iframe-bridge": "2.1.9",
@@ -46,7 +47,7 @@
         "@netless/white-prepare": "^1.0.2",
         "@netless/white-video-plugin": "^1.2.4",
         "@netless/white-video-plugin2": "^2.0.4",
-        "@netless/window-manager": "1.0.23",
+        "@netless/window-manager": "1.0.25",
         "agora-foundation": "3.11.1-rc.1 || 3.11.1",
         "buffer": "^6.0.3",
         "core-js": "^3.33.3",
@@ -56,7 +57,7 @@
         "react": "^16.12.0",
         "react-dom": "^16.12.0",
         "whatwg-fetch": "^3.0.0",
-        "white-web-sdk": "2.16.58"
+        "white-web-sdk": "2.16.59"
     },
     "devDependencies": {
         "@babel/core": "^7.7.4",

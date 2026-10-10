@@ -1109,15 +1109,15 @@
   resolved "https://registry.npmjs.org/@juggle/resize-observer/-/resize-observer-3.3.1.tgz"
   integrity sha512-zMM9Ds+SawiUkakS7y94Ymqx+S0ORzpG3frZirN3l+UlXUmSUR7hF4wxCVqW+ei94JzV5kt0uXBcoOEAuiydrw==
 
-"@netless/app-slide@0.2.106":
-  version "0.2.106"
-  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.106.tgz#29f00cb777b61a069b2a6a57936b661d678c86e0"
-  integrity sha512-txEeP7wMsS2Q/4v1xD4dGZCCjsozb8dphwp9xF1QcgSC69R0axuis2iXMFoRetXsmKYtih4EgAR4Dp54jylolQ==
+"@netless/app-slide@0.2.107":
+  version "0.2.107"
+  resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.107.tgz#a68f0b7d38252ecce9e58ac16752fbc5ba481312"
+  integrity sha512-7siQi+aaJrJSicKC9OinouZn/f0piBo1aM2C0h1h+5eXCEL9vGME3uPyTLDrlwk8HD0mT+tTN4oPNIA1XR+pBQ==
 
-"@netless/appliance-plugin@1.1.44":
-  version "1.1.44"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.44.tgz#c7e5912bc2e9507f5152155befd4f1d99f9f697d"
-  integrity sha512-Yx9rRpyT8jhMoRJztLbX2CMMGzthEfHX11EfNeZcBY+k2Pcz2hyiB756OGcmsHxRUky6J3fBOUR/eWh6aQZZ1g==
+"@netless/appliance-plugin@1.1.45":
+  version "1.1.45"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.45.tgz#4694b08e802cd0a08bc10fdec051edb734d8dd5d"
+  integrity sha512-8I1sQ7qzZPNKdr/ZLtCOrM616X1LFRoLyyIdS8yBe3ylj2GoOKTUgUKbGkGAxAs5JnUU2ypNY85LmJYjuyvYEA==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"
@@ -1222,10 +1222,10 @@
   resolved "https://registry.npmjs.org/@netless/whiteboard-bridge-types/-/whiteboard-bridge-types-0.1.13.tgz"
   integrity sha512-ZfJt/fD824oqLFW6Jl09cpWB9t30G+lwSUzLiWI1PpakhdlxX3lC9XMH8FtWGghYbzzXFEDh6Ay2N02F87II7g==
 
-"@netless/window-manager@1.0.23":
-  version "1.0.23"
-  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.23.tgz#0a0acd9b1d42387ea85d194d6a682412c73fa6b9"
-  integrity sha512-zuTqoIQ9B5e5Qf81i9GNDEQkVYvLRnaraCLbwDlszDm9cZU4eF4sJlbwhHXDFnpw4JP9xb1OiVPS/HBRvbyqaA==
+"@netless/window-manager@1.0.25":
+  version "1.0.25"
+  resolved "https://registry.npmjs.org/@netless/window-manager/-/window-manager-1.0.25.tgz#c0b6c0852e298565abd109d7149a4b9a6ada64da"
+  integrity sha512-kbCElJicc7/1b9XJUj08dHRoO5FHf6Sj3TyS0JvJMS0q81gtC4EP+S/Bipzy/pCRKSNKUDj39L6ef1jSZmWKiw==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/telebox-insider" "0.3.2"
@@ -6827,10 +6827,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.58:
-  version "2.16.58"
-  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.58.tgz#68eb4aecafe1c0c119a26ccfc3d6d2ac437852d2"
-  integrity sha512-RzwajnBuJrxrJnOKyP6jPxy+9xtDX1CZgfh1YokftEjQh2kIvDBDhx/S/QDXEBhw9F9Z898oxKlIUKXVKQOHcw==
+white-web-sdk@2.16.59:
+  version "2.16.59"
+  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.59.tgz#b4ddcd03935e66c9ccca65315c2667a443547fbb"
+  integrity sha512-Ol2oy6oRyd/Iicie+DBP6GzXkOSLAAIOR/gcCWEV2Q5+q5LYdtTk45omYLsKnRuCzsbqvt8dUgPGd5LrGjX4Iw==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
