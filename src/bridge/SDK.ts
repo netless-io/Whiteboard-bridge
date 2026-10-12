@@ -1,7 +1,9 @@
+import { withDynamicConfigDefaults, splitNativeConfiguration, resolveNativeConfiguration } from "./DynamicConfigParameters";
 import { hookCreateElement } from '../utils/ImgError';
 import {CursorTool} from "@netless/cursor-tool";
 import { registerAsyn } from '.';
 import { NativeSDKConfig, NativeJoinRoomParams, NativeReplayParams, AppRegisterParams, NativeSlideAppOptions } from "@netless/whiteboard-bridge-types";
+import type { DynamicConfigOptions } from "white-web-sdk";
 import {WhiteWebSdk, Room, Player, createPlugins, PlayerPhase, setAsyncModuleLoadMode, AsyncModuleLoadMode} from "white-web-sdk";
 import {videoPlugin} from "@netless/white-video-plugin";
 import {audioPlugin} from "@netless/white-audio-plugin";
@@ -80,6 +82,9 @@ type NativeBuiltinAppOptions = {
 };
 
 type NativeSDKConfigWithPresentation = NativeSDKConfig & {
+    disableDeviceInputs?: boolean;
+    dynamicConfig?: DynamicConfigOptions;
+    __nativeConfigDefaults?: readonly string[];
     presentationAppOptions?: NativePresentationAppOptions;
     backgroundImageLoadOptions?: BackgroundImageLoadOptions;
 };
@@ -219,7 +224,7 @@ function resolveBackgroundImageViewId(event: BackgroundImageLoadEvent): string {
     try {
         return resolveBackgroundImageEventViewId(
             originalViewId,
-            !!nativeConfig?.useMultiViews,
+            !!(room?.useMultiViews ?? player?.useMultiViews ?? nativeConfig?.useMultiViews),
         );
     } catch {
         // WindowManager may exist before AppManager finishes initialization.
@@ -461,33 +466,41 @@ function toBuiltinAppOptions(options?: NativeBuiltinAppOptions) {
     };
 }
 
-async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: NativeWindowParams) {
+async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: NativeWindowParams, setup = nativeConfig) {
     const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
-    const { builtinAppOptions, ...restWindowParams } = windowParams || {};
-    const presentation = builtinAppOptions?.presentation ?? nativeConfig?.presentationAppOptions;
+    const windowLayers = splitNativeConfiguration(windowParams || {});
+    const { builtinAppOptions, ...restWindowParams } = windowLayers.explicit;
+    const setupLayers = splitNativeConfiguration<Partial<NativeSDKConfigWithPresentation>>(setup || {});
+    const presentation = builtinAppOptions?.presentation ?? setup?.presentationAppOptions;
     roomLogger?.info("[Bridge] WindowManager.mount start");
-    let manager: WindowManager;
+    let manager: WindowManager | undefined;
     try {
-        manager = await WindowManager.mount({
-            // 高比宽
+        manager = await WindowManager.mount(withDynamicConfigDefaults({
             containerSizeRatio: 9/16,
             chessboard: true,
             cursor: !!cursorAdapter,
-            supportAppliancePlugin: nativeConfig?.enableAppliancePlugin,
+            ...windowLayers.defaults,
+        }, {
+            ...(setupLayers.explicit.userCursor !== undefined ? { cursor: !!setupLayers.explicit.userCursor } : {}),
+            ...(setupLayers.explicit.enableAppliancePlugin !== undefined ? { supportAppliancePlugin: setupLayers.explicit.enableAppliancePlugin } : {}),
             ...restWindowParams,
             builtinAppOptions: toBuiltinAppOptions(
                 presentation ? { presentation } : undefined
             ),
             container: divRef(),
             room,
-        } as MountParams);
+        } as MountParams));
         roomLogger?.info("[Bridge] WindowManager.mount success");
+        addManagerListener(manager, logger, handler);
+        return manager;
     } catch (error) {
+        if (manager) {
+            try { manager.destroy(); } catch (cleanupError) { console.warn("[Bridge] failed to clean mount", cleanupError); }
+            if (window.manager === manager) window.manager = undefined;
+        }
         roomLogger?.error(`[Bridge] WindowManager.mount failed: ${error?.message || error}`);
         throw error;
     }
-    addManagerListener(manager, logger, handler);
-    return manager;
 }
 
 class SDKBridge {
@@ -504,7 +517,7 @@ class SDKBridge {
 
             const plugin = window.appliancePlugin as any;
             assertBackgroundImageCapability(
-                !!nativeConfig?.useMultiViews,
+                !!(room?.useMultiViews ?? player?.useMultiViews ?? nativeConfig?.useMultiViews),
                 !!nativeConfig?.enableAppliancePlugin,
                 plugin?.hasBackgroundImage,
             );
@@ -539,7 +552,7 @@ class SDKBridge {
             }
             const plugin = window.appliancePlugin as any;
             assertBackgroundImageCapability(
-                !!nativeConfig?.useMultiViews,
+                !!(room?.useMultiViews ?? player?.useMultiViews ?? nativeConfig?.useMultiViews),
                 !!nativeConfig?.enableAppliancePlugin,
                 plugin?.reloadBackgroundImage,
             );
@@ -572,7 +585,7 @@ class SDKBridge {
             return url;
         };
 
-        const { log, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, presentationAppOptions, backgroundImageLoadOptions, ...restConfig } = config;
+        const { log, __nativeConfigDefaults, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, presentationAppOptions, backgroundImageLoadOptions, ...restConfig } = config;
         const whiteSdkConfig = mergeLocalLogOptions(restConfig);
         const enablePcmDataCallback = (config as any).enablePcmDataCallback || false;
 
@@ -675,7 +688,7 @@ class SDKBridge {
         }
 
         // 新增的插件需要确定是否依赖此状态
-        const useMobXState =  enableSyncedStore || enableIFramePlugin || useMultiViews
+        const useMobXState = !!(enableSyncedStore || enableIFramePlugin || useMultiViews || config.dynamicConfig)
         const invisiblePlugins = [
             ...enableIFramePlugin ? [IframeBridge as any] : [],
             ...enableSyncedStore ? [SyncedStorePlugin as any] : [],
@@ -707,112 +720,127 @@ class SDKBridge {
         }
     };
 
-    joinRoom = (nativeParams: NativeJoinRoomParams & ExtraNativeJoinRoomParams, responseCallback: any) => {
+    joinRoom = async (nativeParams: NativeJoinRoomParams & ExtraNativeJoinRoomParams, responseCallback: any) => {
         if (!sdk) {
             responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
             return;
         }
-        removeBind();
-        const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, appliancePluginOptions, ...joinRoomParams} = nativeParams;
-
-        const {useMultiViews, enableSyncedStore} = nativeConfig!;
-        const invisiblePlugins = [
-            ...useMultiViews ? [WindowManager as any] : [],
-        ]
-        
-        window.nativeWebSocket = nativeWebSocket;
-
-        const roomCallbackHandler = new RoomCallbackHandler();
-
-        sdk!.joinRoom({
-            useMultiViews,
-            disableCameraTransform,
-            ...joinRoomParams,
-            invisiblePlugins: invisiblePlugins,
-            cursorAdapter: useMultiViews ? undefined : cursorAdapter,
-            cameraBound: convertBound(cameraBound),
-            disableMagixEventDispatchLimit: useMultiViews,
-        }, {...roomCallbackHandler, ...sdkCallbackHandler}).then(async aRoom => {
+        const joiningSdk = sdk;
+        const setup = nativeConfig!;
+        const joiningCursor = cursorAdapter;
+        const disposers: Array<() => void | Promise<void>> = [];
+        let acquiredRoom: Room | undefined;
+        try {
+            removeBind();
+            const nativeLayers = splitNativeConfiguration(nativeParams);
+            const {timeout: defaultTimeout, cameraBound: defaultCameraBound, windowParams: defaultWindowParams, nativeWebSocket: defaultSocket, appliancePluginOptions: defaultPlugin, ...nativeJoinDefaults} = nativeLayers.defaults;
+            const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, appliancePluginOptions, ...joinRoomParams} = nativeLayers.explicit;
+            const setupLayers = splitNativeConfiguration(setup);
+            const {useMultiViews, enableSyncedStore} = setup;
+            const invisiblePlugins = [...useMultiViews ? [WindowManager as any] : []];
+            window.nativeWebSocket = nativeWebSocket;
+            const roomCallbackHandler = new RoomCallbackHandler();
+            const aRoom = await joiningSdk.joinRoom(withDynamicConfigDefaults({
+                disableMagixEventDispatchLimit: useMultiViews,
+                useMultiViews,
+                ...nativeJoinDefaults,
+            }, {
+                ...(setupLayers.explicit.useMultiViews !== undefined ? { useMultiViews: setupLayers.explicit.useMultiViews } : {}),
+                ...(setupLayers.explicit.disableDeviceInputs !== undefined ? { disableDeviceInputs: setupLayers.explicit.disableDeviceInputs } : {}),
+                disableCameraTransform,
+                ...joinRoomParams,
+                invisiblePlugins,
+                cursorAdapter: useMultiViews ? undefined : joiningCursor,
+                cameraBound: convertBound(cameraBound),
+            }, (parameters, remote) => {
+                const effectiveMultiViews = !!parameters.useMultiViews;
+                const plugins = parameters.invisiblePlugins || [];
+                return {
+                    ...parameters,
+                    invisiblePlugins: effectiveMultiViews && !plugins.includes(WindowManager as any)
+                        ? [...plugins, WindowManager as any] : plugins,
+                    cursorAdapter: effectiveMultiViews ? undefined : joiningCursor,
+                    disableMagixEventDispatchLimit: joinRoomParams.disableMagixEventDispatchLimit !== undefined || remote?.disableMagixEventDispatchLimit !== undefined
+                        ? parameters.disableMagixEventDispatchLimit : effectiveMultiViews,
+                };
+            }), {...roomCallbackHandler, ...sdkCallbackHandler});
+            acquiredRoom = aRoom;
+            disposers.push(() => aRoom.disconnect());
             removeBind();
             room = aRoom;
-            let roomState = room.state;
-
-            /** native 端，把 sdk 初始化时的 useMultiViews 记录下来，再初始化 sdk 的时候，同步传递进来，避免用户写两遍 */
-            if (useMultiViews) {
-                try {
-                    const fullscreen = windowParams && (windowParams as any).fullscreen;
-                    window.fullScreen = fullscreen;
-                    if (fullscreen) {
-                        // css should be inject before mount
-                        document.body.appendChild(document.createElement("style")).textContent = `
-                            .telebox-titlebar, .telebox-max-titlebar-maximized,.netless-app-slide-footer, .telebox-footer-wrap, .telebox-titlebar-wrap { display: none }
-                        `;
-                    }
-                    
-                    const manager = await mountWindowManager(room, roomCallbackHandler, windowParams );    
-                    roomState = { ...roomState, ...{ windowBoxState: manager.boxState }, cameraState: manager.cameraState, sceneState: manager.sceneState, ...{ pageState: manager.pageState, appState: createAppState()} };
-
-                    if (fullscreen) {
-                        manager.setMaximized(true);
-                    }
-
-                    if (nativeConfig?.enableAppliancePlugin) {
-                        const applianceWorkerUrls = getApplianceWorkerUrls();
-                        const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
-                        const appliancePluginExtras = mergeDefaultAppliancePluginExtras(
-                            (appliancePluginOptions as any)?.extras,
-                        );
-                        roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
-                        try {
-                            const plugin = await ApplianceMultiPlugin.getInstance(manager,
-                                {
-                                    options: {
-                                        cdn: {
-                                            fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl,
-                                            subWorkerUrl: applianceWorkerUrls.subWorkerUrl,
-                                        },
-                                        ...appliancePluginOptions,
-                                        extras: {
-                                            ...appliancePluginExtras,
-                                            backgroundImageLoadOptions: nativeConfig?.backgroundImageLoadOptions,
-                                        },
-                                    },
-                                    callbacks: {
-                                        onBackgroundImageLoadEvent: postBackgroundImageLoadEvent,
-                                        onInitLoadingChange: postApplianceInitLoadingChange,
-                                    },
-                                }
-                            );
-                            window.appliancePlugin = plugin;
-                            roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance success");
-                        } catch (error) {
-                            roomLogger?.error(`[Bridge] ApplianceMultiPlugin.getInstance failed: ${error?.message || error}`);
-                            throw error;
-                        }
-                    }
-                } catch (error) {
-                    return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+            let roomState = aRoom.state;
+            if (aRoom.useMultiViews) {
+                const effectiveWindowParams = resolveNativeConfiguration(windowParams || {}, aRoom.dynamicConfig?.windowManager);
+                const fullscreen = (effectiveWindowParams as any).fullscreen;
+                const previousFullscreen = window.fullScreen;
+                window.fullScreen = fullscreen;
+                let fullscreenStyle: HTMLStyleElement | undefined;
+                disposers.push(() => {
+                    fullscreenStyle?.remove();
+                    if (room === aRoom) window.fullScreen = previousFullscreen;
+                });
+                if (fullscreen) {
+                    fullscreenStyle = document.createElement("style");
+                    fullscreenStyle.textContent = `
+                        .telebox-titlebar, .telebox-max-titlebar-maximized,.netless-app-slide-footer, .telebox-footer-wrap, .telebox-titlebar-wrap { display: none }
+                    `;
+                    document.body.appendChild(fullscreenStyle);
+                }
+                const manager = await mountWindowManager(aRoom, roomCallbackHandler, windowParams, setup);
+                disposers.push(() => {
+                    try { manager.destroy(); }
+                    finally { if (window.manager === manager) window.manager = undefined; }
+                });
+                roomState = { ...roomState, ...{ windowBoxState: manager.boxState, cameraState: manager.cameraState, sceneState: manager.sceneState, pageState: manager.pageState, appState: createAppState() } };
+                if (fullscreen) manager.setMaximized(true);
+                if (setup.enableAppliancePlugin) {
+                    if (WindowManager.supportAppliancePlugin === false) throw new Error("Appliance Plugin requires supportAppliancePlugin=true");
+                    const applianceWorkerUrls = getApplianceWorkerUrls();
+                    const appliancePluginExtras = mergeDefaultAppliancePluginExtras(
+                        (appliancePluginOptions as any)?.extras,
+                        { backgroundImageLoadOptions: setup.backgroundImageLoadOptions },
+                    );
+                    const roomLogger = (aRoom as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
+                    roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
+                    const plugin = await ApplianceMultiPlugin.getInstance(manager, {
+                        options: {
+                            cdn: { fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl, subWorkerUrl: applianceWorkerUrls.subWorkerUrl },
+                            ...appliancePluginOptions,
+                            extras: appliancePluginExtras,
+                        },
+                        callbacks: { onBackgroundImageLoadEvent: postBackgroundImageLoadEvent, onInitLoadingChange: postApplianceInitLoadingChange },
+                    });
+                    disposers.push(async () => {
+                        try { await plugin.destroy(); }
+                        finally { if (window.appliancePlugin === plugin) window.appliancePlugin = undefined; }
+                    });
+                    window.appliancePlugin = plugin;
+                    roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance success");
                 }
             } else {
-                room.bindHtmlElement(divRef() as HTMLDivElement);
-                if (!!cursorAdapter) {
-                    cursorAdapter.setRoom(room);
-                }
+                aRoom.bindHtmlElement(divRef() as HTMLDivElement);
+                joiningCursor?.setRoom(aRoom);
                 roomState = { ...roomState, ...createPageState(roomState.sceneState) };
             }
-
             if (enableSyncedStore) {
-                await initSyncedStore(room)
+                const store = await initSyncedStore(aRoom);
+                disposers.push(() => {
+                    if (window.syncedStore === store) destroySyncedStore();
+                    else store.destroy();
+                });
             }
-            registerBridgeRoom(room);
-            // joinRoom 的 disableCameraTransform 参数不生效的 workaround。等 web-sdk 修复后，删除这里的代码。
-            if (disableCameraTransform) {
-                room.disableCameraTransform = disableCameraTransform;
+            registerBridgeRoom(aRoom);
+            // Preserve the existing explicit Native camera-transform workaround.
+            if (disableCameraTransform) aRoom.disableCameraTransform = disableCameraTransform;
+            responseCallback(JSON.stringify({ state: roomState, observerId: aRoom.observerId, isWritable: aRoom.isWritable }));
+        } catch (error) {
+            for (const dispose of disposers.reverse()) {
+                try { await dispose(); }
+                catch (cleanupError) { console.warn("[Bridge] failed to clean unsuccessful join", cleanupError); }
             }
-            return responseCallback(JSON.stringify({ state: roomState, observerId: room.observerId, isWritable: room.isWritable}));
-        }).catch((e: Error) => {
-            return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
-        });
+            if (room === acquiredRoom) room = undefined;
+            return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+        }
     }
 
     replayRoom = (nativeParams: ExtraNativeReplayParams, responseCallback: any) => {
