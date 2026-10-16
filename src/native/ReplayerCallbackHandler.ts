@@ -1,4 +1,5 @@
-import { call } from "../bridge";
+import { lifecycle, Task } from "../bridge/Lifecycle";
+import { scopedCall } from "../bridge";
 import { PlayerPhase, Room, PlayerState } from "white-web-sdk";
 import { postIframeMessage } from '../utils/iFrame';
 import { logger } from "../utils/Logger";
@@ -38,12 +39,13 @@ export type ReplayerCallbackHandler = {
 };
 
 export class ReplayerCallbackHandlerImp implements ReplayerCallbackHandler {
-    constructor(aStep: number, hasMedia: Boolean, isEnableIFramePlugin: boolean, phaseChangeHook: (player: Room, phase: PlayerPhase) => void) {
+    private call = scopedCall();
+    constructor(aStep: number, hasMedia: Boolean, isEnableIFramePlugin: boolean, phaseChangeHook: (player: Room, phase: PlayerPhase) => void, private task?: Task) {
         enableIFramePlugin = isEnableIFramePlugin;
         step = aStep; 
 
         this.onPhaseChanged = (phase: PlayerPhase) => {
-            const player = window.player;
+            const player = (this.task?.object || window.player) as Room | undefined;
             if (player === undefined) {
                 return;
             }
@@ -51,7 +53,7 @@ export class ReplayerCallbackHandlerImp implements ReplayerCallbackHandler {
 
             const handle = (phase: PlayerPhase) => {
                 lastSchedule.time = 0;
-                call("player.onPhaseChanged", phase);
+                this.call("player.onPhaseChanged", phase);
                 if (enableIFramePlugin) {
                     postIframeMessage({ eventName: "onPhaseChanged", params: [phase] }, logger);
                 }
@@ -74,8 +76,8 @@ export class ReplayerCallbackHandlerImp implements ReplayerCallbackHandler {
         // playerState 在此时才可读。这个时候需要把完整的 playerState 传递给 native，保证：
         // 1. native 端同步 API 状态的完整性
         // 2. Android 目前 playState diff 的正确性。
-        call("player.onPlayerStateChanged", JSON.stringify(window.player!.state));
-        call("player.onLoadFirstFrame");
+        this.call("player.onPlayerStateChanged", JSON.stringify((this.task?.object as any || window.player!).state));
+        this.call("player.onLoadFirstFrame");
         if (enableIFramePlugin) {
             postIframeMessage({eventName: "onLoadFirstFrame", params: []}, logger);
         }
@@ -86,21 +88,22 @@ export class ReplayerCallbackHandlerImp implements ReplayerCallbackHandler {
         if (window.manager && modifyState.sceneState) {
             return;
         }
-        call("player.onPlayerStateChanged", JSON.stringify(modifyState));
+        this.call("player.onPlayerStateChanged", JSON.stringify(modifyState));
         if (enableIFramePlugin) {
             postIframeMessage({eventName: "onPlayerStateChanged", params: [modifyState]}, logger);
         }
     }
 
     onStoppedWithError = (error) => {
-        call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
+        if (this.task) lifecycle.phase(this.task, "error");
+        this.call("player.onStoppedWithError", JSON.stringify({"error": error.message, jsStack: error.stack}));
         if (enableIFramePlugin) {
             postIframeMessage({eventName: "onStoppedWithError", params: [error]}, logger);
         }
     }
 
     onProgressTimeChanged = (scheduleTime) => {
-        limitScheduleCallback(() => {call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
+        limitScheduleCallback(() => {this.call("player.onScheduleTimeChanged", scheduleTime); }, scheduleTime, step);
         if (enableIFramePlugin) {
             postIframeMessage({eventName: "onProgressTimeChanged", params: [scheduleTime]}, logger);
         }
@@ -108,10 +111,10 @@ export class ReplayerCallbackHandlerImp implements ReplayerCallbackHandler {
 
     // DisplayerCallbacks
     onCatchErrorWhenAppendFrame = (userId: number, error: Error) => {
-        // dsBridge.call("player.fireCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
+        // dsBridge.this.call("player.fireCatchErrorWhenAppendFrame", {userId: userId, error: error.message});
     }
 
     onCatchErrorWhenRender = (err: Error) => {
-        call("player.onCatchErrorWhenRender", {error: err.message});
+        this.call("player.onCatchErrorWhenRender", {error: err.message});
     }
 }

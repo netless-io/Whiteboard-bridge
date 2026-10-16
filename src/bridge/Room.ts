@@ -1,3 +1,5 @@
+import { lifecycle, currentScope, failure } from "./Lifecycle";
+import { scopedCall } from ".";
 import { AppResult, Attributes as SlideAttributes } from "@netless/app-slide";
 import { TeleBoxColorScheme } from '@netless/telebox-insider';
 import { AddAppOptions, AddPageParams, BuiltinApps, WindowManager } from "@netless/window-manager";
@@ -190,6 +192,7 @@ function querySlidePageState(manager: WindowManager, appId?: unknown): SlidePage
 }
 
 export class RoomBridge {
+    private call = scopedCall();
     setWindowManagerAttributes = (attributes: any) => {
         window.manager?.safeSetAttributes(attributes);
         window.manager?.refresh();
@@ -220,6 +223,7 @@ export class RoomPPTBridge {
 }
 
 export class RoomSyncBridge {
+    private call = scopedCall();
     constructor(readonly room: Room) { }
     syncBlockTimestamp = (timestamp: number) => {
         this.room.syncBlockTimestamp(timestamp);
@@ -230,8 +234,8 @@ export class RoomSyncBridge {
         this.room.disableSerialization = disable;
         /** 单窗口且开启序列化主动触发一次redo,undo次数回调 */
         if (!disable && window.manager == null) {
-            call("room.fireCanUndoStepsUpdate", this.room.canUndoSteps);
-            call("room.fireCanRedoStepsUpdate", this.room.canRedoSteps);
+            this.call("room.fireCanUndoStepsUpdate", this.room.canUndoSteps);
+            this.call("room.fireCanRedoStepsUpdate", this.room.canRedoSteps);
         }
     }
 
@@ -257,6 +261,7 @@ export class RoomSyncBridge {
 }
 
 export class RoomAsyncBridge {
+    private call = scopedCall();
     constructor(readonly room: Room) { }
     redo = (responseCallback: any) => {
         const count = this.room.redo();
@@ -484,9 +489,8 @@ export class RoomAsyncBridge {
     }
 
     disconnect = (responseCallback: any) => {
-        this.room.disconnect().then(() => {
-            responseCallback();
-        });
+        lifecycle.leave(currentScope()).then(() => responseCallback(JSON.stringify({closed: true})),
+            error => responseCallback(failure(error.message)));
     }
 
     zoomChange = (scale: number) => {

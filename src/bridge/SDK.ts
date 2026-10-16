@@ -1,3 +1,4 @@
+import { currentScope, documentId, failure, inScope, lifecycle, Task } from "./Lifecycle";
 import { withDynamicConfigDefaults, splitNativeConfiguration, resolveNativeConfiguration } from "./DynamicConfigParameters";
 import { hookCreateElement } from '../utils/ImgError';
 import {CursorTool} from "@netless/cursor-tool";
@@ -250,6 +251,7 @@ const logTruncatedSuffix = "...";
 let disposeLocalLogStateChange: (() => void) | undefined;
 let applianceFullWorkerBlobUrl: string | undefined;
 let applianceSubWorkerBlobUrl: string | undefined;
+let sdkConfigurationJson: string | undefined;
 
 export function registerSDKBridge() {
     const sdk = new SDKBridge();
@@ -466,7 +468,7 @@ function toBuiltinAppOptions(options?: NativeBuiltinAppOptions) {
     };
 }
 
-async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: NativeWindowParams, setup = nativeConfig) {
+async function mountWindowManager(room: Room, handler: RoomCallbackHandler | ReplayerCallbackHandler, windowParams?: NativeWindowParams, setup = nativeConfig, task?: Task) {
     const roomLogger = (room as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
     const windowLayers = splitNativeConfiguration(windowParams || {});
     const { builtinAppOptions, ...restWindowParams } = windowLayers.explicit;
@@ -491,7 +493,7 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
             room,
         } as MountParams));
         roomLogger?.info("[Bridge] WindowManager.mount success");
-        addManagerListener(manager, logger, handler);
+        if (!task?.cancelled) inScope(task?.scope, () => addManagerListener(manager!, logger, handler));
         return manager;
     } catch (error) {
         if (manager) {
@@ -567,7 +569,22 @@ class SDKBridge {
         }
     };
 
-    newWhiteSdk = (config: NativeSDKConfigWithPresentation) => {
+    getLifecycle = (callback: any) => callback(JSON.stringify({documentId}));
+
+    leaveRoom = (callback: any) => {
+        lifecycle.leave(currentScope()).then(() => callback(JSON.stringify({closed: true})),
+            error => callback(failure(error.message)));
+    }
+
+    newWhiteSdk = (config: NativeSDKConfigWithPresentation, callback?: (value: string) => void) => {
+        // Native JSON snapshots may enumerate the same keys in a different order.
+        const configurationJson = JSON.stringify(config, (_key, value) =>
+            value && typeof value === "object" && !Array.isArray(value)
+                ? Object.keys(value).sort().reduce((sorted, key) => { sorted[key] = value[key]; return sorted; }, {})
+                : value);
+        // A new Native facade may use the existing SDK configuration, but never the old Room.
+        if (sdk && configurationJson === sdkConfigurationJson) { callback?.("{}"); return; }
+        if (lifecycle.state !== "idle") throw new Error("Busy");
         const urlInterrupter = config.enableInterrupterAPI ? (url: string) => {
             const modifyUrl: string = sdkCallbackHandler.onUrlInterrupter(url);
             if (modifyUrl.length > 0) {
@@ -714,10 +731,14 @@ class SDKBridge {
                 useMobXState,
             });
             window.sdk = sdk;
+            sdkConfigurationJson = configurationJson;
             bindLocalLogStateChange(sdk);
         } catch (e) {
             sdkCallbackHandler.onSetupFail(e);
+            callback?.(failure(e.message || "SdkSetupFailed"));
+            return;
         }
+        callback?.("{}");
     };
 
     joinRoom = async (nativeParams: NativeJoinRoomParams & ExtraNativeJoinRoomParams, responseCallback: any) => {
@@ -725,13 +746,17 @@ class SDKBridge {
             responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
             return;
         }
+        let task: Task;
+        try {
+            if (!nativeParams.uuid || !nativeParams.roomToken || !nativeParams.uid) throw new Error("InvalidJoinParameters");
+            task = lifecycle.begin("room", currentScope(), responseCallback, (nativeParams as any).timeout || 45000);
+        } catch (error) { responseCallback(failure(error.message)); return; }
         const joiningSdk = sdk;
         const setup = nativeConfig!;
         const joiningCursor = cursorAdapter;
-        const disposers: Array<() => void | Promise<void>> = [];
+        const disposers = task.disposers;
         let acquiredRoom: Room | undefined;
         try {
-            removeBind();
             const nativeLayers = splitNativeConfiguration(nativeParams);
             const {timeout: defaultTimeout, cameraBound: defaultCameraBound, windowParams: defaultWindowParams, nativeWebSocket: defaultSocket, appliancePluginOptions: defaultPlugin, ...nativeJoinDefaults} = nativeLayers.defaults;
             const {timeout = 45000, cameraBound, windowParams, disableCameraTransform, nativeWebSocket, appliancePluginOptions, ...joinRoomParams} = nativeLayers.explicit;
@@ -739,7 +764,7 @@ class SDKBridge {
             const {useMultiViews, enableSyncedStore} = setup;
             const invisiblePlugins = [...useMultiViews ? [WindowManager as any] : []];
             window.nativeWebSocket = nativeWebSocket;
-            const roomCallbackHandler = new RoomCallbackHandler();
+            const roomCallbackHandler = new RoomCallbackHandler(task);
             const aRoom = await joiningSdk.joinRoom(withDynamicConfigDefaults({
                 disableMagixEventDispatchLimit: useMultiViews,
                 useMultiViews,
@@ -763,10 +788,15 @@ class SDKBridge {
                     disableMagixEventDispatchLimit: joinRoomParams.disableMagixEventDispatchLimit !== undefined || remote?.disableMagixEventDispatchLimit !== undefined
                         ? parameters.disableMagixEventDispatchLimit : effectiveMultiViews,
                 };
-            }), {...roomCallbackHandler, ...sdkCallbackHandler});
+            }), {...roomCallbackHandler, ...new SDKCallbackHandler(true)});
             acquiredRoom = aRoom;
-            disposers.push(() => aRoom.disconnect());
-            removeBind();
+            task.object = aRoom;
+            disposers.push(() => {
+                if (!aRoom.useMultiViews) aRoom.bindHtmlElement(null);
+                if (window.room === aRoom) window.room = undefined;
+                if (room === aRoom) room = undefined;
+            });
+            if (task.cancelled) throw new Error("Cancelled");
             room = aRoom;
             let roomState = aRoom.state;
             if (aRoom.useMultiViews) {
@@ -786,11 +816,12 @@ class SDKBridge {
                     `;
                     document.body.appendChild(fullscreenStyle);
                 }
-                const manager = await mountWindowManager(aRoom, roomCallbackHandler, windowParams, setup);
+                const manager = await mountWindowManager(aRoom, roomCallbackHandler, windowParams, setup, task);
                 disposers.push(() => {
                     try { manager.destroy(); }
                     finally { if (window.manager === manager) window.manager = undefined; }
                 });
+                if (task.cancelled) throw new Error("Cancelled");
                 roomState = { ...roomState, ...{ windowBoxState: manager.boxState, cameraState: manager.cameraState, sceneState: manager.sceneState, pageState: manager.pageState, appState: createAppState() } };
                 if (fullscreen) manager.setMaximized(true);
                 if (setup.enableAppliancePlugin) {
@@ -808,12 +839,13 @@ class SDKBridge {
                             ...appliancePluginOptions,
                             extras: appliancePluginExtras,
                         },
-                        callbacks: { onBackgroundImageLoadEvent: postBackgroundImageLoadEvent, onInitLoadingChange: postApplianceInitLoadingChange },
+                        callbacks: { onBackgroundImageLoadEvent: event => inScope(task.scope, () => postBackgroundImageLoadEvent(event)), onInitLoadingChange: event => inScope(task.scope, () => postApplianceInitLoadingChange(event)) },
                     });
                     disposers.push(async () => {
                         try { await plugin.destroy(); }
                         finally { if (window.appliancePlugin === plugin) window.appliancePlugin = undefined; }
                     });
+                    if (task.cancelled) throw new Error("Cancelled");
                     window.appliancePlugin = plugin;
                     roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance success");
                 }
@@ -823,100 +855,92 @@ class SDKBridge {
                 roomState = { ...roomState, ...createPageState(roomState.sceneState) };
             }
             if (enableSyncedStore) {
-                const store = await initSyncedStore(aRoom);
+                const store = await inScope(task.scope, () => initSyncedStore(aRoom));
                 disposers.push(() => {
                     if (window.syncedStore === store) destroySyncedStore();
                     else store.destroy();
                 });
             }
-            registerBridgeRoom(aRoom);
+            if (task.cancelled) throw new Error("Cancelled");
+            inScope(task.scope, () => registerBridgeRoom(aRoom));
             // Preserve the existing explicit Native camera-transform workaround.
             if (disableCameraTransform) aRoom.disableCameraTransform = disableCameraTransform;
-            responseCallback(JSON.stringify({ state: roomState, observerId: aRoom.observerId, isWritable: aRoom.isWritable }));
+            lifecycle.activate(task, JSON.stringify({ state: roomState, observerId: aRoom.observerId, isWritable: aRoom.isWritable }));
         } catch (error) {
-            for (const dispose of disposers.reverse()) {
-                try { await dispose(); }
-                catch (cleanupError) { console.warn("[Bridge] failed to clean unsuccessful join", cleanupError); }
-            }
-            if (room === acquiredRoom) room = undefined;
-            return responseCallback(JSON.stringify({__error: {message: error.message, jsStack: error.stack}}));
+            await lifecycle.finish(task, error);
+        } finally {
+            task.settle();
         }
     }
 
-    replayRoom = (nativeParams: ExtraNativeReplayParams, responseCallback: any) => {
-        // nativeReplayParams = nativeParams;
-        if (!sdk) {
-            responseCallback(JSON.stringify({__error: {message: "sdk init failed"}}));
-            return;
-        }
-
+    replayRoom = async (nativeParams: ExtraNativeReplayParams, responseCallback: any) => {
+        if (!sdk) { responseCallback(failure("SdkNotReady")); return; }
+        let task: Task;
+        try {
+            if (!nativeParams.room || !nativeParams.roomToken) throw new Error("InvalidReplayParameters");
+            task = lifecycle.begin("player", currentScope(), responseCallback);
+        } catch (error) { responseCallback(failure(error.message)); return; }
         const {step = 500, cameraBound, mediaURL, windowParams, ...replayParams} = nativeParams;
-        removeBind();
-        const {useMultiViews, enableSyncedStore} = nativeConfig!;
-
-        let replayCallbackHanlder: ReplayerCallbackHandler;
-
-        const phaseChangeHook = (player: Room, phase: PlayerPhase) => {
-            if ((phase === PlayerPhase.Pause || phase === PlayerPhase.Playing) && !!nativeConfig?.useMultiViews && player.getInvisiblePlugin(WindowManager.kind) === null && !window.manager) {
-                const room: Room = player! as unknown as Room;
-                const { windowParams } = nativeParams!;
-                // sdk 内部，先触发回调，才更新 invisiblePlugins，所以要带一个延迟，放到回调后执行
-                setTimeout(() => {
-                    mountWindowManager(room, replayCallbackHanlder, windowParams).catch(e => {
-                        console.error("mount error", e);
-                    })
-                }, 0);
-            }
-        }
-        replayCallbackHanlder = new ReplayerCallbackHandlerImp(step, !!mediaURL, !!(nativeConfig?.enableIFramePlugin), phaseChangeHook);
-
-        const invisiblePlugins = [
-            ...useMultiViews ? [WindowManager as any] : [],
-        ]
-
-        sdk!.replayRoom({
-            ...replayParams,
-            cursorAdapter: useMultiViews ? undefined : cursorAdapter,
-            cameraBound: convertBound(cameraBound),
-            invisiblePlugins: invisiblePlugins,
-            useMultiViews
-        }, {...replayCallbackHanlder, ...sdkCallbackHandler}).then(async mPlayer => {
-            removeBind();
+        const setup = nativeConfig!;
+        const {useMultiViews, enableSyncedStore} = setup;
+        let replayCallbackHandler: ReplayerCallbackHandler;
+        let mounting: Promise<void> | undefined;
+        const phaseChangeHook = (displayer: Room, phase: PlayerPhase) => {
+            lifecycle.phase(task, phase);
+            if (task.cancelled || !useMultiViews || mounting || window.manager ||
+                (phase !== PlayerPhase.Pause && phase !== PlayerPhase.Playing)) return;
+            mounting = new Promise<void>(resolve => setTimeout(resolve, 0)).then(async () => {
+                if (task.cancelled) return;
+                const manager = await mountWindowManager(displayer, replayCallbackHandler, windowParams, setup, task);
+                task.disposers.push(() => {
+                    try { manager.destroy(); }
+                    finally { if (window.manager === manager) window.manager = undefined; }
+                });
+            });
+            // A mount starts after replayRoom resolves. Closing must also wait for this chain.
+            task.initializations.push(mounting);
+            mounting.catch(() => { lifecycle.leave(task.scope).catch(() => {}); });
+        };
+        replayCallbackHandler = new ReplayerCallbackHandlerImp(step, !!mediaURL, !!setup.enableIFramePlugin, phaseChangeHook, task);
+        try {
+            const mPlayer = await sdk.replayRoom({
+                ...replayParams, cursorAdapter: useMultiViews ? undefined : cursorAdapter,
+                cameraBound: convertBound(cameraBound),
+                invisiblePlugins: useMultiViews ? [WindowManager as any] : [], useMultiViews,
+            }, {...replayCallbackHandler, ...new SDKCallbackHandler(true)});
+            task.object = mPlayer;
+            task.disposers.push(() => {
+                if (!useMultiViews) mPlayer.bindHtmlElement(null);
+                if (window.player === mPlayer) { window.player = undefined; window.combinePlayer = undefined; }
+                if (player === mPlayer) player = undefined;
+            });
+            if (task.cancelled) throw new Error("Cancelled");
             player = mPlayer;
-            // 多窗口需要调用 player 的 getInvisiblePlugin 方法，获取数据，而这些数据需要在 player 成功初始化，首次进入 play || pause 状态，才能获取到，所以回放时，多窗口需要异步
-            if (!useMultiViews) {
-                mPlayer.bindHtmlElement(divRef() as HTMLDivElement);
-                if (!!cursorAdapter) {
-                    cursorAdapter?.setPlayer(player);
-                }
-            }
+            if (!useMultiViews) { mPlayer.bindHtmlElement(divRef() as HTMLDivElement); cursorAdapter?.setPlayer(mPlayer); }
             if (enableSyncedStore) {
-                await initSyncedStore(player)
+                const store = await inScope(task.scope, () => initSyncedStore(mPlayer));
+                task.disposers.push(() => { if (window.syncedStore === store) destroySyncedStore(); else store.destroy(); });
+                if (task.cancelled) throw new Error("Cancelled");
             }
+            let combinePlayer: ReturnType<CombinePlayerFactory["create"]> | undefined;
             if (mediaURL) {
-                // FIXME: 多次初始化，会造成一些问题
                 const videoDom = document.createElement("video");
                 videoDom.setAttribute("x5-video-player-type", "h5-page");
                 videoDom.setAttribute("playsInline", "");
                 videoDom.setAttribute("style", "display:none;");
                 videoDom.setAttribute("class", "video-js");
                 document.body.appendChild(videoDom);
-
-                const combinePlayerFactory = new CombinePlayerFactory(player, {
-                    url: mediaURL,
-                    videoDOM: videoDom,
-                });
-                const combinePlayer = combinePlayerFactory.create();
-                registerPlayerBridge(mPlayer, combinePlayer, lastSchedule, replayCallbackHanlder);
-            } else {
-                registerPlayerBridge(mPlayer, undefined, lastSchedule, replayCallbackHanlder);
+                task.disposers.push(() => { videoDom.pause(); videoDom.removeAttribute("src"); videoDom.load(); videoDom.remove(); });
+                combinePlayer = new CombinePlayerFactory(mPlayer, {url: mediaURL, videoDOM: videoDom}).create();
             }
-       
+            inScope(task.scope, () => registerPlayerBridge(mPlayer, combinePlayer, lastSchedule, replayCallbackHandler));
+            replayCallbackHandler.onPhaseChanged(mPlayer.phase);
+            if (mounting) await mounting;
+            if (task.cancelled) throw new Error("Cancelled");
             const {progressTime: scheduleTime, timeDuration, framesCount, beginTimestamp} = mPlayer;
-            return responseCallback(JSON.stringify({timeInfo: {scheduleTime, timeDuration, framesCount, beginTimestamp}}));
-        }).catch((e: Error) => {
-            return responseCallback(JSON.stringify({__error: {message: e.message, jsStack: e.stack}}));
-        });
+            lifecycle.activate(task, JSON.stringify({timeInfo: {scheduleTime, timeDuration, framesCount, beginTimestamp}}));
+        } catch (error) { await lifecycle.finish(task, error); }
+        finally { task.settle(); }
     }
 
     isPlayable = (nativeReplayParams: NativeReplayParams, responseCallback: any) => {

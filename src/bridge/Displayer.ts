@@ -1,3 +1,4 @@
+import { scopedCall } from ".";
 import { register, registerAsyn, call } from ".";
 import { Displayer, Camera, AnimationMode, Rectangle, Player, Room, DisplayerState } from "white-web-sdk";
 import { convertBound } from "../utils/BoundConvert";
@@ -84,6 +85,7 @@ function screenshot(scenePath: string, fn: (scenePath: string, div: HTMLElement,
 }
 
 export class AsyncDisplayerBridge {
+    private call = scopedCall();
     constructor(readonly aDisplayer: Displayer) { }
 
     sceneSnapshot = (scenePath: string, responseCallback: any) => {
@@ -102,6 +104,7 @@ export class AsyncDisplayerBridge {
 }
 
 export class DisplayerBridge {
+    private call = scopedCall();
     constructor(readonly aDisplayer: Displayer) { }
     // 尝试让 native 端直接传入 json 格式
     postMessage = (payload: any) => {
@@ -193,9 +196,9 @@ export class DisplayerBridge {
                 return { uuid, eventName: evt.event, payload: evt.payload, scope: evt.scope, authorId: evt.authorId };
             });
             if (isRoom(this.aDisplayer)) {
-                call("room.fireHighFrequencyEvent", JSON.stringify(nativeEvts));
+                this.call("room.fireHighFrequencyEvent", JSON.stringify(nativeEvts));
             } else {
-                call("player.fireHighFrequencyEvent", JSON.stringify(nativeEvts));
+                this.call("player.fireHighFrequencyEvent", JSON.stringify(nativeEvts));
             }
         }, interval);
     }
@@ -211,9 +214,9 @@ export class DisplayerBridge {
                 authorId: evt.authorId,
             };
             if (isRoom(this.aDisplayer)) {
-                call("room.fireMagixEvent", JSON.stringify(nativeEvt));
+                this.call("room.fireMagixEvent", JSON.stringify(nativeEvt));
             } else {
-                call("player.fireMagixEvent", JSON.stringify(nativeEvt));
+                this.call("player.fireMagixEvent", JSON.stringify(nativeEvt));
             }
         });
     }

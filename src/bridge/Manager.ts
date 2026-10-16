@@ -1,7 +1,7 @@
 import { WindowManager } from "@netless/window-manager";
 import { RoomCallbackHandler } from "../native/RoomCallbackHandler";
 import { ReplayerCallbackHandler } from "../native/ReplayerCallbackHandler";
-import { call } from ".";
+import { scopedCall } from ".";
 import { forwardUnifiedPageStateChange, UnifiedPageStateChange } from "./UnifiedPageControl";
 
 function isRoomCallbackHandler(handler: RoomCallbackHandler | ReplayerCallbackHandler): handler is RoomCallbackHandler {
@@ -27,6 +27,7 @@ export function createAppState() {
 }
 
 function addRoomListener(manager: WindowManager, logger: (funName: string, ...param: any[]) => void, handler: RoomCallbackHandler) {
+    const call = scopedCall();
     // 多窗口模式下，原有的 cameraState 意义丢失，通过这种方式，来替代显示 mainView 的 cameraState
     manager.emitter.on("cameraStateChange", cameraState => {
         handler.onRoomStateChanged({cameraState});
@@ -86,6 +87,7 @@ function addRoomListener(manager: WindowManager, logger: (funName: string, ...pa
 }
 
 function addReplayListener(manager: WindowManager, logger: (funName: string, ...param: any[]) => void, handler: ReplayerCallbackHandler) {
+    const call = scopedCall();
     // 多窗口模式下，原有的 cameraState 意义丢失，通过这种方式，来替代显示 mainView 的 cameraState
     manager.emitter.on("cameraStateChange", cameraState => {
         handler.onPlayerStateChanged({cameraState});

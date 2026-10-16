@@ -1,7 +1,11 @@
 import { MediaType } from "white-web-sdk";
-import { call, syncCall, asyncCall} from "../bridge"
+import { call, syncCall, asyncCall, scopedCall} from "../bridge"
 
 export class SDKCallbackHandler {
+    private mediaCall = call;
+    constructor(taskScoped = false) {
+        if (taskScoped) this.mediaCall = scopedCall();
+    }
     onPostMessage = (message: string) => {
         call("sdk.postMessage", message);
     }
@@ -44,10 +48,10 @@ export class SDKCallbackHandler {
 
     onPPTMediaPlay = (shapeId: string, type: MediaType) => {
         console.log('onPPTMediaPlay');
-        call("sdk.onPPTMediaPlay", {shapeId, type});
+        this.mediaCall("sdk.onPPTMediaPlay", {shapeId, type});
     }
     
     onPPTMediaPause = (shapeId: string, type: MediaType) => {
-        call("sdk.onPPTMediaPause", {shapeId, type});
+        this.mediaCall("sdk.onPPTMediaPause", {shapeId, type});
     }
 }
