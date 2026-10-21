@@ -19,7 +19,7 @@
         "sync-foundation-worker": "yarn sync-foundation-worker:generate && yarn patch-foundation-worker",
         "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
         "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
-        "check": "tsc && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control",
+        "check": "tsc && yarn test:session-lifecycle && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control",
         "precy:server": "yarn sync-foundation-worker",
         "cy:server": "webpack-dev-server --mode development --host localhost --port 8760",
         "cy:run": "cypress run",
@@ -27,13 +27,14 @@
         "test:background-image-view-id": "node scripts/test-background-image-view-id.js",
         "test:slide-performance-defaults": "node scripts/test-slide-performance-defaults.js",
         "test:unified-page-control": "node scripts/test-unified-page-control.js",
+        "test:session-lifecycle": "node scripts/test-session-lifecycle.js",
         "test:dynamic-config-runtime": "node scripts/test-dynamic-config-runtime.js"
     },
     "resolutions": {
         "**/video.js": "7.10.0"
     },
     "dependencies": {
-        "@netless/app-slide": "0.2.107",
+        "@netless/app-slide": "0.2.108",
         "@netless/appliance-plugin": "1.1.45",
         "@netless/combine-player": "^1.1.1",
         "@netless/cursor-tool": "^0.1.1",

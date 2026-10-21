@@ -1,3 +1,4 @@
+import { lifecycle, currentScope, failure } from "./Lifecycle";
 import { ObserverMode, Player, PlayerPhase, PlayerSeekingResult } from "white-web-sdk";
 import { registerDisplayerBridge } from "./Displayer";
 import { CombinePlayer, PublicCombinedStatus } from "@netless/combine-player";
@@ -115,12 +116,9 @@ export class PlayerAsyncBridge {
         }
     }
 
-    stop = () => {
-        try {
-            this.player.stop();
-        } catch (error) {
-            console.log("stop:", error.message);
-        }
+    stop = (responseCallback?: any) => {
+        lifecycle.leave(currentScope()).then(() => responseCallback?.(JSON.stringify({closed: true})),
+            error => responseCallback?.(failure(error.message)));
     }
 
     seekToScheduleTime = (beginTime: number, responseCallback?: any) => {
