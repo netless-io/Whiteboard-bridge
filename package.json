@@ -34,7 +34,7 @@
         "**/video.js": "7.10.0"
     },
     "dependencies": {
-        "@netless/app-slide": "0.2.107",
+        "@netless/app-slide": "0.2.108",
         "@netless/appliance-plugin": "1.1.45",
         "@netless/combine-player": "^1.1.1",
         "@netless/cursor-tool": "^0.1.1",
