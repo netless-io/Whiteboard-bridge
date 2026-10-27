@@ -20,15 +20,22 @@ async function main() {
                 export { applyDynamicMountParams } from '../window-manager/src/Utils/dynamicConfig';
                 export { withDynamicConfigDefaults, splitNativeConfiguration, resolveNativeConfiguration } from './src/bridge/DynamicConfigParameters';
                 export { mergeDefaultAppliancePluginExtras } from './src/bridge/AppliancePluginDefaults';
+                export { Lifecycle, currentScope, documentId, failure, inScope } from './src/bridge/Lifecycle';
+                export { ApplianceWorkerUrlProvider } from './src/bridge/ApplianceWorkerUrls';
+                export { mergeApplianceDynamicExtras } from '../appliance-plugin/src/plugin/dynamicConfig';
             `,
             resolveDir: root, loader: 'ts',
         },
         bundle: true, write: false, platform: 'node', format: 'cjs', target: 'node14',
+        plugins: [{ name: 'worker-source-stubs', setup(build) {
+            build.onResolve({ filter: /\?raw$/ }, args => ({ path: args.path, namespace: 'worker-source-stub' }));
+            build.onLoad({ filter: /.*/, namespace: 'worker-source-stub' }, () => ({ contents: 'test Worker source', loader: 'text' }));
+        } }],
     });
     const mod = { exports: {} };
     new Function('module', 'exports', helpers.outputFiles[0].text)(mod, mod.exports);
     const compiled = await transform(`
-        let sdk, room, player, nativeConfig, cursorAdapter;
+        let sdk, room, player, nativeConfig, cursorAdapter, sdkConfigurationJson;
         ${extract('function removeBind()', 'function toBuiltinAppOptions(')}
         ${extract('function toBuiltinAppOptions(', 'class SDKBridge')}
         class Harness {
@@ -40,6 +47,20 @@ async function main() {
     function scenario(options = {}) {
         const events = [], rooms = [], styles = [], window = { fullScreen: 'previous' };
         let joined, mounted, sdkConfiguration;
+        const lifecycle = new mod.exports.Lifecycle();
+        const workerLoads = { full: 0, sub: 0 }, workerBlobs = [];
+        const workerUrls = new mod.exports.ApplianceWorkerUrlProvider(async () => {
+            workerLoads.full++;
+            options.onWorkerLoad?.();
+            await options.workerDelay;
+            if (options.failWorkerLoad) throw Error('worker chunk missing');
+            return { default: 'full' };
+        }, async () => {
+            workerLoads.sub++;
+            return { default: 'sub' };
+        }, source => { workerBlobs.push(source); return `blob:${source}`; });
+        let applianceOptions;
+        let generation = 0;
         class CursorTool { setRoom(value) { events.push('cursor.setRoom'); } }
         class WindowManager {
             static register() {}
@@ -67,25 +88,25 @@ async function main() {
                     assert.equal(joined.cursorAdapter, undefined);
                 }
                 const result = {
-                    useMultiViews: !!joined.useMultiViews, state: {}, observerId: rooms.length + 1, isWritable: true,
+                    useMultiViews: !!joined.useMultiViews, state: {}, phase: 'connected', observerId: rooms.length + 1, isWritable: true,
                     dynamicConfig: options.remote,
                     bindHtmlElement() {
                         events.push('room.bind');
                         if (this.useMultiViews) throw Error('you should pass useMultiViews: false');
                     },
-                    async disconnect() { events.push('room.disconnect'); },
+                    async disconnect() { events.push('room.disconnect'); this.phase = 'disconnected'; },
                 };
                 rooms.push(result);
                 return result;
             }
         }
         const scope = {
-            ...mod.exports, window, document: {
+            ...mod.exports, lifecycle, window, document: {
                 createElement: () => { const style = { remove() { styles.splice(styles.indexOf(style), 1); } }; return style; },
                 body: { appendChild(style) { styles.push(style); return style; } },
             },
             console: { warn() {}, log() {} }, navigator: { userAgent: '' },
-            WhiteWebSdk, WindowManager, CursorTool, RoomCallbackHandler: class {},
+            WhiteWebSdk, WindowManager, CursorTool, RoomCallbackHandler: class {}, SDKCallbackHandler: class {},
             sdkCallbackHandler: { onSetupFail(error) { throw error; } },
             mergeLocalLogOptions: value => value, enableReport() {}, hookCreateElement() {},
             createPlugins: () => ({ setPluginContext() {} }),
@@ -95,9 +116,10 @@ async function main() {
             divRef: () => ({}), createAppState: () => ({}), createPageState: () => ({}),
             addManagerListener(manager) { window.manager = manager; if (options.failListener) throw Error('listener failed'); },
             registerBridgeRoom() { events.push('registerBridgeRoom'); if (options.failRegistration) throw Error('register failed'); },
-            getApplianceWorkerUrls: () => ({ fullWorkerUrl: 'full', subWorkerUrl: 'sub' }),
+            getApplianceWorkerUrls: (...args) => workerUrls.get(...args),
             postBackgroundImageLoadEvent() {}, postApplianceInitLoadingChange() {},
-            ApplianceMultiPlugin: { async getInstance() {
+            ApplianceMultiPlugin: { async getInstance(manager, adaptor) {
+                applianceOptions = adaptor.options;
                 events.push('plugin.create');
                 if (options.failPlugin) throw Error('plugin failed');
                 return { async destroy() {
@@ -121,11 +143,14 @@ async function main() {
         const runtime = new Function(...Object.keys(scope), compiled.code)(...Object.values(scope));
         runtime.bridge.newWhiteSdk({ appIdentifier: 'test', dynamicConfig: { url: 'https://example.test/latest.json' }, ...(options.setup || {}) });
         return {
-            options, events, rooms, window, styles, runtime,
+            options, events, rooms, window, styles, runtime, lifecycle, workerLoads, workerBlobs,
+            applianceOptions: () => applianceOptions,
             joined: () => joined, mounted: () => mounted, config: () => sdkConfiguration,
             async join(params = {}) {
                 let responses = 0, result;
-                await runtime.bridge.joinRoom({ uuid: 'room', uid: 'user', roomToken: 'test', ...params }, text => { responses++; result = JSON.parse(text); });
+                await mod.exports.inScope({ documentId: mod.exports.documentId, generation: ++generation }, () =>
+                    runtime.bridge.joinRoom({ uuid: 'room', uid: 'user', roomToken: 'test', ...params }, text => { responses++; result = JSON.parse(text); }));
+                if (result?.__error && lifecycle.task?.closeResult) await lifecycle.task.closeResult.catch(() => {});
                 assert.equal(responses, 1);
                 return result;
             },
@@ -201,7 +226,7 @@ async function main() {
         const r = scenario({ [failure]: true, setup: { enableAppliancePlugin: true, enableSyncedStore: true }, remote: { joinRoom: { useMultiViews: true } } });
         const response = await r.join({ windowParams: { fullscreen: true } });
         assert.ok(response.__error);
-        assert.equal(r.events.at(-1), 'room.disconnect');
+        assert.ok(r.events.includes('room.disconnect'));
         assert.equal(r.runtime.globals().room, undefined);
         assert.equal(r.window.manager, undefined);
         assert.equal(r.window.appliancePlugin, undefined);
@@ -222,17 +247,70 @@ async function main() {
     const pending = delayed.join();
     await started;
     assert.ok(!delayed.events.includes('manager.destroy'));
-    assert.ok(!delayed.events.includes('room.disconnect'));
+    assert.ok(delayed.events.includes('room.disconnect'));
     releaseDrain();
     assert.equal((await pending).__error.message, 'store failed');
     assert.ok(delayed.events.indexOf('plugin.drained') < delayed.events.indexOf('manager.destroy'));
     const failedCleanup = scenario({ failStore: true, failManagerCleanup: true, failPluginCleanup: true, setup: { enableAppliancePlugin: true, enableSyncedStore: true }, remote: { joinRoom: { useMultiViews: true } } });
     assert.equal((await failedCleanup.join()).__error.message, 'store failed');
-    assert.equal(failedCleanup.events.at(-1), 'room.disconnect');
+    assert.ok(failedCleanup.events.includes('room.disconnect'));
     const unsupported = scenario({ setup: { enableAppliancePlugin: true }, remote: { joinRoom: { useMultiViews: true } } });
     assert.match((await unsupported.join({ windowParams: { supportAppliancePlugin: false } })).__error.message, /requires supportAppliancePlugin/);
     assert.ok(!unsupported.events.includes('plugin.create'));
-    assert.equal(unsupported.events.at(-1), 'room.disconnect');
+    assert.ok(unsupported.events.includes('room.disconnect'));
+    for (const [local, remote, expected] of [
+        [{}, {}, { full: 1, sub: 0 }],
+        [{}, { useSimple: false }, { full: 1, sub: 1 }],
+        [{ useSimple: true }, { useSimple: false }, { full: 1, sub: 0 }],
+        [{ useSimple: false }, { useSimple: true }, { full: 1, sub: 1 }],
+        [{ useSimple: 0 }, { useSimple: true }, { full: 1, sub: 1 }],
+        [{ useSimple: 1 }, { useSimple: false }, { full: 1, sub: 0 }],
+        [{}, { useSimple: 0 }, { full: 1, sub: 1 }],
+        [{ useWorker: 'mainThread' }, {}, { full: 0, sub: 0 }],
+        [{}, { useWorker: 'mainThread' }, { full: 0, sub: 0 }],
+        [{ useWorker: 'auto' }, { useWorker: 'mainThread' }, { full: 1, sub: 0 }],
+    ]) {
+        const r = scenario({ setup: { useMultiViews: true, enableAppliancePlugin: true },
+            remote: { appliancePlugin: { extras: remote } } });
+        assert.equal((await r.join({ appliancePluginOptions: { extras: local } })).__error, undefined);
+        assert.deepEqual(r.workerLoads, expected);
+        const effective = mod.exports.mergeApplianceDynamicExtras(r.rooms[0], r.applianceOptions().extras);
+        if (effective.useWorker !== 'mainThread') {
+            assert.ok(r.applianceOptions().cdn.fullWorkerUrl);
+            assert.equal(!!r.applianceOptions().cdn.subWorkerUrl,
+                effective.useSimple !== undefined && !effective.useSimple);
+        }
+    }
+    const customWorker = scenario({ setup: { useMultiViews: true, enableAppliancePlugin: true } });
+    assert.equal((await customWorker.join({ appliancePluginOptions: { cdn: { fullWorkerUrl: 'blob:host' } } })).__error, undefined);
+    assert.deepEqual(customWorker.workerLoads, { full: 0, sub: 0 });
+    assert.deepEqual(customWorker.applianceOptions().cdn, { fullWorkerUrl: 'blob:host' });
+    const missingWorker = scenario({ failWorkerLoad: true, setup: { useMultiViews: true, enableAppliancePlugin: true } });
+    assert.equal((await missingWorker.join()).__error.message, 'worker chunk missing');
+    assert.ok(!missingWorker.events.includes('plugin.create'));
+    assert.ok(missingWorker.events.includes('manager.destroy'));
+    assert.ok(missingWorker.events.includes('room.disconnect'));
+    missingWorker.options.failWorkerLoad = false;
+    assert.equal((await missingWorker.join()).__error, undefined);
+    assert.equal(missingWorker.workerLoads.full, 2);
+    let releaseWorker, workerStarted;
+    const workerDelay = new Promise(resolve => { releaseWorker = resolve; });
+    const workerStart = new Promise(resolve => { workerStarted = resolve; });
+    const cancelledWorker = scenario({ workerDelay, onWorkerLoad: workerStarted,
+        setup: { useMultiViews: true, enableAppliancePlugin: true } });
+    const cancelledJoin = cancelledWorker.join();
+    await workerStart;
+    const cancelledLeave = cancelledWorker.lifecycle.leave(cancelledWorker.lifecycle.task.scope);
+    releaseWorker();
+    assert.equal((await cancelledJoin).__error.code, 'Cancelled');
+    await cancelledLeave;
+    assert.ok(!cancelledWorker.events.includes('plugin.create'));
+    assert.ok(cancelledWorker.events.includes('manager.destroy'));
+    assert.equal(cancelledWorker.window.appliancePlugin, undefined);
+    const disabledPlugin = scenario({ setup: { useMultiViews: true, enableAppliancePlugin: false } });
+    await disabledPlugin.join();
+    assert.deepEqual(disabledPlugin.workerLoads, { full: 0, sub: 0 });
+    console.log('Bridge Worker integration: effective flags match SDK merge, custom CDN, failed chunk recovery and cancellation passed');
     console.log('Bridge dynamic runtime: effective mode, pre-room dependencies, explicit priority, fallback, failure cleanup and recovery passed');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

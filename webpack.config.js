@@ -11,11 +11,17 @@ const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
 const { DefinePlugin } = require('webpack');
 
+function isApplianceWorkerSource(module) {
+  return /[\\/]appliance-plugin[\\/]dist[\\/](?:fullWorker|subWorker)\.js\?raw$/.test(module.resource || "");
+}
+
 config = {
   entry: './src/index',
   output: {
     path: path.join(__dirname, '/build'),
-    filename: `[name].[contenthash:8].js`
+    filename: `[name].[contenthash:8].js`,
+    // Resolve lazy chunks beside index.html for file: and rawfile pages too.
+    publicPath: "",
   },
   target: ["web", "es5"],
   resolve: {
@@ -53,6 +59,16 @@ config = {
     splitChunks: {
       chunks: "all",
       cacheGroups: {
+        applianceWorkerSources: {
+          test: isApplianceWorkerSource,
+          name(module) {
+            return module.resource.includes("/fullWorker.js?") || module.resource.includes("\\fullWorker.js?")
+              ? "appliance-worker-full-source" : "appliance-worker-sub-source";
+          },
+          chunks: "async",
+          priority: 30,
+          enforce: true,
+        },
         white: {
           test: /[\\/]node_modules[\\/](white-web-sdk)[\\/]/,
           name: 'web-sdk',
@@ -68,14 +84,15 @@ config = {
           reuseExistingChunk: true
         },
         netless: {
-          test: /@netless/,
+          // Named async source chunks must never join this initial shared chunk.
+          test: module => !isApplianceWorkerSource(module) && /@netless/.test(module.nameForCondition() || ""),
           name: 'netless',
           chunks: 'all',
           priority: 7,
           reuseExistingChunk: true
         },
         vendors: {
-          test: /[\\/]node_modules[\\/]/,
+          test: module => !isApplianceWorkerSource(module) && /[\\/]node_modules[\\/]/.test(module.nameForCondition() || ""),
           name: 'vendor',
           chunks: 'all',
           priority: 1,

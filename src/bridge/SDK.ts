@@ -50,8 +50,7 @@ import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 import { prepare } from '@netless/white-prepare';
 
 import { ApplianceMultiPlugin } from '@netless/appliance-plugin';
-import fullWorkerString from '@netless/appliance-plugin/dist/fullWorker.js?raw';
-import subWorkerString from '@netless/appliance-plugin/dist/subWorker.js?raw';
+import { getApplianceWorkerUrls } from './ApplianceWorkerUrls';
 import { createWorkerInstance as createFoundationWorkerInstance } from '../FoundationWorkerFactory';
 import { PCMProxy } from '../PCMProxy';
 
@@ -249,8 +248,6 @@ const sdkNameSpace = "sdk";
 const maxRegisterAppJavascriptStringLength = 500;
 const logTruncatedSuffix = "...";
 let disposeLocalLogStateChange: (() => void) | undefined;
-let applianceFullWorkerBlobUrl: string | undefined;
-let applianceSubWorkerBlobUrl: string | undefined;
 let sdkConfigurationJson: string | undefined;
 
 export function registerSDKBridge() {
@@ -293,21 +290,6 @@ function pickNativeLocalLogOptions(localLog: any): NativeLocalLogOptions | undef
 function createFoundationLogWorker(): Worker {
     logger("localLog worker blob url");
     return createFoundationWorkerInstance();
-}
-
-function createWorkerBlobUrl(workerString: string): string {
-    const blob = new Blob([workerString], { type: "text/javascript" });
-    return URL.createObjectURL(blob);
-}
-
-function getApplianceWorkerUrls(): { fullWorkerUrl: string; subWorkerUrl: string } {
-    const fullWorkerUrl = applianceFullWorkerBlobUrl || (applianceFullWorkerBlobUrl = createWorkerBlobUrl(fullWorkerString));
-    const subWorkerUrl = applianceSubWorkerBlobUrl || (applianceSubWorkerBlobUrl = createWorkerBlobUrl(subWorkerString));
-
-    return {
-        fullWorkerUrl,
-        subWorkerUrl,
-    };
 }
 
 function mergeLocalLogOptions(restConfig: any): any {
@@ -826,17 +808,21 @@ class SDKBridge {
                 if (fullscreen) manager.setMaximized(true);
                 if (setup.enableAppliancePlugin) {
                     if (WindowManager.supportAppliancePlugin === false) throw new Error("Appliance Plugin requires supportAppliancePlugin=true");
-                    const applianceWorkerUrls = getApplianceWorkerUrls();
                     const appliancePluginExtras = mergeDefaultAppliancePluginExtras(
                         (appliancePluginOptions as any)?.extras,
                         { backgroundImageLoadOptions: setup.backgroundImageLoadOptions },
                     );
+                    const applianceWorkerUrls = await getApplianceWorkerUrls(
+                        { ...appliancePluginOptions, extras: appliancePluginExtras },
+                        (aRoom.dynamicConfig as any)?.appliancePlugin?.extras,
+                    );
+                    if (task.cancelled) throw new Error("Cancelled");
                     const roomLogger = (aRoom as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
                     roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
                     const plugin = await ApplianceMultiPlugin.getInstance(manager, {
                         options: {
-                            cdn: { fullWorkerUrl: applianceWorkerUrls.fullWorkerUrl, subWorkerUrl: applianceWorkerUrls.subWorkerUrl },
                             ...appliancePluginOptions,
+                            cdn: applianceWorkerUrls,
                             extras: appliancePluginExtras,
                         },
                         callbacks: { onBackgroundImageLoadEvent: event => inScope(task.scope, () => postBackgroundImageLoadEvent(event)), onInitLoadingChange: event => inScope(task.scope, () => postApplianceInitLoadingChange(event)) },

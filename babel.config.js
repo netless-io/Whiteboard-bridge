@@ -9,6 +9,8 @@ module.exports = {
         {
             "useBuiltIns": "entry",
             "corejs": 3,
+            // Webpack must see import() to keep local Worker source chunks lazy.
+            "exclude": ["proposal-dynamic-import"],
         }],
         "@babel/preset-typescript",
         "@babel/preset-react"
