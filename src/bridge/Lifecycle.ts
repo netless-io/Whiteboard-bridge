@@ -8,6 +8,8 @@ export type Task = {
     reply: (value: any) => void; disposers: Array<() => void | Promise<void>>;
     initializations: Promise<void>[];
     close?: Promise<void>; closeResult?: Promise<void>; unstable: boolean;
+    /** Explicitly false only while preparing dependencies before calling the SDK. */
+    transportStarted?: boolean;
     timer?: ReturnType<typeof setTimeout>;
 };
 export const documentId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
@@ -66,9 +68,9 @@ export class Lifecycle {
     async finish(task: Task, error?: Error): Promise<void> {
         task.settle();
         if (!error) return;
-        this.setState(task, task.object ? "closing" : "blocked");
+        this.setState(task, task.object || task.transportStarted === false ? "closing" : "blocked");
         this.complete(task, failure(error.message || "CreateFailed"));
-        if (task.object) this.leave(task.scope).catch(() => {});
+        if (task.object || task.transportStarted === false) this.leave(task.scope).catch(() => {});
     }
     leave(scope?: Scope): Promise<void> {
         if (!scope || scope.documentId !== documentId) return Promise.reject(new Error("StaleScope"));
@@ -87,7 +89,11 @@ export class Lifecycle {
         // Defer execution until close is stored, so synchronous phase callbacks see the same close work.
         task.close = Promise.resolve().then(async () => {
             await task.settled;
-            if (!task.object) throw new Error("CloseUnconfirmed");
+            if (!task.object) {
+                if (task.transportStarted !== false) throw new Error("CloseUnconfirmed");
+                this.setState(task, "idle");
+                return;
+            }
             let firstError: Error | undefined;
             for (const initialization of task.initializations) {
                 try { await initialization; } catch (error) { firstError = firstError || error; }

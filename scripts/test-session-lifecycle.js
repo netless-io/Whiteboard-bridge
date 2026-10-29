@@ -112,6 +112,24 @@ test('cancel overtaking create rejects the stale generation only',async()=>{
   const owner=new Lifecycle();await owner.leave(scope(2));assert.throws(()=>owner.begin('room',scope(2),()=>{}),/StaleScope/);
   owner.begin('room',scope(3),()=>{});assert.equal(sameScope(scope(2),scope(3)),false);
 });
+test('preparation failure or cancellation frees only a slot that never started transport', async () => {
+  for (const cancelled of [false, true]) {
+    const owner = new Lifecycle(), replies = [];
+    const task = owner.begin('room', scope(1), value => replies.push(JSON.parse(value)));
+    task.transportStarted = false;
+    const close = cancelled ? owner.leave(scope(1)) : undefined;
+    await owner.finish(task, new Error('preparation failed'));
+    await (close || task.closeResult);
+    assert.equal(owner.state, 'idle');
+    assert.equal(replies.length, 1);
+    assert.equal(replies[0].__error.code, cancelled ? 'Cancelled' : 'preparation failed');
+    owner.begin('room', scope(2), () => {});
+  }
+  const owner = new Lifecycle(), task = owner.begin('room', scope(1), () => {});
+  task.transportStarted = true;
+  await owner.finish(task, new Error('SDK join failed'));
+  assert.equal(owner.state, 'blocked');
+});
 (async()=>{for(const t of tests){await t.fn();process.stdout.write(`PASS ${t.name}\n`);timers=[];}process.stdout.write(`${tests.length} lifecycle tests passed\n`);})().catch(e=>{console.error(e);process.exitCode=1;});
 
 // Exercise the actual thin adapter with a native-shaped transport, including sync calls.

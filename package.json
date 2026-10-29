@@ -9,6 +9,7 @@
     ],
     "scripts": {
         "bundle": "webpack",
+        "test:room-preparation": "node scripts/test-room-preparation.js",
         "prebundle": "yarn sync-foundation-worker",
         "prebuild": "yarn sync-foundation-worker",
         "prebuildDev": "yarn sync-foundation-worker",
@@ -19,7 +20,7 @@
         "sync-foundation-worker": "yarn sync-foundation-worker:generate && yarn patch-foundation-worker",
         "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
         "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
-        "check": "tsc && yarn test:appliance-worker-urls && yarn test:session-lifecycle && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control",
+        "check": "tsc && yarn test:room-preparation && yarn test:appliance-worker-urls && yarn test:session-lifecycle && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control",
         "precy:server": "yarn sync-foundation-worker",
         "cy:server": "webpack-dev-server --mode development --host localhost --port 8760",
         "cy:run": "cypress run",

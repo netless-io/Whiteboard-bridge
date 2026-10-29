@@ -31,7 +31,7 @@ import {
     shouldQueryApplianceBackgroundImage,
     validateHasBackgroundImageParams,
 } from "./BackgroundImageViewId";
-import { mergeDefaultAppliancePluginExtras } from "./AppliancePluginDefaults";
+import { RoomPreparation } from "./RoomPreparation";
 import type {
     NativeSlidePerformanceOptions,
 } from "./SlidePerformanceDefaults";
@@ -49,7 +49,7 @@ import { SlideLoggerPlugin } from '../utils/SlideLogger';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 import { prepare } from '@netless/white-prepare';
 
-import { ApplianceMultiPlugin } from '@netless/appliance-plugin';
+import { ApplianceMultiPlugin, prepareApplianceRendering, getAppliancePreparationGeneration } from '@netless/appliance-plugin';
 import { getApplianceWorkerUrls } from './ApplianceWorkerUrls';
 import { createWorkerInstance as createFoundationWorkerInstance } from '../FoundationWorkerFactory';
 import { PCMProxy } from '../PCMProxy';
@@ -87,6 +87,7 @@ type NativeSDKConfigWithPresentation = NativeSDKConfig & {
     __nativeConfigDefaults?: readonly string[];
     presentationAppOptions?: NativePresentationAppOptions;
     backgroundImageLoadOptions?: BackgroundImageLoadOptions;
+    appliancePluginOptions?: Record<string, any>;
 };
 
 /** 背景图片加载重试次数：`-1`（无限重试）或 `0`~`10` 的整数。 */
@@ -584,7 +585,7 @@ class SDKBridge {
             return url;
         };
 
-        const { log, __nativeConfigDefaults, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, presentationAppOptions, backgroundImageLoadOptions, ...restConfig } = config;
+        const { log, __nativeConfigDefaults, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, appliancePluginOptions, presentationAppOptions, backgroundImageLoadOptions, ...restConfig } = config;
         const whiteSdkConfig = mergeLocalLogOptions(restConfig);
         const enablePcmDataCallback = (config as any).enablePcmDataCallback || false;
 
@@ -712,6 +713,17 @@ class SDKBridge {
                 pptParams,
                 useMobXState,
             });
+            const preparingSdk = sdk;
+            const preparation = new RoomPreparation(
+                () => WindowManager.preloadApps(),
+                options => prepareApplianceRendering(options as any, true, console),
+                getAppliancePreparationGeneration,
+            );
+            (preparingSdk as any).__nativePreparation = preparation;
+            (window as any).__whitePreparation = preparation.status;
+            void Promise.resolve(preparingSdk.prepareDynamicConfig()).then(dynamic => preparation.prepare(config, {}, dynamic)).catch(error => {
+                console.warn("[preparation] constructor failed; join will retry", error.message);
+            });
             window.sdk = sdk;
             sdkConfigurationJson = configurationJson;
             bindLocalLogStateChange(sdk);
@@ -747,6 +759,14 @@ class SDKBridge {
             const invisiblePlugins = [...useMultiViews ? [WindowManager as any] : []];
             window.nativeWebSocket = nativeWebSocket;
             const roomCallbackHandler = new RoomCallbackHandler(task);
+            const preparation: RoomPreparation = (joiningSdk as any).__nativePreparation;
+            task.transportStarted = false;
+            preparation.mark("joinRequested");
+            const resources = await joiningSdk.prepareRoomResources({ region: joinRoomParams.region, modulesOrigin: joinRoomParams.modulesOrigin });
+            const preparedPluginOptions = await preparation.prepare(setup, nativeParams, resources.dynamicConfig).catch(() => preparation.prepare(setup, nativeParams, resources.dynamicConfig));
+            if (task.cancelled) throw new Error("Cancelled");
+            preparation.mark("connectStarted");
+            task.transportStarted = true;
             const aRoom = await joiningSdk.joinRoom(withDynamicConfigDefaults({
                 disableMagixEventDispatchLimit: useMultiViews,
                 useMultiViews,
@@ -770,7 +790,7 @@ class SDKBridge {
                     disableMagixEventDispatchLimit: joinRoomParams.disableMagixEventDispatchLimit !== undefined || remote?.disableMagixEventDispatchLimit !== undefined
                         ? parameters.disableMagixEventDispatchLimit : effectiveMultiViews,
                 };
-            }), {...roomCallbackHandler, ...new SDKCallbackHandler(true)});
+            }), {...roomCallbackHandler, ...new SDKCallbackHandler(true)}, undefined, resources);
             acquiredRoom = aRoom;
             task.object = aRoom;
             disposers.push(() => {
@@ -808,23 +828,11 @@ class SDKBridge {
                 if (fullscreen) manager.setMaximized(true);
                 if (setup.enableAppliancePlugin) {
                     if (WindowManager.supportAppliancePlugin === false) throw new Error("Appliance Plugin requires supportAppliancePlugin=true");
-                    const appliancePluginExtras = mergeDefaultAppliancePluginExtras(
-                        (appliancePluginOptions as any)?.extras,
-                        { backgroundImageLoadOptions: setup.backgroundImageLoadOptions },
-                    );
-                    const applianceWorkerUrls = await getApplianceWorkerUrls(
-                        { ...appliancePluginOptions, extras: appliancePluginExtras },
-                        (aRoom.dynamicConfig as any)?.appliancePlugin?.extras,
-                    );
                     if (task.cancelled) throw new Error("Cancelled");
                     const roomLogger = (aRoom as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
                     roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");
                     const plugin = await ApplianceMultiPlugin.getInstance(manager, {
-                        options: {
-                            ...appliancePluginOptions,
-                            cdn: applianceWorkerUrls,
-                            extras: appliancePluginExtras,
-                        },
+                        options: preparedPluginOptions as any,
                         callbacks: { onBackgroundImageLoadEvent: event => inScope(task.scope, () => postBackgroundImageLoadEvent(event)), onInitLoadingChange: event => inScope(task.scope, () => postApplianceInitLoadingChange(event)) },
                     });
                     disposers.push(async () => {
