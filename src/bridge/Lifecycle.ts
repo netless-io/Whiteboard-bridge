@@ -8,6 +8,8 @@ export type Task = {
     reply: (value: any) => void; disposers: Array<() => void | Promise<void>>;
     initializations: Promise<void>[];
     close?: Promise<void>; closeResult?: Promise<void>; unstable: boolean;
+    /** Explicitly false only while preparing dependencies before calling the SDK. */
+    transportStarted?: boolean;
     timer?: ReturnType<typeof setTimeout>;
 };
 export const documentId = `${Date.now().toString(36)}-${Math.random().toString(36).slice(2)}`;
@@ -65,10 +67,12 @@ export class Lifecycle {
     }
     async finish(task: Task, error?: Error): Promise<void> {
         task.settle();
-        if (!error) return;
-        this.setState(task, task.object ? "closing" : "blocked");
+        // Once leave owns the outcome, a late preparation rejection must not
+        // move an already closed task (or its replacement) back to closing.
+        if (!error || task.close) return;
+        this.setState(task, task.object || task.transportStarted === false ? "closing" : "blocked");
         this.complete(task, failure(error.message || "CreateFailed"));
-        if (task.object) this.leave(task.scope).catch(() => {});
+        if (task.object || task.transportStarted === false) this.leave(task.scope).catch(() => {});
     }
     leave(scope?: Scope): Promise<void> {
         if (!scope || scope.documentId !== documentId) return Promise.reject(new Error("StaleScope"));
@@ -86,15 +90,39 @@ export class Lifecycle {
         this.complete(task, failure("Cancelled"));
         // Defer execution until close is stored, so synchronous phase callbacks see the same close work.
         task.close = Promise.resolve().then(async () => {
-            await task.settled;
-            if (!task.object) throw new Error("CloseUnconfirmed");
             let firstError: Error | undefined;
+            // No SDK transport was admitted. Cancelled continuations must check
+            // task.cancelled before admitting one; dependency prefetch may finish
+            // independently without holding this Room lifecycle slot.
+            if (!task.object && task.transportStarted === false) {
+                this.setState(task, "idle");
+                return;
+            }
+            // Once a Room is acquired, a stalled UI/plugin mount must not keep
+            // its transport alive until that initialization eventually settles.
+            // The lifecycle slot still waits for all initialization and cleanup.
+            const acquiredRoom = task.kind === "room" ? task.object : undefined;
+            const acquiredRoomStable = acquiredRoom?.phase === "connected";
+            if (acquiredRoom) {
+                try { await acquiredRoom.disconnect!(); }
+                catch (error) { firstError = error; }
+            }
+            await task.settled;
+            if (!task.object) {
+                if (task.transportStarted !== false) throw new Error("CloseUnconfirmed");
+                this.setState(task, "idle");
+                return;
+            }
             for (const initialization of task.initializations) {
                 try { await initialization; } catch (error) { firstError = firstError || error; }
             }
-            const stable = stableAtStart === undefined ? task.object.phase === "connected" : stableAtStart;
+            const stable = stableAtStart === undefined
+                ? acquiredRoom ? acquiredRoomStable : task.object.phase === "connected"
+                : stableAtStart;
             try {
-                if (task.kind === "room") await task.object.disconnect!();
+                if (task.kind === "room") {
+                    if (!acquiredRoom) await task.object.disconnect!();
+                }
                 else task.object.stop!();
             } catch (error) { firstError = error; }
             for (const dispose of task.disposers.reverse()) {

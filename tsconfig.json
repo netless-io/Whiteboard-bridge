@@ -32,7 +32,7 @@
 			"dom"
 		],
 		"skipLibCheck": true,
-        "module": "es6",
+        "module": "esnext",
 		"removeComments": true,
 		"alwaysStrict": true,
 		"allowUnreachableCode": false,
