@@ -154,6 +154,9 @@ config = {
         path.join(__dirname, 'babel.config.js'),
         path.join(__dirname, '.generated/foundation-worker.js'),
         path.join(__dirname, '.generated/foundation-worker.manifest.json'),
+        require.resolve('white-web-sdk'),
+        require.resolve('@netless/window-manager'),
+        require.resolve('@netless/appliance-plugin'),
       ],
     },
   },
@@ -165,6 +168,9 @@ config = {
 };
 
 module.exports = (env, argv) => {
+  const sdkEntry = require('./scripts/check-model-preload-sdk').checkModelPreloadSdk(env && env.modelPreloadSdkEntry);
+  config.resolve.alias['white-web-sdk$'] = sdkEntry;
+  config.cache.buildDependencies.config.push(sdkEntry);
   if (argv.mode === 'development') {
     config.output.filename = '[name].[hash].js';
     config.module.rules[0].exclude = /node_modules/;

@@ -61,11 +61,16 @@ async function main() {
             return { default: 'sub' };
         }, source => { workerBlobs.push(source); return `blob:${source}`; });
         let applianceOptions;
+        const appliancePreparations = [], appSelections = [];
         let generation = 0;
         class CursorTool { setRoom(value) { events.push('cursor.setRoom'); } }
         class WindowManager {
             static register() {}
-            static async preloadApps() {}
+            static async preloadApps(kinds) {
+                appSelections.push([...kinds]);
+                if (options.failApps) throw Error("unused custom App loader failed");
+                if (options.hangApps) await new Promise(() => {});
+            }
             static async mount(params) {
                 mounted = mod.exports.applyDynamicMountParams(params, true);
                 assert(params.room.useMultiViews);
@@ -81,7 +86,10 @@ async function main() {
         }
         class WhiteWebSdk {
             constructor(config) { sdkConfiguration = config; }
-            async prepareDynamicConfig() { return { parameters: options.remote }; }
+            async prepareDynamicConfig() {
+                if (options.hangDynamic) await new Promise(() => {});
+                return { parameters: options.remote };
+            }
             async prepareRoomResources() { return { dynamicConfig: await this.prepareDynamicConfig(), modelState: "deferredHandshake" }; }
             async joinRoom(params) {
                 joined = mod.exports.mergeDynamicJoinRoomParameters(options.remote?.joinRoom, params);
@@ -121,7 +129,10 @@ async function main() {
             addManagerListener(manager) { window.manager = manager; if (options.failListener) throw Error('listener failed'); },
             registerBridgeRoom() { events.push('registerBridgeRoom'); if (options.failRegistration) throw Error('register failed'); },
             getApplianceWorkerUrls: (...args) => workerUrls.get(...args),
-            prepareApplianceRendering: async () => undefined,
+            prepareApplianceRendering: async options => {
+                appliancePreparations.push(options);
+                return { renderMode: 'main-thread', contextType: '2d' };
+            },
             getAppliancePreparationGeneration: () => 0,
             postBackgroundImageLoadEvent() {}, postApplianceInitLoadingChange() {},
             ApplianceMultiPlugin: { async getInstance(manager, adaptor) {
@@ -149,7 +160,7 @@ async function main() {
         const runtime = new Function(...Object.keys(scope), compiled.code)(...Object.values(scope));
         runtime.bridge.newWhiteSdk({ appIdentifier: 'test', dynamicConfig: { url: 'https://example.test/latest.json' }, ...(options.setup || {}) });
         return {
-            options, events, rooms, window, styles, runtime, lifecycle, workerLoads, workerBlobs,
+            options, events, rooms, window, styles, runtime, lifecycle, workerLoads, workerBlobs, appliancePreparations, appSelections,
             applianceOptions: () => applianceOptions,
             joined: () => joined, mounted: () => mounted, config: () => sdkConfiguration,
             async join(params = {}) {
@@ -162,6 +173,89 @@ async function main() {
             },
         };
     }
+
+    // The constructor opt-in survives Native JSON and the production setup
+    // handler, independently from multi-view and remote Room defaults.
+    for (const enableModelPreload of [undefined, false, true]) {
+        const setup = JSON.parse(JSON.stringify({ enableModelPreload }));
+        const r = scenario({ setup });
+        assert.equal(r.config().enableModelPreload, enableModelPreload);
+        assert.equal(Object.hasOwn(r.config(), 'enableModelPreload'), enableModelPreload !== undefined);
+    }
+    console.log('Bridge model preload: constructor opt-in omission/false/true forwarded unchanged');
+    for (const selection of [undefined, [], ['Slide'], ['Presentation', 'DocsViewer'], ['MediaPlayer', 'MediaPlayer']]) {
+        const r = scenario({ setup: { preloadBuiltinApps: selection, enableModelPreload: false } });
+        await new Promise(resolve => setImmediate(resolve));
+        assert.equal(Object.hasOwn(r.config(), 'preloadBuiltinApps'), false, 'Native-only selection must not leak into Web SDK');
+        assert.deepEqual(r.appSelections, selection?.length === 0 ? [] : [selection === undefined ? ['Slide', 'Presentation'] : [...new Set(selection)]]);
+        assert.equal((await r.join()).__error, undefined);
+        assert.equal(r.rooms.length, 1);
+    }
+    console.log('Bridge App preload: default pair, empty opt-out, selected kinds and duplicate normalization preserve normal join');
+    const pendingConfig = scenario({ hangDynamic: true, setup: { enableModelPreload: false } });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.deepEqual(pendingConfig.appSelections, [['Slide', 'Presentation']], 'optional class warmup must start without waiting for remote configuration');
+    const capturedKinds = ['Presentation'];
+    const capturedSelection = scenario({ setup: { preloadBuiltinApps: capturedKinds } });
+    capturedKinds.push('MediaPlayer');
+    await new Promise(resolve => setImmediate(resolve));
+    assert.deepEqual(capturedSelection.appSelections, [['Presentation']], 'constructor captures an independent list snapshot');
+    const invalidSelection = scenario({ setup: { preloadBuiltinApps: [] } });
+    const existingSdk = invalidSelection.runtime.globals().sdk;
+    for (const value of [null, false, 'Slide', ['slide'], ['custom']]) {
+        let response;
+        invalidSelection.runtime.bridge.newWhiteSdk({ appIdentifier: 'test', preloadBuiltinApps: value }, text => { response = JSON.parse(text); });
+        assert(response.__error.message.includes('preloadBuiltinApps'));
+        assert.strictEqual(invalidSelection.runtime.globals().sdk, existingSdk, 'invalid selection must not replace an existing SDK');
+    }
+    for (const failure of ['failApps', 'hangApps']) {
+        const r = scenario({ [failure]: true, setup: {enableModelPreload:false,enableAppliancePlugin:false,useMultiViews:false} });
+        const result = await r.join();
+        assert.equal(result.__error, undefined, failure + ' cannot gate an unrelated blank Room');
+        assert.equal(r.rooms.length, 1);
+    }
+    console.log('Bridge optional App preload rejection/hang cannot block blank Room join');
+
+
+    // Native SDK options must prepare the appliance renderer before any Room,
+    // independently from the model-preload opt-in. Only the renderer boundary
+    // is stubbed; execute the production constructor and RoomPreparation cache.
+    const minimalAppliance = scenario({ setup: JSON.parse('{"enableAppliancePlugin":true}') });
+    await new Promise(resolve => setImmediate(resolve));
+    assert.equal(minimalAppliance.rooms.length, 0);
+    assert.equal(minimalAppliance.appliancePreparations.length, 1, 'enableAppliancePlugin alone activates rendering preparation');
+    assert.deepEqual(minimalAppliance.workerLoads, { full: 1, sub: 0 });
+    for (const enableModelPreload of [undefined, false, true]) {
+        for (const appliancePluginOptions of [undefined, {}, { extras: {} },
+            { extras: { useWorker: 'auto', useSimple: true, canvasOpt: { contextType: '2d' } } }]) {
+            const setup = JSON.parse(JSON.stringify({ enableModelPreload, enableAppliancePlugin: true,
+                useMultiViews: true, appliancePluginOptions }));
+            const r = scenario({ setup });
+            await new Promise(resolve => setImmediate(resolve));
+            assert.equal(r.rooms.length, 0, 'appliance preparation must not allocate a Room');
+            assert.equal(r.appliancePreparations.length, 1, 'enableAppliancePlugin alone starts preparation, independently from model preloading');
+            assert.deepEqual(r.workerLoads, { full: 1, sub: 0 }, 'omitted useWorker/useSimple still prepares the default full Worker');
+            const prepared = r.appliancePreparations[0];
+            assert.equal(prepared.cdn.fullWorkerUrl, 'blob:full');
+            if (appliancePluginOptions?.extras?.useWorker) {
+                assert.equal(prepared.extras.useWorker, 'auto');
+                assert.equal(prepared.extras.canvasOpt.contextType, '2d');
+            } else {
+                assert.equal(Object.hasOwn(prepared.extras, 'useWorker'), false, 'Bridge leaves the auto default to the plugin');
+            }
+            assert.equal((await r.join()).__error, undefined);
+            assert.equal(r.appliancePreparations.length, 1, 'join reuses matching SDK-level appliance preparation');
+            assert.deepEqual(r.workerLoads, { full: 1, sub: 0 });
+        }
+    }
+    for (const enableAppliancePlugin of [undefined, false]) {
+        const r = scenario({ setup: { enableModelPreload: true, enableAppliancePlugin } });
+        await new Promise(resolve => setImmediate(resolve));
+        assert.equal(r.appliancePreparations.length, 0, 'model opt-in cannot enable appliance preparation');
+        assert.equal((await r.join()).__error, undefined);
+        assert.equal(r.appliancePreparations.length, 0);
+    }
+    console.log('Bridge appliance preparation: minimal enableAppliancePlugin-only payload, 12 constructor combinations (omitted/empty/explicit options × model default/false/true), matching join reuse and 2 disabled-plugin cases passed');
 
     // Actual tagged Native payloads: unset BOOL defaults are below OSS, explicit false wins.
     const nativeDefaults = scenario({ setup: {

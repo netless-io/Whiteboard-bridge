@@ -13,9 +13,17 @@ function load(name) {
     Function("module", "exports", "require", code)(module, module.exports, id => id === "./ApplianceWorkerUrls" ? { getApplianceWorkerUrls: async options => { workers++; return options.extras?.useWorker === "mainThread" ? {} : { fullWorkerUrl: "blob:full", ...(!options.extras?.useSimple ? { subWorkerUrl: "blob:sub" } : {}) }; } } : load(id.slice(2)));
     return module.exports;
 }
-const { resolveAppliancePreparationOptions: resolve, RoomPreparation } = load("RoomPreparation");
+const { resolveAppliancePreparationOptions: resolve, RoomPreparation, resolveBuiltinAppPreloadKinds } = load("RoomPreparation");
 const plain = value => JSON.parse(JSON.stringify(value));
 (async () => {
+    assert.deepEqual(resolveBuiltinAppPreloadKinds(undefined), ["Slide", "Presentation"]);
+    assert.deepEqual(resolveBuiltinAppPreloadKinds([]), []);
+    const selected = ["DocsViewer", "Slide", "DocsViewer"];
+    assert.deepEqual(resolveBuiltinAppPreloadKinds(selected), ["DocsViewer", "Slide"]);
+    assert.deepEqual(selected, ["DocsViewer", "Slide", "DocsViewer"]);
+    for (const value of [null, true, "Slide", {}, ["slide"], [1], ["custom"]]) {
+        assert.throws(() => resolveBuiltinAppPreloadKinds(value), /preloadBuiltinApps/);
+    }
     const sdk = { enableAppliancePlugin: true, appliancePluginOptions: { extras: { useSimple: false, canvasOpt: { contextType: "webgl2" }, items: [1] } } };
     const room = { appliancePluginOptions: { cdn: {}, extras: { useWorker: "mainThread", canvasOpt: { other: 0 }, items: [] } } };
     const original = JSON.stringify([sdk, room]);
@@ -35,8 +43,9 @@ const plain = value => JSON.parse(JSON.stringify(value));
     const second = preparation.prepare({ enableAppliancePlugin: true }, {}, dynamic);
     assert.strictEqual(first, second);
     assert.equal(preparation.status.state, "loading");
-    complete();
     await first;
+    assert.equal(preparation.status.state, "ready", "hanging optional Apps must not delay required readiness");
+    complete();
     assert.equal(apps, 1); assert.equal(probes, 1); assert.equal(workers, 1);
     assert.equal(preparation.status.state, "ready");
     await preparation.prepare({ enableAppliancePlugin: true }, { appliancePluginOptions: { extras: { useSimple: false } } }, dynamic);
@@ -46,14 +55,26 @@ const plain = value => JSON.parse(JSON.stringify(value));
     assert.equal(preparation.status.workerUrls.subWorkerUrl, undefined, "reusing an earlier key restores its diagnostics");
     let attempts = 0;
     const retry = new RoomPreparation(async () => { if (++attempts === 1) throw Error("chunk failed"); }, async () => {});
-    await assert.rejects(retry.prepare({}, {}, undefined), /chunk failed/);
     await retry.prepare({}, {}, undefined);
+    for (let n=0;n<8;n++) await Promise.resolve();
+    assert(retry.status.events.some(event => event.stage === "appsFailed"));
+    await retry.prepare({}, {}, undefined);
+    for (let n=0;n<8;n++) await Promise.resolve();
     assert.equal(attempts, 2);
+    const required = new RoomPreparation(async () => { throw Error("optional"); }, async () => { throw Error("required probe"); });
+    await assert.rejects(required.prepare({enableAppliancePlugin:true}, {}, undefined), /required probe/);
     let generation = 0, generationProbes = 0;
     const invalidated = new RoomPreparation(async () => {}, async () => { generationProbes++; }, () => generation);
     await invalidated.prepare({ enableAppliancePlugin: true }, {}, dynamic);
     generation++;
     await invalidated.prepare({ enableAppliancePlugin: true }, {}, dynamic);
     assert.equal(generationProbes, 2, "runtime invalidation must recheck before the next join");
+    let independentProbes = 0;
+    const independent = new RoomPreparation(async () => {}, async () => { independentProbes++; });
+    const defaultPlugin = await independent.prepare({ enableAppliancePlugin: true, enableModelPreload: false }, {}, undefined);
+    assert.equal(independentProbes, 1, "model opt-out must not suppress appliance preparation");
+    assert.equal(defaultPlugin.extras.useWorker, undefined, "omitted worker mode reaches the plugin for its auto default");
+    await independent.prepare({ enableAppliancePlugin: true, enableModelPreload: true }, {}, undefined);
+    assert.equal(independentProbes, 1, "model switch changes do not invalidate the independent appliance preparation");
     console.log("room-preparation: remote-only extras, field priority, false/0/arrays/cdn, isolation, in-flight reuse, changed options and retry passed");
 })().catch(error => { console.error(error); process.exitCode = 1; });

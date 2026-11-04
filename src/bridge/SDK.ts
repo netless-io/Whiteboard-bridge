@@ -31,7 +31,7 @@ import {
     shouldQueryApplianceBackgroundImage,
     validateHasBackgroundImageParams,
 } from "./BackgroundImageViewId";
-import { RoomPreparation } from "./RoomPreparation";
+import { RoomPreparation, resolveBuiltinAppPreloadKinds } from "./RoomPreparation";
 import type {
     NativeSlidePerformanceOptions,
 } from "./SlidePerformanceDefaults";
@@ -83,6 +83,10 @@ type NativeBuiltinAppOptions = {
 
 type NativeSDKConfigWithPresentation = NativeSDKConfig & {
     disableDeviceInputs?: boolean;
+    /** Opt in to the Gateway model hint and speculative download; default false. */
+    enableModelPreload?: boolean;
+    /** App class warmup only. Omitted: Slide / Presentation; [] disables it. */
+    preloadBuiltinApps?: readonly string[];
     dynamicConfig?: DynamicConfigOptions;
     __nativeConfigDefaults?: readonly string[];
     presentationAppOptions?: NativePresentationAppOptions;
@@ -585,7 +589,14 @@ class SDKBridge {
             return url;
         };
 
-        const { log, __nativeConfigDefaults, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, appliancePluginOptions, presentationAppOptions, backgroundImageLoadOptions, ...restConfig } = config;
+        let builtinAppKinds: string[];
+        try {
+            builtinAppKinds = resolveBuiltinAppPreloadKinds(config.preloadBuiltinApps);
+        } catch (error) {
+            callback?.(failure(error.message));
+            return;
+        }
+        const { log, __nativeConfigDefaults, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, appliancePluginOptions, presentationAppOptions, backgroundImageLoadOptions, preloadBuiltinApps, ...restConfig } = config;
         const whiteSdkConfig = mergeLocalLogOptions(restConfig);
         const enablePcmDataCallback = (config as any).enablePcmDataCallback || false;
 
@@ -715,12 +726,13 @@ class SDKBridge {
             });
             const preparingSdk = sdk;
             const preparation = new RoomPreparation(
-                () => WindowManager.preloadApps(),
+                () => builtinAppKinds.length ? WindowManager.preloadApps(builtinAppKinds) : Promise.resolve(),
                 options => prepareApplianceRendering(options as any, true, console),
                 getAppliancePreparationGeneration,
             );
             (preparingSdk as any).__nativePreparation = preparation;
             (window as any).__whitePreparation = preparation.status;
+            preparation.warmupApps();
             void Promise.resolve(preparingSdk.prepareDynamicConfig()).then(dynamic => preparation.prepare(config, {}, dynamic)).catch(error => {
                 console.warn("[preparation] constructor failed; join will retry", error.message);
             });
@@ -763,7 +775,11 @@ class SDKBridge {
             task.transportStarted = false;
             preparation.mark("joinRequested");
             const resources = await joiningSdk.prepareRoomResources({ region: joinRoomParams.region, modulesOrigin: joinRoomParams.modulesOrigin });
-            const preparedPluginOptions = await preparation.prepare(setup, nativeParams, resources.dynamicConfig).catch(() => preparation.prepare(setup, nativeParams, resources.dynamicConfig));
+            if (task.cancelled) throw new Error("Cancelled");
+            const preparedPluginOptions = await preparation.prepare(setup, nativeParams, resources.dynamicConfig).catch(error => {
+                if (task.cancelled) throw error;
+                return preparation.prepare(setup, nativeParams, resources.dynamicConfig);
+            });
             if (task.cancelled) throw new Error("Cancelled");
             preparation.mark("connectStarted");
             task.transportStarted = true;

@@ -2,6 +2,16 @@ import { getApplianceWorkerUrls } from "./ApplianceWorkerUrls";
 import { splitNativeConfiguration } from "./DynamicConfigParameters";
 
 type Options = Record<string, any>;
+
+/** Native-only class warmup selection. Empty arrays explicitly disable it. */
+export function resolveBuiltinAppPreloadKinds(value: unknown): string[] {
+    if (value === undefined) return ["Slide", "Presentation"];
+    const allowed = ["Slide", "Presentation", "MediaPlayer", "DocsViewer"];
+    if (!Array.isArray(value) || value.some(kind => typeof kind !== "string" || !allowed.includes(kind))) {
+        throw new TypeError("preloadBuiltinApps must be an array of Slide, Presentation, MediaPlayer or DocsViewer");
+    }
+    return Array.from(new Set(value));
+}
 const plain = (item: any) => item && Object.getPrototypeOf(item) === Object.prototype;
 function copy(value: any): any {
     if (Array.isArray(value)) return value.map(copy);
@@ -37,6 +47,7 @@ export class RoomPreparation {
     private tasks = new Map<string, Promise<Options>>();
     private ready = new Map<string, { workerUrls?: Options; renderModel?: string }>();
     private activeKey?: string;
+    private appWarmup?: Promise<void>;
     readonly status: { state: string; workerUrls?: Options; renderModel?: string; events: Array<{ stage: string; at: number; key?: string }> } = { state: "idle", events: [] };
     constructor(
         private readonly preloadApps: () => Promise<void>,
@@ -48,7 +59,21 @@ export class RoomPreparation {
         if (this.status.events.length > 128) this.status.events.splice(0, this.status.events.length - 128);
         console.info("[preparation] " + stage);
     }
+    warmupApps(): void {
+        // Optional Apps may never be used by this Room. Warm them in the
+        // background, without making their loader/CDN a join prerequisite.
+        if (!this.appWarmup) {
+            const warmup = Promise.resolve().then(() => this.preloadApps()).then(() => {
+                this.mark("appsReady");
+            }).catch(() => {
+                if (this.appWarmup === warmup) this.appWarmup = undefined;
+                this.mark("appsFailed");
+            });
+            this.appWarmup = warmup;
+        }
+    }
     prepare(setup: Options, room: Options, dynamic: any): Promise<Options> {
+        this.warmupApps();
         const options = resolveAppliancePreparationOptions(setup, room, dynamic?.parameters?.appliancePlugin?.extras);
         const key = JSON.stringify([!!setup.enableAppliancePlugin, options, this.probeGeneration()], (_key, value) =>
             value && typeof value === "object" && !Array.isArray(value)
@@ -70,17 +95,14 @@ export class RoomPreparation {
         this.status.renderModel = undefined;
         this.mark("start");
         const result: { workerUrls?: Options; renderModel?: string } = {};
-        const task = Promise.all([
-            this.preloadApps(),
-            setup.enableAppliancePlugin ? (async () => {
+        const task = (setup.enableAppliancePlugin ? (async () => {
                 const cdn = await getApplianceWorkerUrls(options);
                 const effective = { ...options, cdn };
                 const rendering = await this.probe(effective) as any;
                 result.workerUrls = cdn;
                 if (rendering) result.renderModel = `${rendering.renderMode}/${rendering.contextType}`;
                 return effective;
-            })() : Promise.resolve(options),
-        ]).then(([, effective]) => {
+            })() : Promise.resolve(options)).then(effective => {
             this.ready.set(key, result);
             if (this.activeKey === key) Object.assign(this.status, result, { state: "ready" });
             this.mark("dependenciesReady");

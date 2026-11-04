@@ -44,6 +44,31 @@ test('deadline wins, later leave cannot overwrite JoinTimeout', async () => {
   task.object={phase:'connected',async disconnect(){this.phase='disconnected';}};task.settle();await close;
   assert.equal(replies.length,1);
 });
+test('deadline disconnects an acquired Room while plugin mount is still pending', async () => {
+  const owner = new Lifecycle(), replies = [];
+  const task = owner.begin('room', scope(1), value => replies.push(JSON.parse(value)), 45);
+  let disconnects = 0, cleaned = 0;
+  task.object = {phase: 'connected', async disconnect() { disconnects++; this.phase = 'disconnected'; }};
+  task.disposers.push(() => cleaned++);
+  await advance(46);
+  assert.equal(replies[0].__error.code, 'JoinTimeout');
+  assert.equal(disconnects, 1, 'transport must close before a stalled mount settles');
+  assert.equal(cleaned, 0); assert.equal(owner.state, 'closing');
+  assert.throws(() => owner.begin('room', scope(2), () => {}), /Busy/);
+  task.settle(); await owner.leave(scope(1));
+  assert.equal(disconnects, 1); assert.equal(cleaned, 1); assert.equal(owner.state, 'idle');
+});
+test('an acquired Room closes its transport even when initialization never settles', async () => {
+  const owner = new Lifecycle(), task = owner.begin('room', scope(1), () => {});
+  let disconnects = 0;
+  task.object = {phase: 'connected', async disconnect() { disconnects++; this.phase = 'disconnected'; }};
+  const close = owner.leave(scope(1));
+  const rejected = assert.rejects(close, /LeaveTimeout/);
+  await flush(); assert.equal(disconnects, 1);
+  await advance(20001); await rejected;
+  assert.equal(owner.state, 'blocked'); assert.equal(disconnects, 1);
+  task.settle(); await flush(); assert.equal(owner.state, 'idle');
+});
 test('disconnect and leave share one close; idle precedes completion', async () => {
   const {owner,task,closes}=active(); const first=owner.leave(scope(1)),second=owner.leave(scope(1));
   assert.strictEqual(first,second); await first; assert.equal(closes(),1); assert.equal(owner.state,'idle');
@@ -129,6 +154,25 @@ test('preparation failure or cancellation frees only a slot that never started t
   task.transportStarted = true;
   await owner.finish(task, new Error('SDK join failed'));
   assert.equal(owner.state, 'blocked');
+});
+test('cancel before transport releases without waiting; late finish cannot poison an idle or replacement slot', async () => {
+  for (const replace of [false, true]) {
+    const owner = new Lifecycle(), replies = [];
+    const task = owner.begin('room', scope(1), value => replies.push(JSON.parse(value)), 45000);
+    task.transportStarted = false;
+    const close = owner.leave(scope(1));
+    await close;
+    assert.equal(owner.state, 'idle');
+    const replacement = replace ? owner.begin('room', scope(2), () => {}) : undefined;
+    await advance(120001);
+    assert.equal(replies.length, 1); assert.equal(replies[0].__error.code, 'Cancelled');
+    if (replace) await assert.rejects(owner.leave(scope(1)), /StaleScope/);
+    else assert.strictEqual(owner.leave(scope(1)), close);
+    await owner.finish(task, new Error('late preparation failure'));
+    assert.equal(owner.state, replace ? 'joining' : 'idle');
+    if (replacement) assert.strictEqual(owner.task, replacement);
+    else await owner.leave(scope(1));
+  }
 });
 (async()=>{for(const t of tests){await t.fn();process.stdout.write(`PASS ${t.name}\n`);timers=[];}process.stdout.write(`${tests.length} lifecycle tests passed\n`);})().catch(e=>{console.error(e);process.exitCode=1;});
 
