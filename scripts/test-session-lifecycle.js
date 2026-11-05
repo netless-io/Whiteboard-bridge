@@ -209,7 +209,10 @@ process.stdout.write('PASS task media scope survives replacement; global log and
 // Execute the production setup admission prefix: JSON key order is not a configuration change.
 const sdkSource=fs.readFileSync(require('path').join(__dirname,'../src/bridge/SDK.ts'),'utf8');
 const setupPrefix=sdkSource.split('newWhiteSdk = (config: NativeSDKConfigWithPresentation, callback?: (value: string) => void) => {')[1].split('        const urlInterrupter')[0];
-const setupAdmission=new Function('config','sdk','sdkConfigurationJson','lifecycle','callback',setupPrefix+'return configurationJson;');
+const completionModule={exports:{}};
+vm.runInNewContext(ts.transpileModule(fs.readFileSync(require('path').join(__dirname,'../src/bridge/PreloadCompletion.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2019}}).outputText,
+ {module:completionModule,exports:completionModule.exports});
+const setupAdmission=new Function('configurationKey','config','sdk','sdkConfigurationJson','lifecycle','callback',setupPrefix+'return configurationJson;').bind(null,completionModule.exports.configurationKey);
 const initialSetup={appIdentifier:'app',nested:{b:2,a:1},sequence:[1,2]};
 const serializedSetup=setupAdmission(initialSetup,null,null,{state:'idle'},()=>{});
 let setupReplies=0;

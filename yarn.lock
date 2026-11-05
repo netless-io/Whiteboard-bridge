@@ -1114,10 +1114,10 @@
   resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.109.tgz#3b8ea75aa7c1b781bb95a1057cf581428b920de3"
   integrity sha512-MEHcq7ut+Qjl9ClrgJhLGwTAY4aMK1RnpIJtxm8eZksKWxJRiD8rXkwZVpGYLXz+TpHUlLbueZMHaqVFlo1gdg==
 
-"@netless/appliance-plugin@1.1.46":
-  version "1.1.46"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.46.tgz#0c385ba2792790f03f67521f949c21979cb68ade"
-  integrity sha512-tjmt6NEVCBYMKDQohu+4pz57HRZxY6ceiQzAXLZnVqkf/rwwgURDO+d3bjKQHR99BPi0jeKtxGM57YW6iGaHKg==
+"@netless/appliance-plugin@1.1.47":
+  version "1.1.47"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.47.tgz#66007b4a98affb03b87a145dd5fa349981c4f5fd"
+  integrity sha512-LN/b08NpZT5kPobxGqtWzV5oM8Xwrd3ZMR/VTLBdf81/7ToxwOMJifggJyOQbQbAVzH3cnDn2KHNjpOcwLMcvg==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"
@@ -6827,10 +6827,10 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.61:
-  version "2.16.61"
-  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.61.tgz#69b508347b2e66437c390ad035c3d42001df7218"
-  integrity sha512-T/dzHrK1KmRu+T6+nFPQ/poXx49jg4muV8gChlW/iq+gDpApqu8nKijNfjHHHTf+dxlQ8zu9ENiZW/sJ1KyUKQ==
+white-web-sdk@2.16.62:
+  version "2.16.62"
+  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.62.tgz#d1c8ee8480b2cedd551a62d3351894c3c1ab90e6"
+  integrity sha512-ftT1+5/HUNni52PKrITgDXvOiWX3l+14jYAiIXjs6t9ryN4Nh/FunvLD5AmPxi8DIjjajvOxfx9ax+vZ31Nn6A==
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
