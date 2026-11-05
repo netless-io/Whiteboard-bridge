@@ -169,6 +169,8 @@ config = {
 
 module.exports = (env, argv) => {
   const sdkEntry = require('./scripts/check-model-preload-sdk').checkModelPreloadSdk(env && env.modelPreloadSdkEntry);
+  const pluginEntry = require('./scripts/check-model-preload-sdk').checkAppliancePreparation(env && env.preparationPluginEntry);
+  config.resolve.alias['@netless/appliance-plugin$'] = pluginEntry;
   config.resolve.alias['white-web-sdk$'] = sdkEntry;
   config.cache.buildDependencies.config.push(sdkEntry);
   if (argv.mode === 'development') {

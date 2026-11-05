@@ -1,5 +1,6 @@
 import { getApplianceWorkerUrls } from "./ApplianceWorkerUrls";
 import { splitNativeConfiguration } from "./DynamicConfigParameters";
+import { PreloadResult, preloadSuccess } from "./PreloadCompletion";
 
 type Options = Record<string, any>;
 
@@ -47,7 +48,7 @@ export class RoomPreparation {
     private tasks = new Map<string, Promise<Options>>();
     private ready = new Map<string, { workerUrls?: Options; renderModel?: string }>();
     private activeKey?: string;
-    private appWarmup?: Promise<void>;
+    private appWarmup?: Promise<PreloadResult>;
     readonly status: { state: string; workerUrls?: Options; renderModel?: string; events: Array<{ stage: string; at: number; key?: string }> } = { state: "idle", events: [] };
     constructor(
         private readonly preloadApps: () => Promise<void>,
@@ -59,18 +60,27 @@ export class RoomPreparation {
         if (this.status.events.length > 128) this.status.events.splice(0, this.status.events.length - 128);
         console.info("[preparation] " + stage);
     }
-    warmupApps(): void {
+    /** Required options/resources only. Optional render probing never gates a connection. */
+    async resolveForRoom(setup: Options, room: Options, dynamic: any): Promise<Options> {
+        const options = resolveAppliancePreparationOptions(setup, room, dynamic?.parameters?.appliancePlugin?.extras);
+        if (!setup.enableAppliancePlugin) return options;
+        return { ...options, cdn: await getApplianceWorkerUrls(options) };
+    }
+    warmupApps(): Promise<PreloadResult> {
         // Optional Apps may never be used by this Room. Warm them in the
         // background, without making their loader/CDN a join prerequisite.
         if (!this.appWarmup) {
             const warmup = Promise.resolve().then(() => this.preloadApps()).then(() => {
                 this.mark("appsReady");
+                return preloadSuccess();
             }).catch(() => {
                 if (this.appWarmup === warmup) this.appWarmup = undefined;
                 this.mark("appsFailed");
+                return { state: "warn" as const, message: "内置 App 类预加载失败，将在实际使用时重试" };
             });
             this.appWarmup = warmup;
         }
+        return this.appWarmup;
     }
     prepare(setup: Options, room: Options, dynamic: any): Promise<Options> {
         this.warmupApps();
