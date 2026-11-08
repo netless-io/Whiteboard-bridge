@@ -25,6 +25,7 @@ config = {
   },
   target: ["web", "es5"],
   resolve: {
+    modules: [path.resolve(__dirname, 'node_modules'), 'node_modules'],
     alias: {
       // rbush v4 ships an ESM entry that the legacy Babel pipeline rewrites to
       // bare CommonJS globals. Use its official browser bundle in WebView builds.
@@ -70,7 +71,7 @@ config = {
           enforce: true,
         },
         white: {
-          test: /[\\/]node_modules[\\/](white-web-sdk)[\\/]/,
+          test: module => module.resource === require.resolve('white-web-sdk') || /[\\/]node_modules[\\/]white-web-sdk[\\/]/.test(module.resource || ''),
           name: 'web-sdk',
           chunks: 'all',
           priority: 10,

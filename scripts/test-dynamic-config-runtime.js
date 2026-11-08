@@ -20,6 +20,7 @@ async function main() {
                 export { applyDynamicMountParams } from '../window-manager/src/Utils/dynamicConfig';
                 export { withDynamicConfigDefaults, splitNativeConfiguration, resolveNativeConfiguration } from './src/bridge/DynamicConfigParameters';
                 export { mergeDefaultAppliancePluginExtras } from './src/bridge/AppliancePluginDefaults';
+                export { collectPreloadResults, configurationKey, preloadSuccess } from './src/bridge/PreloadCompletion';
                 export { Lifecycle, currentScope, documentId, failure, inScope } from './src/bridge/Lifecycle';
                 export { ApplianceWorkerUrlProvider } from './src/bridge/ApplianceWorkerUrls';
                 export { mergeApplianceDynamicExtras } from '../appliance-plugin/src/plugin/dynamicConfig';
@@ -52,12 +53,14 @@ async function main() {
         const workerLoads = { full: 0, sub: 0 }, workerBlobs = [];
         const workerUrls = new mod.exports.ApplianceWorkerUrlProvider(async () => {
             workerLoads.full++;
+            events.push("worker.full");
             options.onWorkerLoad?.();
             await options.workerDelay;
             if (options.failWorkerLoad) throw Error('worker chunk missing');
             return { default: 'full' };
         }, async () => {
             workerLoads.sub++;
+            events.push("worker.sub");
             return { default: 'sub' };
         }, source => { workerBlobs.push(source); return `blob:${source}`; });
         let applianceOptions;
@@ -86,11 +89,14 @@ async function main() {
         }
         class WhiteWebSdk {
             constructor(config) { sdkConfiguration = config; }
-            async prepareDynamicConfig() {
-                if (options.hangDynamic) await new Promise(() => {});
-                return { parameters: options.remote };
+            __observeDynamicConfigPreload() {
+                assert(sdkConfiguration.dynamicConfig, 'off path cannot register a dynamic observer');
+                return options.hangDynamic ? new Promise(() => {}) : Promise.resolve({ state: {source: options.remote ? 'remote' : 'local'}, parameters: options.remote });
             }
-            async prepareRoomResources() { return { dynamicConfig: await this.prepareDynamicConfig(), modelState: "deferredHandshake" }; }
+            async waitForDynamicConfigPreload() { await this.__observeDynamicConfigPreload(); return {state: 'success', message: ''}; }
+            async waitForModelPreload() { return {state: 'success', message: ''}; }
+            prepareDynamicConfig() { throw Error('Bridge must not call private config prepare'); }
+            prepareRoomResources() { throw Error('Bridge must not call private resources prepare'); }
             async joinRoom(params) {
                 joined = mod.exports.mergeDynamicJoinRoomParameters(options.remote?.joinRoom, params);
                 events.push('sdk.joinRoom');
@@ -186,13 +192,14 @@ async function main() {
     for (const selection of [undefined, [], ['Slide'], ['Presentation', 'DocsViewer'], ['MediaPlayer', 'MediaPlayer']]) {
         const r = scenario({ setup: { preloadBuiltinApps: selection, enableModelPreload: false } });
         await new Promise(resolve => setImmediate(resolve));
-        assert.equal(Object.hasOwn(r.config(), 'preloadBuiltinApps'), false, 'Native-only selection must not leak into Web SDK');
-        assert.deepEqual(r.appSelections, selection?.length === 0 ? [] : [selection === undefined ? ['Slide', 'Presentation'] : [...new Set(selection)]]);
+        assert.equal(Object.hasOwn(r.config(), 'preloadBuiltinApps'), false, 'Native-only selection must not leak into Web SDK'
+        );
+        assert.deepEqual(r.appSelections, selection?.length ? [[...new Set(selection)]] : []);
         assert.equal((await r.join()).__error, undefined);
         assert.equal(r.rooms.length, 1);
     }
-    console.log('Bridge App preload: default pair, empty opt-out, selected kinds and duplicate normalization preserve normal join');
-    const pendingConfig = scenario({ hangDynamic: true, setup: { enableModelPreload: false } });
+    console.log('Bridge App preload: default off, empty opt-out, selected kinds and duplicate normalization preserve normal join');
+    const pendingConfig = scenario({ hangDynamic: true, setup: { enableModelPreload: false, preloadBuiltinApps: ['Slide', 'Presentation'] } });
     await new Promise(resolve => setImmediate(resolve));
     assert.deepEqual(pendingConfig.appSelections, [['Slide', 'Presentation']], 'optional class warmup must start without waiting for remote configuration');
     const capturedKinds = ['Presentation'];
@@ -202,14 +209,14 @@ async function main() {
     assert.deepEqual(capturedSelection.appSelections, [['Presentation']], 'constructor captures an independent list snapshot');
     const invalidSelection = scenario({ setup: { preloadBuiltinApps: [] } });
     const existingSdk = invalidSelection.runtime.globals().sdk;
-    for (const value of [null, false, 'Slide', ['slide'], ['custom']]) {
+    for (const value of [false, 'Slide', ['slide'], ['custom']]) {
         let response;
         invalidSelection.runtime.bridge.newWhiteSdk({ appIdentifier: 'test', preloadBuiltinApps: value }, text => { response = JSON.parse(text); });
         assert(response.__error.message.includes('preloadBuiltinApps'));
         assert.strictEqual(invalidSelection.runtime.globals().sdk, existingSdk, 'invalid selection must not replace an existing SDK');
     }
     for (const failure of ['failApps', 'hangApps']) {
-        const r = scenario({ [failure]: true, setup: {enableModelPreload:false,enableAppliancePlugin:false,useMultiViews:false} });
+        const r = scenario({ [failure]: true, setup: {enableModelPreload:false,enableAppliancePlugin:false,useMultiViews:false,preloadBuiltinApps:['Slide']} });
         const result = await r.join();
         assert.equal(result.__error, undefined, failure + ' cannot gate an unrelated blank Room');
         assert.equal(r.rooms.length, 1);
@@ -220,20 +227,23 @@ async function main() {
     // Native SDK options must prepare the appliance renderer before any Room,
     // independently from the model-preload opt-in. Only the renderer boundary
     // is stubbed; execute the production constructor and RoomPreparation cache.
-    const minimalAppliance = scenario({ setup: JSON.parse('{"enableAppliancePlugin":true}') });
+    const minimalAppliance = scenario({ setup: {enableAppliancePlugin:true, dynamicConfig:undefined} });
     await new Promise(resolve => setImmediate(resolve));
     assert.equal(minimalAppliance.rooms.length, 0);
-    assert.equal(minimalAppliance.appliancePreparations.length, 1, 'enableAppliancePlugin alone activates rendering preparation');
-    assert.deepEqual(minimalAppliance.workerLoads, { full: 1, sub: 0 });
+    assert.equal(minimalAppliance.appliancePreparations.length, 0, 'plugin alone never starts optional preparation');
+    assert.deepEqual(minimalAppliance.workerLoads, { full: 0, sub: 0 });
+    assert.equal(minimalAppliance.runtime.globals().sdk.__nativePreloadResult, undefined);
+    assert.equal(minimalAppliance.runtime.globals().sdk.__nativePreparation, undefined);
+    assert.deepEqual(minimalAppliance.appSelections, []);
     for (const enableModelPreload of [undefined, false, true]) {
         for (const appliancePluginOptions of [undefined, {}, { extras: {} },
             { extras: { useWorker: 'auto', useSimple: true, canvasOpt: { contextType: '2d' } } }]) {
-            const setup = JSON.parse(JSON.stringify({ enableModelPreload, enableAppliancePlugin: true,
+            const setup = JSON.parse(JSON.stringify({ enableModelPreload, enableAppliancePlugin: true, enablePreLoadAppliancePlugin: true, dynamicConfig:null,
                 useMultiViews: true, appliancePluginOptions }));
             const r = scenario({ setup });
             await new Promise(resolve => setImmediate(resolve));
             assert.equal(r.rooms.length, 0, 'appliance preparation must not allocate a Room');
-            assert.equal(r.appliancePreparations.length, 1, 'enableAppliancePlugin alone starts preparation, independently from model preloading');
+            assert.equal(r.appliancePreparations.length, 1, 'explicit appliance preload starts independently from model preloading');
             assert.deepEqual(r.workerLoads, { full: 1, sub: 0 }, 'omitted useWorker/useSimple still prepares the default full Worker');
             const prepared = r.appliancePreparations[0];
             assert.equal(prepared.cdn.fullWorkerUrl, 'blob:full');
@@ -256,6 +266,29 @@ async function main() {
         assert.equal(r.appliancePreparations.length, 0);
     }
     console.log('Bridge appliance preparation: minimal enableAppliancePlugin-only payload, 12 constructor combinations (omitted/empty/explicit options × model default/false/true), matching join reuse and 2 disabled-plugin cases passed');
+
+    // Ordinary-room admission stays synchronous up to the original SDK call.
+    // No private prepare API, App warmup, Worker source, optional task or observer.
+    for (const enableModelPreload of [undefined, false]) for (const preloadBuiltinApps of [undefined, []]) {
+        const r = scenario({ setup: { dynamicConfig: undefined, enableModelPreload, preloadBuiltinApps,
+            useMultiViews: true, enableAppliancePlugin: true, enablePreLoadAppliancePlugin: false } });
+        await new Promise(resolve => setImmediate(resolve));
+        assert.deepEqual(r.events, []); assert.deepEqual(r.workerLoads, {full: 0, sub: 0});
+        assert.deepEqual(r.appSelections, []);
+        assert.equal(r.runtime.globals().sdk.__nativePreparation, undefined);
+        assert.equal(r.runtime.globals().sdk.__nativePreloadResult, undefined);
+        const joining = r.join();
+        assert.equal(r.events[0], 'sdk.joinRoom', 'direct SDK call occurs before any optional microtask wait');
+        assert.equal((await joining).__error, undefined);
+        assert(r.events.indexOf('sdk.joinRoom') < r.events.indexOf('manager.mount'));
+        assert(r.events.indexOf('manager.mount') < r.events.indexOf('worker.full'));
+        assert(r.events.indexOf('worker.full') < r.events.indexOf('plugin.create'));
+    }
+    const flagWithoutPlugin = scenario({setup:{dynamicConfig:undefined, enableAppliancePlugin:false,enablePreLoadAppliancePlugin:true}});
+    await new Promise(resolve => setImmediate(resolve));
+    assert.deepEqual(flagWithoutPlugin.workerLoads,{full:0,sub:0});
+    assert.equal(flagWithoutPlugin.runtime.globals().sdk.__nativePreloadResult,undefined);
+    console.log('PASS ordinary baseline trace: direct SDK join -> WindowManager -> Worker -> plugin; four omitted/false/empty combinations and independent plugin flag');
 
     // Actual tagged Native payloads: unset BOOL defaults are below OSS, explicit false wins.
     const nativeDefaults = scenario({ setup: {
@@ -388,9 +421,9 @@ async function main() {
     const missingWorker = scenario({ failWorkerLoad: true, setup: { useMultiViews: true, enableAppliancePlugin: true } });
     assert.equal((await missingWorker.join()).__error.message, 'worker chunk missing');
     assert.ok(!missingWorker.events.includes('plugin.create'));
-    assert.ok(!missingWorker.events.includes('manager.destroy'));
-    assert.ok(!missingWorker.events.includes('room.disconnect'));
-    assert.ok(!missingWorker.events.includes('sdk.joinRoom'));
+    assert.ok(missingWorker.events.includes('manager.destroy'));
+    assert.ok(missingWorker.events.includes('room.disconnect'));
+    assert.ok(missingWorker.events.includes('sdk.joinRoom'));
     missingWorker.options.failWorkerLoad = false;
     assert.equal((await missingWorker.join()).__error, undefined);
     assert.ok(missingWorker.workerLoads.full >= 2);
@@ -406,13 +439,13 @@ async function main() {
     assert.equal((await cancelledJoin).__error.code, 'Cancelled');
     await cancelledLeave;
     assert.ok(!cancelledWorker.events.includes('plugin.create'));
-    assert.ok(!cancelledWorker.events.includes('manager.destroy'));
-    assert.ok(!cancelledWorker.events.includes('sdk.joinRoom'));
+    assert.ok(cancelledWorker.events.includes('manager.destroy'));
+    assert.ok(cancelledWorker.events.includes('sdk.joinRoom'));
     assert.equal(cancelledWorker.window.appliancePlugin, undefined);
     const disabledPlugin = scenario({ setup: { useMultiViews: true, enableAppliancePlugin: false } });
     await disabledPlugin.join();
     assert.deepEqual(disabledPlugin.workerLoads, { full: 0, sub: 0 });
     console.log('Bridge Worker integration: effective flags match SDK merge, custom CDN, failed chunk recovery and cancellation passed');
-    console.log('Bridge dynamic runtime: effective mode, pre-room dependencies, explicit priority, fallback, failure cleanup and recovery passed');
+    console.log('Bridge dynamic runtime: effective mode, post-Room required resources, explicit priority, fallback, failure cleanup and recovery passed');
 }
 main().catch(error => { console.error(error); process.exitCode = 1; });

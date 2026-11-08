@@ -6,7 +6,7 @@ type Options = Record<string, any>;
 
 /** Native-only class warmup selection. Empty arrays explicitly disable it. */
 export function resolveBuiltinAppPreloadKinds(value: unknown): string[] {
-    if (value === undefined) return ["Slide", "Presentation"];
+    if (value === undefined || value === null) return [];
     const allowed = ["Slide", "Presentation", "MediaPlayer", "DocsViewer"];
     if (!Array.isArray(value) || value.some(kind => typeof kind !== "string" || !allowed.includes(kind))) {
         throw new TypeError("preloadBuiltinApps must be an array of Slide, Presentation, MediaPlayer or DocsViewer");
@@ -44,86 +44,63 @@ export function resolveAppliancePreparationOptions(setup: Options, room: Options
     return merge(merge(merge(defaults, { extras: remoteExtras || {} }), sdk.explicit.appliancePluginOptions), join.explicit.appliancePluginOptions);
 }
 
+/** Required work stays at the original post-Room/WindowManager point when preload is off. */
+export async function resolveApplianceOptionsForRoom(setup: Options, room: Options, dynamic: any): Promise<Options> {
+    const options = resolveAppliancePreparationOptions(setup, room, dynamic?.appliancePlugin?.extras);
+    return { ...options, cdn: await getApplianceWorkerUrls(options) };
+}
+
+/** Created only for explicit appliance preload. One first-options snapshot per document. */
 export class RoomPreparation {
-    private tasks = new Map<string, Promise<Options>>();
-    private ready = new Map<string, { workerUrls?: Options; renderModel?: string }>();
-    private activeKey?: string;
-    private appWarmup?: Promise<PreloadResult>;
-    readonly status: { state: string; workerUrls?: Options; renderModel?: string; events: Array<{ stage: string; at: number; key?: string }> } = { state: "idle", events: [] };
-    constructor(
-        private readonly preloadApps: () => Promise<void>,
-        private readonly probe: (options: Options) => Promise<unknown>,
-        private readonly probeGeneration: () => number = () => 0,
-    ) {}
-    mark(stage: string): void {
+    private options!: Promise<Options | undefined>;
+    private completion?: Promise<PreloadResult>;
+    readonly status: { state: string; workerUrls?: Options; renderModel?: string; events: Array<{ stage: string; at: number }> } = { state: "idle", events: [] };
+    constructor(private readonly probe: (options: Options) => Promise<unknown>) {}
+
+    private mark(stage: string): void {
         this.status.events.push({ stage, at: Date.now() });
-        if (this.status.events.length > 128) this.status.events.splice(0, this.status.events.length - 128);
-        console.info("[preparation] " + stage);
     }
-    /** Required options/resources only. Optional render probing never gates a connection. */
-    async resolveForRoom(setup: Options, room: Options, dynamic: any): Promise<Options> {
-        const options = resolveAppliancePreparationOptions(setup, room, dynamic?.parameters?.appliancePlugin?.extras);
-        if (!setup.enableAppliancePlugin) return options;
-        return { ...options, cdn: await getApplianceWorkerUrls(options) };
-    }
-    warmupApps(): Promise<PreloadResult> {
-        // Optional Apps may never be used by this Room. Warm them in the
-        // background, without making their loader/CDN a join prerequisite.
-        if (!this.appWarmup) {
-            const warmup = Promise.resolve().then(() => this.preloadApps()).then(() => {
-                this.mark("appsReady");
-                return preloadSuccess();
-            }).catch(() => {
-                if (this.appWarmup === warmup) this.appWarmup = undefined;
-                this.mark("appsFailed");
-                return { state: "warn" as const, message: "内置 App 类预加载失败，将在实际使用时重试" };
-            });
-            this.appWarmup = warmup;
-        }
-        return this.appWarmup;
-    }
-    prepare(setup: Options, room: Options, dynamic: any): Promise<Options> {
-        this.warmupApps();
-        const options = resolveAppliancePreparationOptions(setup, room, dynamic?.parameters?.appliancePlugin?.extras);
-        const key = JSON.stringify([!!setup.enableAppliancePlugin, options, this.probeGeneration()], (_key, value) =>
-            value && typeof value === "object" && !Array.isArray(value)
-                ? Object.keys(value).sort().reduce((out, name) => { out[name] = value[name]; return out; }, {}) : value);
-        this.activeKey = key;
-        const existing = this.tasks.get(key);
-        if (existing) {
-            const result = this.ready.get(key);
-            if (result) {
-                this.status.state = "ready";
-                this.status.workerUrls = result.workerUrls;
-                this.status.renderModel = result.renderModel;
-            } else this.status.state = "loading";
-            this.mark("reuse");
-            return existing;
-        }
+
+    start(setup: Options, dynamic?: Promise<any>): Promise<PreloadResult> {
+        if (this.completion) return this.completion;
         this.status.state = "loading";
-        this.status.workerUrls = undefined;
-        this.status.renderModel = undefined;
         this.mark("start");
-        const result: { workerUrls?: Options; renderModel?: string } = {};
-        const task = (setup.enableAppliancePlugin ? (async () => {
-                const cdn = await getApplianceWorkerUrls(options);
-                const effective = { ...options, cdn };
-                const rendering = await this.probe(effective) as any;
-                result.workerUrls = cdn;
-                if (rendering) result.renderModel = `${rendering.renderMode}/${rendering.contextType}`;
-                return effective;
-            })() : Promise.resolve(options)).then(effective => {
-            this.ready.set(key, result);
-            if (this.activeKey === key) Object.assign(this.status, result, { state: "ready" });
-            this.mark("dependenciesReady");
+        let rendering: Promise<any> | undefined;
+        this.options = (async () => {
+            // Observe the SDK's automatic request; never call private preparation APIs.
+            // On cancellation/failure defer the first options lock to the actual Room,
+            // which may receive a different configuration from the normal fallback.
+            const result = setup.dynamicConfig ? await dynamic : undefined;
+            if (setup.dynamicConfig && result?.state.source !== "remote") return undefined;
+            const options = resolveAppliancePreparationOptions(setup, {}, result?.parameters?.appliancePlugin?.extras);
+            const effective = { ...options, cdn: await getApplianceWorkerUrls(options) };
+            // Invoke prepare before publishing options; getInstance can then reuse its
+            // running probe without racing a late prepare after initialization starts.
+            rendering = Promise.resolve(this.probe(effective));
+            rendering.catch(() => undefined);
+            this.status.workerUrls = effective.cdn;
+            this.mark("probeStarted");
             return effective;
-        }).catch(error => {
-            if (this.tasks.get(key) === task) this.tasks.delete(key);
-            if (this.activeKey === key) this.status.state = "failed";
-            this.mark("failed");
-            throw error;
+        })();
+        this.completion = this.options.then(async options => {
+            if (!options) throw new Error("DynamicConfigPreparationDeferred");
+            const result = await rendering;
+            this.status.state = "ready";
+            if (result) this.status.renderModel = `${result.renderMode}/${result.contextType}`;
+            this.mark("ready");
+            return preloadSuccess();
+        }).catch(() => {
+            this.status.state = "deferred";
+            this.mark("deferred");
+            return { state: "warn" as const, message: "教具预准备未完成，将在正常初始化时处理" };
         });
-        this.tasks.set(key, task);
-        return task;
+        return this.completion;
+    }
+
+    async resolveForRoom(setup: Options, room: Options, dynamic: any): Promise<Options> {
+        // Wait only until resource loading has started the shared probe. getInstance
+        // owns the probe wait/fallback. Optional App/model tasks never gate this step.
+        const prepared = await this.options.catch(() => undefined);
+        return prepared || resolveApplianceOptionsForRoom(setup, room, dynamic);
     }
 }

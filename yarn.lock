@@ -1114,10 +1114,10 @@
   resolved "https://registry.npmjs.org/@netless/app-slide/-/app-slide-0.2.109.tgz#3b8ea75aa7c1b781bb95a1057cf581428b920de3"
   integrity sha512-MEHcq7ut+Qjl9ClrgJhLGwTAY4aMK1RnpIJtxm8eZksKWxJRiD8rXkwZVpGYLXz+TpHUlLbueZMHaqVFlo1gdg==
 
-"@netless/appliance-plugin@1.1.48":
-  version "1.1.48"
-  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.48.tgz#022cecb099c887d3b06ef4f77a2764131d6586c4"
-  integrity sha512-rwRkJbvNFUsAACC1+xpYzf/FBbXmw5QayCDFTIR+Wm9X30jkwgmaH5CLNX90XRFC12HFYSn1HM+ReupOvwVjmQ==
+"@netless/appliance-plugin@1.1.49":
+  version "1.1.49"
+  resolved "https://registry.npmjs.org/@netless/appliance-plugin/-/appliance-plugin-1.1.49.tgz#edf38626d273bb4634079a15c9939d4debba281d"
+  integrity sha512-64PE3PdTxX7HI8d8RY4hqBr3664aq8BZrC5Lq7xln+p51bg9KASbqqvGH/W/Pb9DcG8/rCrkQzW16xfjs/yx2w==
   dependencies:
     clipper-lib "^6.4.2"
     dom-to-image "^2.6.0"
@@ -2552,11 +2552,6 @@ core-js-compat@^3.6.2:
   dependencies:
     browserslist "^4.8.5"
     semver "7.0.0"
-
-core-js@^3.15.2:
-  version "3.16.0"
-  resolved "https://registry.npmjs.org/core-js/-/core-js-3.16.0.tgz"
-  integrity sha512-5+5VxRFmSf97nM8Jr2wzOwLqRo6zphH2aX+7KsAUONObyzakDNq2G/bgbhinxB4PoV9L3aXQYhiDKyIKWd2c8g==
 
 core-js@^3.33.3:
   version "3.49.0"
@@ -6827,10 +6822,8 @@ which@^2.0.1:
   dependencies:
     isexe "^2.0.0"
 
-white-web-sdk@2.16.62:
-  version "2.16.62"
-  resolved "https://registry.npmjs.org/white-web-sdk/-/white-web-sdk-2.16.62.tgz#d1c8ee8480b2cedd551a62d3351894c3c1ab90e6"
-  integrity sha512-ftT1+5/HUNni52PKrITgDXvOiWX3l+14jYAiIXjs6t9ryN4Nh/FunvLD5AmPxi8DIjjajvOxfx9ax+vZ31Nn6A==
+"white-web-sdk@file:../../output/native-preload-isolation-20261108/white-web-sdk":
+  version "2.16.63"
   dependencies:
     "@juggle/resize-observer" "^3.3.1"
     "@netless/canvas-polyfill" "^0.0.4"
@@ -6839,7 +6832,6 @@ white-web-sdk@2.16.62:
     bezier-js "^2.4.4"
     bowser "^2.11.0"
     color "^4.2.3"
-    core-js "^3.15.2"
     detect-it "^3.0.5"
     eventemitter3 "^4.0.7"
     mathjs "^10.1.1"
