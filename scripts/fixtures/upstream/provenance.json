@@ -1,0 +1,21 @@
+{
+  "purpose": "Pinned upstream merge helpers for Bridge payload-contract tests in standalone CI. Real published runtime is covered by release E2E. Refresh from the matching release tag when upgrading these semantics.",
+  "sources": [
+    {
+      "package": "white-sdk",
+      "tag": "2.16.63",
+      "commit": "990332b68d6f1cf47dcf173c8c1059fc36ce82e5",
+      "source": "web-sdk/src/dynamicConfig/Parameters.ts",
+      "file": "white-web-sdk-2.16.63-parameters.ts",
+      "sha256": "7d4098b715afc880499dace6cc30550814d42111368d9c5881a5adcca90c2e36"
+    },
+    {
+      "package": "appliance-plugin",
+      "tag": "1.1.49",
+      "commit": "6d83efb9e79b7569ea952508ef2c81b8406fc52d",
+      "source": "src/plugin/dynamicConfig.ts",
+      "file": "appliance-plugin-1.1.49-dynamicConfig.ts",
+      "sha256": "17f4a9b5532a56d545d93b3695ea685eec0bcd2a860b467dda7d40c90751b13a"
+    }
+  ]
+}

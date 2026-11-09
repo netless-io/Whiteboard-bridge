@@ -16,14 +16,14 @@ async function main() {
     const helpers = await build({
         stdin: {
             contents: `
-                export { mergeDynamicJoinRoomParameters } from '../white-sdk/web-sdk/src/dynamicConfig/Parameters';
-                export { applyDynamicMountParams } from '../window-manager/src/Utils/dynamicConfig';
+                export { mergeDynamicJoinRoomParameters } from './scripts/fixtures/upstream/white-web-sdk-2.16.63-parameters';
+                export { applyDynamicMountParams } from '@netless/window-manager/src/Utils/dynamicConfig';
                 export { withDynamicConfigDefaults, splitNativeConfiguration, resolveNativeConfiguration } from './src/bridge/DynamicConfigParameters';
                 export { mergeDefaultAppliancePluginExtras } from './src/bridge/AppliancePluginDefaults';
                 export { collectPreloadResults, configurationKey, preloadSuccess } from './src/bridge/PreloadCompletion';
                 export { Lifecycle, currentScope, documentId, failure, inScope } from './src/bridge/Lifecycle';
                 export { ApplianceWorkerUrlProvider } from './src/bridge/ApplianceWorkerUrls';
-                export { mergeApplianceDynamicExtras } from '../appliance-plugin/src/plugin/dynamicConfig';
+                export { mergeApplianceDynamicExtras } from './scripts/fixtures/upstream/appliance-plugin-1.1.49-dynamicConfig';
             `,
             resolveDir: root, loader: 'ts',
         },
