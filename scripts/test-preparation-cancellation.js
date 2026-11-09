@@ -17,7 +17,7 @@ function environment(stage) {
     const room = { useMultiViews: true, state: {}, phase: 'connected', async disconnect() { disconnects++; this.phase = 'disconnected'; } };
     const preparation = { mark: e => events.push(e), prepare() { probes++; throw Error('optional preparation must never gate join'); },
         resolveForRoom() { resolves++; return stage === 'required' ? required.task : Promise.resolve({ cdn: { fullWorkerUrl: 'blob:full' } }); } };
-    const sdk = { prepareRoomResources: () => resources.task, __nativePreparation: preparation, async joinRoom() { transports++; return room; } };
+    const sdk = { prepareRoomResources: () => resources.task, __nativePreparation: preparation, async joinRoom() { transports++; return stage === 'resources' ? resources.task : room; } };
     const handler = { exports: {} };
     vm.runInNewContext(compile('module.exports = ' + joinSource), { module: handler, sdk, lifecycle: owner, currentScope: () => scope(1),
         nativeConfig: { enableAppliancePlugin: true, useMultiViews: true }, cursorAdapter: undefined, room: undefined, window: {},
@@ -27,17 +27,18 @@ function environment(stage) {
         mountWindowManager: async () => ({ destroy() {} }), createAppState: () => ({}), registerBridgeRoom() {}, convertBound: x => x,
         inScope: life.inScope, failure: life.failure });
     const joining = handler.exports({ uuid: 'fixture-room', roomToken: 'fixture-token', uid: 'fixture-user' }, value => replies.push(JSON.parse(value)));
-    return { owner, scope, timers, resources, required, events, replies, joining, stats: () => ({ transports, probes, resolves, disconnects, initialized }) };
+    return { owner, scope, timers, resources, required, events, replies, joining, fakeRoom: room, stats: () => ({ transports, probes, resolves, disconnects, initialized }) };
 }
 (async () => {
     {
         const e = environment('resources');
-        await e.owner.leave(e.scope(1)); assert.equal(e.owner.state, 'idle'); assert.equal(e.timers.size, 0);
-        const replacement = e.owner.begin('room', e.scope(2), () => {});
-        e.resources.resolve({}); await e.joining;
-        assert.equal(e.stats().transports, 0); assert.equal(e.stats().probes, 0);
-        assert.strictEqual(e.owner.task, replacement); assert.equal(e.replies.length, 1); assert.equal(e.replies[0].__error.code, 'Cancelled');
-        console.log('PASS cancellation before connection cannot admit a late transport');
+        const closing = e.owner.leave(e.scope(1)); await flush();
+        e.resources.resolve(e.fakeRoom); await e.joining; await closing;
+        assert.equal(e.owner.state, 'idle'); assert.equal(e.timers.size, 0);
+        assert.equal(e.stats().transports, 1); assert.equal(e.stats().probes, 0);
+        assert.equal(e.stats().disconnects, 1);
+        assert.equal(e.replies.length, 1); assert.equal(e.replies[0].__error.code, 'Cancelled');
+        console.log('PASS cancellation during SDK join disconnects a late Room');
     }
     for (const failLate of [false, true]) {
         const e = environment('required'); e.resources.resolve({}); await flush();

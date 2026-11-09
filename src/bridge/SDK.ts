@@ -31,7 +31,7 @@ import {
     shouldQueryApplianceBackgroundImage,
     validateHasBackgroundImageParams,
 } from "./BackgroundImageViewId";
-import { RoomPreparation, resolveBuiltinAppPreloadKinds } from "./RoomPreparation";
+import { RoomPreparation, resolveBuiltinAppPreloadKinds, resolveApplianceOptionsForRoom } from "./RoomPreparation";
 import type {
     NativeSlidePerformanceOptions,
 } from "./SlidePerformanceDefaults";
@@ -50,7 +50,7 @@ import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
 import { prepare } from '@netless/white-prepare';
 import { collectPreloadResults, configurationKey, preloadSuccess, PreloadResult } from './PreloadCompletion';
 
-import { ApplianceMultiPlugin, prepareApplianceRendering, getAppliancePreparationGeneration } from '@netless/appliance-plugin';
+import { ApplianceMultiPlugin, prepareApplianceRendering } from '@netless/appliance-plugin';
 import { getApplianceWorkerUrls } from './ApplianceWorkerUrls';
 import { createWorkerInstance as createFoundationWorkerInstance } from '../FoundationWorkerFactory';
 import { PCMProxy } from '../PCMProxy';
@@ -86,7 +86,9 @@ type NativeSDKConfigWithPresentation = NativeSDKConfig & {
     disableDeviceInputs?: boolean;
     /** Opt in to the Gateway model hint and speculative download; default false. */
     enableModelPreload?: boolean;
-    /** App class warmup only. Omitted: Slide / Presentation; [] disables it. */
+    /** Explicit appliance probe/Worker preparation; default false. Requires enableAppliancePlugin. */
+    enablePreLoadAppliancePlugin?: boolean;
+    /** Explicit App class warmup only. Omitted / [] disables it. */
     preloadBuiltinApps?: readonly string[];
     dynamicConfig?: DynamicConfigOptions;
     __nativeConfigDefaults?: readonly string[];
@@ -568,6 +570,7 @@ class SDKBridge {
         const observedSdk = sdk;
         if (!observedSdk || configurationKey(config) !== sdkConfigurationJson) { callback(failure("StaleSdk")); return; }
         const result: Promise<PreloadResult> = (observedSdk as any).__nativePreloadResult;
+        if (!result) { callback(failure("PreloadDisabled")); return; }
         result.then(value => {
             if (sdk === observedSdk && configurationKey(config) === sdkConfigurationJson) callback(JSON.stringify(value));
             else callback(failure("StaleSdk"));
@@ -604,7 +607,7 @@ class SDKBridge {
             callback?.(failure(error.message));
             return;
         }
-        const { log, __nativeConfigDefaults, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, appliancePluginOptions, presentationAppOptions, backgroundImageLoadOptions, preloadBuiltinApps, ...restConfig } = config;
+        const { log, __nativeConfigDefaults, __nativeTags, __platform, __netlessUA, initializeOriginsStates, useMultiViews, userCursor, enableInterrupterAPI, routeBackup, enableRtcIntercept, enableRtcAudioEffectIntercept, enableSlideInterrupterAPI, enableImgErrorCallback, enableIFramePlugin, enableSyncedStore, enableAppliancePlugin, enablePreLoadAppliancePlugin, appliancePluginOptions, presentationAppOptions, backgroundImageLoadOptions, preloadBuiltinApps, ...restConfig } = config;
         const whiteSdkConfig = mergeLocalLogOptions(restConfig);
         const enablePcmDataCallback = (config as any).enablePcmDataCallback || false;
 
@@ -723,7 +726,6 @@ class SDKBridge {
             validateBackgroundImageLoadOptions(backgroundImageLoadOptions);
             sdk = new WhiteWebSdk({
                 ...whiteSdkConfig,
-                enableModelPreload: config.enableModelPreload === true,
                 invisiblePlugins: invisiblePlugins,
                 wrappedComponents: wrappedComponents,
                 plugins: plugins,
@@ -735,28 +737,26 @@ class SDKBridge {
                 useMobXState,
             });
             const preparingSdk = sdk;
-            const preparation = new RoomPreparation(
-                () => builtinAppKinds.length ? WindowManager.preloadApps(builtinAppKinds) : Promise.resolve(),
-                options => prepareApplianceRendering(options as any, true, console),
-                getAppliancePreparationGeneration,
-            );
-            (preparingSdk as any).__nativePreparation = preparation;
-            (window as any).__whitePreparation = preparation.status;
-            const apps = preparation.warmupApps();
-            const appliance: Promise<PreloadResult> = enableAppliancePlugin
-                ? Promise.resolve(preparingSdk.prepareDynamicConfig()).then(dynamic => preparation.prepare(config, {}, dynamic))
-                    .then(preloadSuccess).catch(error => ({ state: "warn" as const, message:
-                        error?.message === "RenderPreparationDeferredWhileHidden"
-                            ? "教具渲染预准备因页面隐藏而延后，将在正常初始化时执行"
-                            : "教具渲染预准备失败，将在正常初始化时重试" }))
-                : Promise.resolve(preloadSuccess());
-            const modelSdk = preparingSdk as WhiteWebSdk & { waitForModelPreload?: () => Promise<PreloadResult> };
-            const model: Promise<PreloadResult> = config.enableModelPreload === true && modelSdk.waitForModelPreload
-                ? modelSdk.waitForModelPreload()
-                    .catch(() => ({ state: "warn" as const, message: "模型 JS 预加载失败，将按正常入房握手加载" }))
-                : Promise.resolve(config.enableModelPreload === true
-                    ? { state: "warn" as const, message: "模型 JS 预加载完成状态不可用，将按正常入房握手加载" } : preloadSuccess());
-            (preparingSdk as any).__nativePreloadResult = collectPreloadResults([apps, appliance, model]);
+            const hasPreload = builtinAppKinds.length > 0 || config.enableModelPreload === true || !!config.dynamicConfig ||
+                (!!enableAppliancePlugin && enablePreLoadAppliancePlugin === true);
+            if (hasPreload) {
+                const tasks: Promise<PreloadResult>[] = [];
+                if (builtinAppKinds.length) {
+                    tasks.push(WindowManager.preloadApps(builtinAppKinds).then(preloadSuccess)
+                        .catch(() => ({ state: "warn" as const, message: "内置 App 类预加载失败，将在实际使用时重试" })));
+                }
+                if (enableAppliancePlugin && enablePreLoadAppliancePlugin === true) {
+                    const preparation = new RoomPreparation(options => prepareApplianceRendering(options as any, true, console));
+                    (preparingSdk as any).__nativePreparation = preparation;
+                    (window as any).__whitePreparation = preparation.status;
+                    const dynamic = config.dynamicConfig ? (preparingSdk as any).__observeDynamicConfigPreload() : undefined;
+                    tasks.push(preparation.start(config, dynamic));
+                }
+                if (config.enableModelPreload === true) tasks.push(preparingSdk.waitForModelPreload().then(result => ({ ...result, state: result.state === "success" ? "success" as const : "warn" as const })));
+                if (config.dynamicConfig) tasks.push(preparingSdk.waitForDynamicConfigPreload().then(result => ({ ...result, state: result.state === "success" ? "success" as const : "warn" as const })));
+                // Default path allocates no optional batch and Native does not observe it.
+                (preparingSdk as any).__nativePreloadResult = collectPreloadResults(tasks);
+            }
             window.sdk = sdk;
             sdkConfigurationJson = configurationJson;
             bindLocalLogStateChange(sdk);
@@ -792,12 +792,6 @@ class SDKBridge {
             const invisiblePlugins = [...useMultiViews ? [WindowManager as any] : []];
             window.nativeWebSocket = nativeWebSocket;
             const roomCallbackHandler = new RoomCallbackHandler(task);
-            const preparation: RoomPreparation = (joiningSdk as any).__nativePreparation;
-            task.transportStarted = false;
-            preparation.mark("joinRequested");
-            const resources = await joiningSdk.prepareRoomResources({ region: joinRoomParams.region, modulesOrigin: joinRoomParams.modulesOrigin });
-            if (task.cancelled) throw new Error("Cancelled");
-            preparation.mark("connectStarted");
             task.transportStarted = true;
             const aRoom = await joiningSdk.joinRoom(withDynamicConfigDefaults({
                 disableMagixEventDispatchLimit: useMultiViews,
@@ -822,7 +816,7 @@ class SDKBridge {
                     disableMagixEventDispatchLimit: joinRoomParams.disableMagixEventDispatchLimit !== undefined || remote?.disableMagixEventDispatchLimit !== undefined
                         ? parameters.disableMagixEventDispatchLimit : effectiveMultiViews,
                 };
-            }), {...roomCallbackHandler, ...new SDKCallbackHandler(true)}, undefined, resources);
+            }), {...roomCallbackHandler, ...new SDKCallbackHandler(true)});
             acquiredRoom = aRoom;
             task.object = aRoom;
             disposers.push(() => {
@@ -861,7 +855,10 @@ class SDKBridge {
                 if (setup.enableAppliancePlugin) {
                     if (WindowManager.supportAppliancePlugin === false) throw new Error("Appliance Plugin requires supportAppliancePlugin=true");
                     if (task.cancelled) throw new Error("Cancelled");
-                    const preparedPluginOptions = await preparation.resolveForRoom(setup, nativeParams, resources.dynamicConfig);
+                    const preparation: RoomPreparation | undefined = (joiningSdk as any).__nativePreparation;
+                    const preparedPluginOptions = await (preparation
+                        ? preparation.resolveForRoom(setup, nativeParams, aRoom.dynamicConfig)
+                        : resolveApplianceOptionsForRoom(setup, nativeParams, aRoom.dynamicConfig));
                     if (task.cancelled) throw new Error("Cancelled");
                     const roomLogger = (aRoom as unknown as { logger?: { info(message: string): void; error(message: string): void } }).logger;
                     roomLogger?.info("[Bridge] ApplianceMultiPlugin.getInstance start");

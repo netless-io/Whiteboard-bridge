@@ -21,7 +21,7 @@
         "sync-foundation-worker": "yarn sync-foundation-worker:generate && yarn patch-foundation-worker",
         "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
         "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
-        "check": "tsc && yarn test:room-preparation && yarn test:preload-completion && yarn test:appliance-worker-urls && yarn test:session-lifecycle && yarn test:preparation-cancellation && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control",
+        "check": "tsc && yarn test:room-preparation && yarn test:preload-completion && yarn test:appliance-worker-urls && yarn test:session-lifecycle && yarn test:preparation-cancellation && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control && yarn test:dynamic-config-runtime",
         "precy:server": "yarn sync-foundation-worker",
         "cy:server": "webpack-dev-server --mode development --host localhost --port 8760",
         "cy:run": "cypress run",
@@ -39,7 +39,7 @@
     },
     "dependencies": {
         "@netless/app-slide": "0.2.109",
-        "@netless/appliance-plugin": "1.1.48",
+        "@netless/appliance-plugin": "1.1.49",
         "@netless/combine-player": "^1.1.1",
         "@netless/cursor-tool": "^0.1.1",
         "@netless/iframe-bridge": "2.1.9",
@@ -52,7 +52,7 @@
         "@netless/white-prepare": "^1.0.2",
         "@netless/white-video-plugin": "^1.2.4",
         "@netless/white-video-plugin2": "^2.0.4",
-        "@netless/window-manager": "1.0.28",
+        "@netless/window-manager": "1.0.29",
         "agora-foundation": "3.11.1-rc.1 || 3.11.1",
         "buffer": "^6.0.3",
         "core-js": "^3.33.3",
@@ -62,7 +62,7 @@
         "react": "^16.12.0",
         "react-dom": "^16.12.0",
         "whatwg-fetch": "^3.0.0",
-        "white-web-sdk": "2.16.62"
+        "white-web-sdk": "2.16.63"
     },
     "devDependencies": {
         "@babel/core": "^7.7.4",
