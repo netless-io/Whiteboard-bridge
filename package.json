@@ -21,7 +21,7 @@
         "sync-foundation-worker": "yarn sync-foundation-worker:generate && yarn patch-foundation-worker",
         "build": "tsc && webpack --mode production && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
         "buildDev": "tsc && webpack --mode development && touch ./build/$(git rev-parse --short HEAD) && git status -s >> ./build/$(git rev-parse --short HEAD)",
-        "check": "tsc && yarn test:room-preparation && yarn test:preload-completion && yarn test:appliance-worker-urls && yarn test:session-lifecycle && yarn test:preparation-cancellation && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control && yarn test:dynamic-config-runtime",
+        "check": "tsc && yarn test:room-preparation && yarn test:preload-completion && yarn test:appliance-worker-urls && yarn test:session-lifecycle && yarn test:room-api-results && yarn test:preparation-cancellation && yarn test:background-image-view-id && yarn test:slide-performance-defaults && yarn test:unified-page-control && yarn test:dynamic-config-runtime",
         "precy:server": "yarn sync-foundation-worker",
         "cy:server": "webpack-dev-server --mode development --host localhost --port 8760",
         "cy:run": "cypress run",
@@ -30,6 +30,7 @@
         "test:slide-performance-defaults": "node scripts/test-slide-performance-defaults.js",
         "test:unified-page-control": "node scripts/test-unified-page-control.js",
         "test:session-lifecycle": "node scripts/test-session-lifecycle.js",
+        "test:room-api-results": "node scripts/test-room-api-results.js",
         "test:preparation-cancellation": "node scripts/test-preparation-cancellation.js",
         "test:dynamic-config-runtime": "node scripts/test-dynamic-config-runtime.js",
         "test:appliance-worker-urls": "node scripts/test-appliance-worker-urls.js && node scripts/test-appliance-worker-chunks.js"
