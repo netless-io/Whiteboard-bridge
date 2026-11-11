@@ -80,9 +80,34 @@ test('automatic reconnect keeps owner active; terminal event never frees it', as
   owner.phase(task,'connected');assert.equal(owner.state,'active');owner.phase(task,'disconnected');
   assert.equal(owner.state,'blocked');assert.throws(()=>owner.begin('room',scope(2),()=>{}),/Busy/);
 });
-test('exit while reconnecting cleans but does not certify a normal close', async () => {
+test('exit during automatic reconnect waits for recovery, then disconnects before reuse', async () => {
   const {owner,task,closes}=active();task.object.phase='reconnecting';
-  await assert.rejects(owner.leave(scope(1)),/CloseUnconfirmed/);assert.equal(closes(),1);assert.equal(owner.state,'blocked');
+  const close=owner.leave(scope(1));await flush();
+  assert.equal(closes(),0);assert.equal(owner.state,'closing');
+  assert.throws(()=>owner.begin('room',scope(2),()=>{}),/Busy/);
+  task.object.phase='connected';owner.phase(task,'connected');await close;
+  assert.equal(closes(),1);assert.equal(task.object.phase,'disconnected');assert.equal(owner.state,'idle');
+  owner.begin('room',scope(2),()=>{});
+});
+test('waiting for automatic recovery keeps a single close and has a deadline', async () => {
+  const {owner,task,closes}=active();task.object.phase='reconnecting';
+  const close=owner.leave(scope(1));const rejected=assert.rejects(close,/LeaveTimeout/);
+  assert.strictEqual(owner.leave(scope(1)),close);await flush();await advance(20001);await rejected;
+  assert.equal(closes(),0);assert.equal(owner.state,'blocked');assert.equal(task.connectionWaiter,undefined);
+});
+test('terminal phase during recovery wait cannot admit another Room', async () => {
+  for(const phase of ['disconnected','error','kicked']){
+    const {owner,task,closes}=active();task.object.phase='reconnecting';
+    const close=owner.leave(scope(1));const rejected=assert.rejects(close,/CloseUnconfirmed/);await flush();
+    task.object.phase='disconnected';owner.phase(task,phase);await rejected;
+    assert.equal(closes(),0);assert.equal(owner.state,'blocked');assert.equal(task.connectionWaiter,undefined);
+  }
+});
+test('reconnect after normal disconnect has started remains unconfirmed', async () => {
+  const {owner,task}=active();task.object.disconnect=async()=>{
+    owner.phase(task,'reconnecting');task.object.phase='disconnected';
+  };
+  await assert.rejects(owner.leave(scope(1)),/CloseUnconfirmed/);assert.equal(owner.state,'blocked');
 });
 test('cleanup errors preserve blocked and still clean other resources', async () => {
   const {owner,task}=active();let cleaned=0;task.disposers.push(()=>{cleaned++;},()=>{throw new Error('cleanup');});
@@ -174,7 +199,9 @@ test('cancel before transport releases without waiting; late finish cannot poiso
     else await owner.leave(scope(1));
   }
 });
-(async()=>{for(const t of tests){await t.fn();process.stdout.write(`PASS ${t.name}\n`);timers=[];}process.stdout.write(`${tests.length} lifecycle tests passed\n`);})().catch(e=>{console.error(e);process.exitCode=1;});
+let suiteCompleted=false;
+process.on('beforeExit',()=>{if(!suiteCompleted){console.error('Lifecycle suite did not finish');process.exitCode=1;}});
+(async()=>{for(const t of tests){await t.fn();process.stdout.write(`PASS ${t.name}\n`);timers=[];}suiteCompleted=true;process.stdout.write(`${tests.length} lifecycle tests passed\n`);})().catch(e=>{console.error(e);process.exitCode=1;});
 
 // Exercise the actual thin adapter with a native-shaped transport, including sync calls.
 const adapterModule={exports:{}}, wire=[];
