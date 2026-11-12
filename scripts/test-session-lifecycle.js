@@ -199,6 +199,70 @@ test('cancel before transport releases without waiting; late finish cannot poiso
     else await owner.leave(scope(1));
   }
 });
+test('replacement retires a failed close, logs once to Room logger and fences late events', async () => {
+  const {owner,task}=active(); const logs=[],nativeLogs=[];
+  task.object.logger={error:message=>logs.push(message)};
+  owner.onLeaveFailure=(_scope,message)=>nativeLogs.push(message);
+  task.object.disconnect=async()=>{throw Error('synthetic disconnect failure');};
+  await assert.rejects(owner.leave(scope(1)),/synthetic disconnect failure/);
+  assert.equal(owner.state,'blocked');
+  owner.continueAfterLeaveFailure(scope(1),'synthetic disconnect failure');
+  assert.equal(logs.length,1); assert.match(logs[0],/synthetic disconnect failure/); assert.equal(nativeLogs.length,1);
+  const fresh=owner.begin('room',scope(2),()=>{});owner.activate(fresh,'{}');fresh.settle();
+  owner.phase(task,'error');await owner.finish(task,Error('late failure'));
+  owner.continueAfterLeaveFailure(scope(1),'stale recovery');
+  assert.equal(owner.state,'active');assert.strictEqual(owner.task,fresh);
+});
+test('replacement continues after timeout and cleans late Room exactly once',async()=>{
+  const owner=new Lifecycle(),task=owner.begin('room',scope(1),()=>{});
+  task.transportStarted=true;const closed=owner.leave(scope(1));const rejected=assert.rejects(closed,/LeaveTimeout/);
+  await advance(20001);await rejected;owner.continueAfterLeaveFailure(scope(1),'LeaveTimeout');
+  const fresh=owner.begin('room',scope(2),()=>{});owner.activate(fresh,'{}');fresh.settle();
+  let disconnects=0,disposals=0;
+  task.object={phase:'connected',async disconnect(){disconnects++;this.phase='disconnected';}};
+  task.disposers.push(()=>disposals++);
+  await owner.finish(task,Error('Cancelled'));await flush();
+  assert.equal(disconnects,1);assert.equal(disposals,1);assert.equal(owner.state,'active');assert.strictEqual(owner.task,fresh);
+});
+test('pending old disconnect cannot block replacement after Native deadline or later poison it',async()=>{
+  for(const rejectLate of [false,true]) {
+    const {owner,task}=active();let finish,disconnects=0;
+    task.object.disconnect=()=>{disconnects++;return new Promise((resolve,reject)=>finish=()=>rejectLate?reject(Error('late close')):resolve());};
+    const closed=owner.leave(scope(1));const rejected=assert.rejects(closed,/LeaveTimeout/);await flush();
+    await advance(20001);await rejected;owner.continueAfterLeaveFailure(scope(1),'LeaveTimeout');
+    const fresh=owner.begin('room',scope(2),()=>{});owner.activate(fresh,'{}');fresh.settle();finish();await flush();
+    assert.equal(disconnects,1);assert.equal(owner.state,'active');assert.strictEqual(owner.task,fresh);
+  }
+});
+test('logger exceptions and reconnect wait do not prevent fallback cleanup or fresh creation',async()=>{
+  const {owner,task,closes}=active();task.object.phase='reconnecting';
+  task.object.logger={error(){throw Error('logger failed');}};owner.onLeaveFailure=()=>{throw Error('callback failed');};
+  const closed=owner.leave(scope(1));const rejected=assert.rejects(closed,/CloseUnconfirmed/);await flush();
+  owner.continueAfterLeaveFailure(scope(1),'native timeout');await rejected;
+  assert.equal(closes(),1);owner.begin('room',scope(2),()=>{});assert.equal(owner.state,'joining');
+});
+test('healthy pending leave still serializes and new join errors remain observable',async()=>{
+  const {owner,task}=active();let finish;
+  task.object.disconnect=()=>new Promise(r=>finish=()=>{task.object.phase='disconnected';r();});
+  const closed=owner.leave(scope(1));await flush();assert.throws(()=>owner.begin('room',scope(2),()=>{}),/Busy/);
+  finish();await closed;
+  const replies=[],fresh=owner.begin('room',scope(2),v=>replies.push(JSON.parse(v)));fresh.transportStarted=true;
+  await owner.finish(fresh,Error('new room rejected'));assert.equal(replies[0].__error.message,'new room rejected');
+});
+test('late retired synced-store initialization cannot overwrite replacement store or handlers',async()=>{
+  const mod={exports:{}},installs=[],pending=[],win={};
+  vm.runInNewContext(ts.transpileModule(fs.readFileSync(require('path').join(__dirname,'../src/bridge/SyncedStore.ts'),'utf8'),{compilerOptions:{module:ts.ModuleKind.CommonJS,target:ts.ScriptTarget.ES2019}}).outputText,
+    {module:mod,exports:mod.exports,window:win,Map,WeakMap,require(name){
+      if(name==='./Lifecycle')return moduleObject.exports;
+      if(name==='@netless/synced-store')return {SyncedStorePlugin:{init:()=>new Promise(r=>pending.push(r))}};
+      if(name==='.')return {scopedCall:()=>()=>{},register:(_name,handler)=>installs.push(handler),registerAsyn:(_name,handler)=>installs.push(handler)};
+      return {addBridgeLogHook(){}};
+    }});
+  let cancelled=false;const old=mod.exports.initSyncedStore({},()=>!cancelled);
+  cancelled=true;const fresh=mod.exports.initSyncedStore({});const current={destroy(){}};
+  pending[1](current);await fresh;pending[0]({destroy(){}});await old;
+  assert.strictEqual(win.syncedStore,current);assert.equal(installs.length,2);assert.ok(installs.every(h=>h.syncedStore===current));
+});
 let suiteCompleted=false;
 process.on('beforeExit',()=>{if(!suiteCompleted){console.error('Lifecycle suite did not finish');process.exitCode=1;}});
 (async()=>{for(const t of tests){await t.fn();process.stdout.write(`PASS ${t.name}\n`);timers=[];}suiteCompleted=true;process.stdout.write(`${tests.length} lifecycle tests passed\n`);})().catch(e=>{console.error(e);process.exitCode=1;});

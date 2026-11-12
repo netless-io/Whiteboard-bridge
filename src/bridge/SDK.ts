@@ -496,6 +496,10 @@ async function mountWindowManager(room: Room, handler: RoomCallbackHandler | Rep
 }
 
 class SDKBridge {
+    continueAfterLeaveFailure = (message: string) => {
+        lifecycle.continueAfterLeaveFailure(currentScope(), message);
+    };
+
     hasBackgroundImage = async (
         params: HasBackgroundImageParams,
         responseCallback: any,
@@ -880,7 +884,7 @@ class SDKBridge {
                 roomState = { ...roomState, ...createPageState(roomState.sceneState) };
             }
             if (enableSyncedStore) {
-                const store = await inScope(task.scope, () => initSyncedStore(aRoom));
+                const store = await inScope(task.scope, () => initSyncedStore(aRoom, () => !task.cancelled));
                 disposers.push(() => {
                     if (window.syncedStore === store) destroySyncedStore();
                     else store.destroy();
@@ -943,7 +947,7 @@ class SDKBridge {
             player = mPlayer;
             if (!useMultiViews) { mPlayer.bindHtmlElement(divRef() as HTMLDivElement); cursorAdapter?.setPlayer(mPlayer); }
             if (enableSyncedStore) {
-                const store = await inScope(task.scope, () => initSyncedStore(mPlayer));
+                const store = await inScope(task.scope, () => initSyncedStore(mPlayer, () => !task.cancelled));
                 task.disposers.push(() => { if (window.syncedStore === store) destroySyncedStore(); else store.destroy(); });
                 if (task.cancelled) throw new Error("Cancelled");
             }

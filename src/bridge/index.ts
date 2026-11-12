@@ -103,5 +103,6 @@ export function scopedHandler(namespace: string, handler: any): any {
     return result;
 }
 lifecycle.onState = (scope, state) => inScope(scope, () => call("sdk.lifecycleState", { state }));
+lifecycle.onLeaveFailure = (scope, message) => inScope(scope, () => call("sdk.logger", { funName: "leaveRoomFailed", message, replacementPolicy: "continue" }));
 
 (window as any).__whiteRunScoped = (scope: Scope, fn: () => any) => lifecycle.accepts(scope) ? inScope(scope, fn) : failure("StaleScope");
