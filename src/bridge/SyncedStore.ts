@@ -11,9 +11,11 @@ const syncedStoreAsyncNamespace = "store";
 
 const storeMaps = new WeakMap<SyncedStore, Map<string, Storage>>();
 
-export async function initSyncedStore(displayer: Displayer) {
+export async function initSyncedStore(displayer: Displayer, canInstall = () => true) {
     const scope = currentScope();
     const syncedStore = await SyncedStorePlugin.init(displayer);
+    // A retired Room may finish initialization after a replacement has installed its store.
+    if (!canInstall()) return syncedStore;
     window.syncedStore = syncedStore;
     storeMaps.set(syncedStore, new Map());
 

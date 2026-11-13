@@ -1,13 +1,16 @@
 /** Single document owner. It does not cancel SDK transports or infer socket closure. */
 export type Scope = { documentId: string; generation: number };
 export type State = "idle" | "joining" | "active" | "closing" | "blocked";
-type ObjectHandle = { phase?: string; disconnect?: () => Promise<void>; stop?: () => void; bindHtmlElement?: (element: null) => void };
+type ObjectHandle = { phase?: string; disconnect?: () => Promise<void>; stop?: () => void; bindHtmlElement?: (element: null) => void; logger?: { error(message: string): void } };
 export type Task = {
     scope: Scope; kind: "room" | "player"; object?: ObjectHandle;
     cancelled: boolean; completed: boolean; settled: Promise<void>; settle: () => void;
     reply: (value: any) => void; disposers: Array<() => void | Promise<void>>;
     initializations: Promise<void>[];
     close?: Promise<void>; closeResult?: Promise<void>; unstable: boolean;
+    abandoned?: boolean; transportCleanupStarted?: boolean; closeFailureReported?: boolean;
+    disconnecting?: boolean;
+    connectionWaiter?: (phase: string) => void;
     /** Explicitly false only while preparing dependencies before calling the SDK. */
     transportStarted?: boolean;
     timer?: ReturnType<typeof setTimeout>;
@@ -30,8 +33,41 @@ export class Lifecycle {
     task?: Task;
     private boundary = 0;
     onState: (scope: Scope, state: State) => void = () => {};
+    onLeaveFailure: (scope: Scope, message: string) => void = () => {};
     private setState(task: Task, state: State): void {
-        if (this.task === task) { this.state = state; this.onState(task.scope, state); }
+        if (this.task === task && (!task.abandoned || state === "idle")) { this.state = state; this.onState(task.scope, state); }
+    }
+    private reportLeaveFailure(task: Task, error: Error): void {
+        if (task.closeFailureReported) return;
+        task.closeFailureReported = true;
+        const message = `[Bridge] Previous room leave failed: ${error.message || error}; replacement may continue without confirmed closure`;
+        try { task.object?.logger?.error(message); } catch { /* Logging must not block replacement. */ }
+        try { this.onLeaveFailure(task.scope, message); } catch { /* Native logging is also best effort. */ }
+    }
+    private cleanupAbandoned(task: Task): void {
+        if (task.object && !task.transportCleanupStarted) {
+            task.transportCleanupStarted = true;
+            try {
+                const cleanup = task.kind === "room" ? task.object.disconnect?.() : task.object.stop?.();
+                Promise.resolve(cleanup).catch(error => this.reportLeaveFailure(task, error));
+            } catch (error) { this.reportLeaveFailure(task, error); }
+        }
+        // Pop before invoking: a pending normal close must not dispose the same resource twice.
+        while (task.disposers.length) {
+            try { Promise.resolve(task.disposers.pop()!()).catch(error => this.reportLeaveFailure(task, error)); }
+            catch (error) { this.reportLeaveFailure(task, error); }
+        }
+    }
+    /** Native replacement policy: report a failed leave, retire its scope and keep joining. */
+    continueAfterLeaveFailure(scope: Scope | undefined, message: string): void {
+        const task = this.task;
+        if (!task || !sameScope(scope, task.scope)) return;
+        this.reportLeaveFailure(task, new Error(message));
+        task.abandoned = true; task.cancelled = true; clearTimeout(task.timer);
+        this.complete(task, failure("Cancelled"));
+        task.connectionWaiter?.("error");
+        this.cleanupAbandoned(task);
+        this.setState(task, "idle");
     }
     accepts(scope?: Scope, closing = false): boolean {
         return sameScope(scope, this.task?.scope) && (this.state === "joining" || this.state === "active" || closing);
@@ -62,11 +98,39 @@ export class Lifecycle {
         this.setState(task, "active"); this.complete(task, value);
     }
     phase(task: Task, phase: string): void {
-        if (phase === "error" || phase === "kicked" || (phase === "reconnecting" && task.close)) task.unstable = true;
+        if (phase === "error" || phase === "kicked" || (phase === "reconnecting" && task.disconnecting)) task.unstable = true;
+        task.connectionWaiter?.(phase);
         if ((phase === "disconnected" || phase === "stopped" || phase === "error" || phase === "kicked") && !task.close && this.state === "active") this.setState(task, "blocked");
+    }
+    private async disconnectRoom(task: Task): Promise<void> {
+        const room = task.object!;
+        // Akko's reconnect cancellation can finish before the pending transport
+        // closes. Let its normal recovery finish, then use the confirmed normal
+        // disconnect path before admitting a replacement Room.
+        if (room.phase === "reconnecting") {
+            await new Promise<void>((resolve, reject) => {
+                const finish = (error?: Error): void => {
+                    clearTimeout(timer); task.connectionWaiter = undefined;
+                    if (error) reject(error); else resolve();
+                };
+                const timer = setTimeout(() => finish(new Error("LeaveTimeout")), 20000);
+                task.connectionWaiter = phase => {
+                    if (phase === "connected") finish();
+                    else if (phase === "disconnected" || phase === "error" || phase === "kicked") finish(new Error("CloseUnconfirmed"));
+                };
+            });
+        }
+        if (room.phase !== "connected") throw new Error("CloseUnconfirmed");
+        if (task.abandoned && task.transportCleanupStarted) return;
+        task.transportCleanupStarted = true;
+        task.disconnecting = true;
+        try { await room.disconnect!(); }
+        finally { task.disconnecting = false; }
+        if ((room.phase as string | undefined) !== "disconnected") throw new Error("CloseUnconfirmed");
     }
     async finish(task: Task, error?: Error): Promise<void> {
         task.settle();
+        if (task.abandoned) { this.cleanupAbandoned(task); return; }
         // Once leave owns the outcome, a late preparation rejection must not
         // move an already closed task (or its replacement) back to closing.
         if (!error || task.close) return;
@@ -85,7 +149,6 @@ export class Lifecycle {
             return Promise.reject(new Error("StaleScope"));
         }
         if (task.closeResult) return task.closeResult;
-        const stableAtStart = task.kind === "player" ? true : task.object ? task.object.phase === "connected" : undefined;
         task.cancelled = true; this.setState(task, "closing");
         this.complete(task, failure("Cancelled"));
         // Defer execution until close is stored, so synchronous phase callbacks see the same close work.
@@ -102,9 +165,8 @@ export class Lifecycle {
             // its transport alive until that initialization eventually settles.
             // The lifecycle slot still waits for all initialization and cleanup.
             const acquiredRoom = task.kind === "room" ? task.object : undefined;
-            const acquiredRoomStable = acquiredRoom?.phase === "connected";
             if (acquiredRoom) {
-                try { await acquiredRoom.disconnect!(); }
+                try { await this.disconnectRoom(task); }
                 catch (error) { firstError = error; }
             }
             await task.settled;
@@ -116,25 +178,22 @@ export class Lifecycle {
             for (const initialization of task.initializations) {
                 try { await initialization; } catch (error) { firstError = firstError || error; }
             }
-            const stable = stableAtStart === undefined
-                ? acquiredRoom ? acquiredRoomStable : task.object.phase === "connected"
-                : stableAtStart;
             try {
                 if (task.kind === "room") {
-                    if (!acquiredRoom) await task.object.disconnect!();
+                    if (!acquiredRoom) await this.disconnectRoom(task);
                 }
-                else task.object.stop!();
+                else if (!task.abandoned || !task.transportCleanupStarted) { task.transportCleanupStarted = true; task.object.stop!(); }
             } catch (error) { firstError = error; }
-            for (const dispose of task.disposers.reverse()) {
-                try { await dispose(); } catch (error) { firstError = firstError || error; }
+            while (task.disposers.length) {
+                try { await task.disposers.pop()!(); } catch (error) { firstError = firstError || error; }
             }
             if (firstError) throw firstError;
             // A late acquired Room may be closed normally after a cancelled create.
-            if (task.unstable || (task.kind === "room" && !stable)) throw new Error("CloseUnconfirmed");
+            if (task.unstable) throw new Error("CloseUnconfirmed");
             this.setState(task, "idle");
-        }).catch(error => { this.setState(task, "blocked"); throw error; });
+        }).catch(error => { this.reportLeaveFailure(task, error); this.setState(task, "blocked"); throw error; });
         task.closeResult = new Promise<void>((resolve, reject) => {
-            const timer = setTimeout(() => { this.setState(task, "blocked"); reject(new Error("LeaveTimeout")); }, 20000);
+            const timer = setTimeout(() => { const error = new Error("LeaveTimeout"); this.reportLeaveFailure(task, error); this.setState(task, "blocked"); reject(error); }, 20000);
             task.close!.then(() => { clearTimeout(timer); resolve(); }, error => { clearTimeout(timer); reject(error); });
         });
         return task.closeResult;

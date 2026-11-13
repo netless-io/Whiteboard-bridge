@@ -103,5 +103,15 @@ export function scopedHandler(namespace: string, handler: any): any {
     return result;
 }
 lifecycle.onState = (scope, state) => inScope(scope, () => call("sdk.lifecycleState", { state }));
+lifecycle.onLeaveFailure = (scope, message) => inScope(scope, () => call("sdk.logger", { funName: "leaveRoomFailed", message, replacementPolicy: "continue" }));
+
+// pagehide means navigation actually happened (beforeunload may be cancelled).
+// Start real Room cleanup while JS is still runnable; Native can restore a fresh
+// document on the next explicit join even when this document cannot return an ACK.
+window.addEventListener?.("pagehide", () => {
+    const scope = lifecycle.task?.scope || { documentId, generation: 0 };
+    if (lifecycle.task) lifecycle.leave(scope).catch(() => {});
+    inScope(scope, () => call("sdk.documentNavigating", { state: lifecycle.state }));
+});
 
 (window as any).__whiteRunScoped = (scope: Scope, fn: () => any) => lifecycle.accepts(scope) ? inScope(scope, fn) : failure("StaleScope");

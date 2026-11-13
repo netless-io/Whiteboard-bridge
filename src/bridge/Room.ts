@@ -372,6 +372,8 @@ export class RoomAsyncBridge {
         if (window.manager) {
             window.manager.nextPage().then((result) => {
                 responseCallback(result)
+            }, e => {
+                responseCallback(JSON.stringify({ __error: { message: e?.message || String(e), jsStack: e?.stack } }));
             })
         } else {
             const nextIndex = this.room.state.sceneState.index + 1;
@@ -388,6 +390,8 @@ export class RoomAsyncBridge {
         if (window.manager) {
             window.manager.prevPage().then((result) => {
                 responseCallback(result)
+            }, e => {
+                responseCallback(JSON.stringify({ __error: { message: e?.message || String(e), jsStack: e?.stack } }));
             })
         } else {
             const prevIndex = this.room.state.sceneState.index - 1;
@@ -614,7 +618,11 @@ export class RoomAsyncBridge {
         if (window.manager) {
             window.manager.closeApp(appId).then(() => {
                 return responseCallback(undefined);
+            }, e => {
+                responseCallback(JSON.stringify({ __error: { message: e?.message || String(e), jsStack: e?.stack } }));
             });
+        } else {
+            responseCallback(JSON.stringify({ __error: { message: "window manager not existed" } }));
         }
     }
 
@@ -627,11 +635,9 @@ export class RoomAsyncBridge {
     queryAllApps = (responseCallback: any) => {
         if (window.manager) {
             const apps = window.manager.apps;
-            if (apps) {
-                return responseCallback(JSON.stringify(window.manager.apps))
-            } else {
-                return responseCallback({});
-            }
+            return responseCallback(JSON.stringify(apps || {}));
+        } else {
+            responseCallback(JSON.stringify({ __error: { message: "window manager not existed" } }));
         }
     }
 
@@ -647,6 +653,8 @@ export class RoomAsyncBridge {
             } else {
                 return responseCallback(JSON.stringify({ __error: { message: "app " + appId + " not existed" } }));
             }
+        } else {
+            responseCallback(JSON.stringify({ __error: { message: "window manager not existed" } }));
         }
     }
 
