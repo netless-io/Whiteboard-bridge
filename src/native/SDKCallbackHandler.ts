@@ -1,6 +1,12 @@
 import { MediaType } from "white-web-sdk";
 import { call, syncCall, asyncCall, scopedCall} from "../bridge"
 
+export interface SlideResourceRetryInfo {
+    pageIndex: number | null;
+    isPreload: boolean;
+    slideId?: string;
+}
+
 export class SDKCallbackHandler {
     private mediaCall = call;
     constructor(taskScoped = false) {
@@ -38,8 +44,13 @@ export class SDKCallbackHandler {
         call("sdk.setupFail", {message: e.message, jsStack: e.stack});
     }
 
-    onSlideResourceMaxRetries = (url: string, error: Error) => {
-        call("sdk.slideResourceMaxRetries", {url, message: error.message, jsStack: error.stack});
+    onSlideResourceMaxRetries = (url: string, error: Error, info?: SlideResourceRetryInfo) => {
+        call("sdk.slideResourceMaxRetries", {
+            url,
+            message: error.message,
+            jsStack: error.stack,
+            ...info,
+        });
     }
 
     onPPTLoadProgress = (uuid: string, progress: number) => {

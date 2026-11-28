@@ -44,6 +44,7 @@ import { registerBridgeRoom } from "./Room";
 import { registerPlayerBridge } from "./Player";
 import { RtcAudioMixingClient } from '../RtcAudioMixingClient';
 import { SDKCallbackHandler } from '../native/SDKCallbackHandler';
+import type { SlideResourceRetryInfo } from "../native/SDKCallbackHandler";
 import { destroySyncedStore, initSyncedStore } from './SyncedStore'
 import { SlideLoggerPlugin } from '../utils/SlideLogger';
 import { RtcAudioEffectClient } from '../RtcAudioEffectClient';
@@ -697,8 +698,8 @@ class SDKBridge {
                 maxFPS: slidePerformanceOptions.maxFPS,
                 resolution: slidePerformanceOptions.resolution,
                 maxResolutionLevel: slidePerformanceOptions.maxResolutionLevel,
-                onResourceMaxRetries: (url: string, error: Error) => {
-                    sdkCallbackHandler.onSlideResourceMaxRetries(url, error);
+                onResourceMaxRetries: (url: string, error: Error, info?: SlideResourceRetryInfo) => {
+                    sdkCallbackHandler.onSlideResourceMaxRetries(url, error, info);
                 },
             },
             addHooks: addHooksSlide,
