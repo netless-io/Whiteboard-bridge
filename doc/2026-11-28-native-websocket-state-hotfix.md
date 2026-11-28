@@ -101,6 +101,7 @@ ohpm install @shengwang/whiteboard@0.2.15
 | --- | --- | --- | --- |
 | iOS | iPhone 6 / SJ1214 | iOS 12.5.8 | 用户确认通过；有物理断网及房间 / Socket 状态日志 |
 | iOS | iPhone 12 / flat-iphone | iOS 17.1.1 | 用户确认通过；早期物理断网样本也记录到恢复后自动 connected |
+| iPadOS | iPad Air 4 | iPadOS 27.2.1 | 用户确认手动物理断网及自动重连测试通过 |
 | HarmonyOS | MatePad DMG-W00 | 6.1.0.139（同设备历史固件记录） | 用户确认通过 |
 | Android | Meizu PRO 7-H / SJ1005 | Android 7.0 / API 24 | 用户确认通过 |
 | Android | Meizu S6 | Android 7.0 / API 24；Flyme 8.0.5.0A | 用户确认通过 |
@@ -109,15 +110,13 @@ ohpm install @shengwang/whiteboard@0.2.15
 | Android | Mi Note 2 | Android 8.0.0 / API 26 | 已安装，用户后续总体确认测试无问题 |
 | Android | OPPO PBAM00 | Android 8.1.0 / API 27 | 已安装，用户后续总体确认测试无问题 |
 | Android | MI 6 | Android 8.0.0 / API 26 | 已安装，用户后续总体确认测试无问题 |
-| Android | 另 1 台用户提供设备（型号未采集） | 未采集 | 已安装，包含在用户“此前非三星设备均 OK”的总体确认中 |
 
-通过结论来自用户手测反馈；未提供的逐设备循环次数、耗时及底层事件时序不作推断。补充样本与未完成项单列如下：
+通过结论来自用户手测反馈；未提供的逐设备循环次数、耗时及底层事件时序不作推断。补充样本与环境异常单列如下：
 
 | 设备 / 标识 | 系统 | 已记录结果与边界 |
 | --- | --- | --- |
 | Huawei JMM-AL00 / SJ0177 | Android 7.0 | 早期同方案物理断网样本：首轮恢复网络后自动重连成功；后两轮恢复网络前重试已耗尽，房间进入 disconnected，需要显式重新入房，不能记为所有轮次均自动恢复 |
 | Samsung SM-G9280 / SJ0239 | Android 7.0 | Wi-Fi 已连接但公网不可达，公共网站与白板 API 均失败，未成功入房；环境阻塞，不计入 SDK 自动重连通过或失败 |
-| iPad Air 4 | iPadOS 27.2.1 | 已部署 Demo，未取得该机独立的手动物理断网结果，不计入本项通过 |
 
 本批物理断网主要验证系统 / WebView 感知断开、旧 Socket 已 `CLOSED` 后的恢复路径；iOS 12 有直接事件时序证据。心跳超时主动 `close()` 后长时间停留在 `CLOSING` 的场景，仍按本版规则保留最多 10 秒关闭等待。
 
