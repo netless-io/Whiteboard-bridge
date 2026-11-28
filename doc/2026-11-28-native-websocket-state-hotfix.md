@@ -7,8 +7,8 @@
 | 平台 | 线上基线 | 本次版本 | 状态 |
 | --- | --- | --- | --- |
 | iOS | 2.16.150 | 2.16.151 | CocoaPods 已发布，公开 spec 与源码内嵌资源已回读验证 |
-| Android | 2.16.137 | 2.16.138 | 构建和单测通过；等待稳定 USB 完成真机验收，尚未发布 |
-| Harmony | 0.2.14 | 0.2.15 | 真机验收通过，OHPM 已上传；平台审核中，尚未确认公开可安装 |
+| Android | 2.16.137 | 2.16.138 | JitPack 已发布，构建提交、匿名 POM/AAR、版本和内嵌资源已核对一致 |
+| Harmony | 0.2.14 | 0.2.15 | OHPM 已发布，latest、公开下载 HAR 与上传包完整性已核对一致 |
 
 ## 修复内容
 
@@ -29,7 +29,7 @@ Bridge 包装全局 WebSocket 时未保留构造器上的四个标准状态常�
 - Bridge 类型和回归检查、Cypress、生产构建通过；各平台内嵌的 13 项资源全部通过大小与 SHA-256 对照。
 - iOS：iPhone 6 / iOS 12.5.8，77 项真机自动化通过，包含普通及预加载入口、双向绘制、课件、撤销重做、离房重入、View 重建、重复入房与配置隔离；编译和 CocoaPods 校验通过。
 - Harmony：DMG-W00 / OpenHarmony 6.1.1.120，同一组 77 项通过；另通过 PPT 媒体播放暂停、Slide 资源失败恢复，以及实际 Native → Bridge 入房 JSON 探针。release HAR 已解包检查，无测试凭据及本地签名。
-- Android：构建通过；单测 184 项，0 失败、0 错误、1 跳过。真机验收因 USB 断连尚未完成，不计通过。
+- Android：Samsung SM-P610 / Android 13，稳定 USB 下完整 77 项真机自动化通过，覆盖与 iOS/Harmony 对应功能、配置和立即入房路径。实际安装 APK 与验收包哈希一致；构建通过，单测 184 项，0 失败、0 错误、1 跳过。此前 USB 中断轮次未计入通过。
 
 本轮按要求不新增物理断网测试。基础设施中断记录与完整重跑结果分别保留。
 
@@ -37,8 +37,12 @@ Bridge 包装全局 WebSocket 时未保留构造器上的四个标准状态常�
 
 已发布的 iOS：`pod 'Whiteboard', '2.16.151'`。
 
-Harmony 请等待 OHPM 审核及公开仓库可下载确认；Android 请等待真机验收和 JitPack 发布完成。
+已发布的 Harmony：`ohpm install @shengwang/whiteboard@0.2.15`。
+
+已发布的 Android：`implementation "com.github.netless-io:whiteboard-android:2.16.138"`，仓库使用 `https://jitpack.io`。
 
 - [iOS 修复与版本 PR](https://github.com/netless-io/Whiteboard-iOS/pull/100)
 - [Android 修复与版本 PR](https://github.com/netless-io/whiteboard-android/pull/24)
 - [Harmony 修复与版本 PR](https://github.com/netless-io/whiteboard-harmony/pull/10)
+
+三端发布均已合入正式主线：iOS、Android 为 `origin/master`，Harmony 为其正式默认分支 `origin/main`。release tag 均指向对应主线合并提交，源码内容与真机验收候选一致。
