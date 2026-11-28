@@ -32,13 +32,22 @@ export interface FakeWebSocket {
 
 function hookWebSocket() {
     const originConstructor = WebSocket;
-    (WebSocket as any) = function(url, protocols?) {
+    const hookedConstructor = function(url, protocols?) {
         if (window.nativeWebSocket) {
             return new WebSocketBridge(url);
         } else {
             return new originConstructor(url, protocols);
         }
-    }
+    };
+    // Keep the standard constants available to consumers of either transport,
+    // including recovery that starts after the socket's close event has fired.
+    Object.defineProperties(hookedConstructor, {
+        CONNECTING: { value: ReadyState.CONNECTING, enumerable: true },
+        OPEN: { value: ReadyState.OPEN, enumerable: true },
+        CLOSING: { value: ReadyState.CLOSING, enumerable: true },
+        CLOSED: { value: ReadyState.CLOSED, enumerable: true },
+    });
+    (WebSocket as any) = hookedConstructor;
 }
 
 hookWebSocket();
